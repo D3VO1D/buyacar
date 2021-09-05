@@ -5,5 +5,10 @@ from .serializers import CarAdSerializer
 
 
 class CarAdViewSet(viewsets.ModelViewSet):
-    queryset = CarAdvertisement.objects.all().order_by('-created_at')
+    queryset = CarAdvertisement.objects.all()
     serializer_class = CarAdSerializer
+
+    def get_queryset(self):
+        p = int(self.request.query_params["p"])
+        cars_on_page = 50
+        return CarAdvertisement.objects.all()[(p-1)*cars_on_page:p*cars_on_page]

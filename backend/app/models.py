@@ -24,6 +24,6 @@ class CarAdvertisement(models.Model):
     power = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return '{} {}'.format(self.make, self.model)
+        return '{} {} {}'.format(self.id, self.make, self.model)
 
 
