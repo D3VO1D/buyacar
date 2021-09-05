@@ -19,7 +19,7 @@ export default {
 @import '@/_vars';
 
 .header {
-    background-color: $header-color;
+    background-color: $accent-color;
     color: $white;
     display: flex;
     justify-content: space-around;

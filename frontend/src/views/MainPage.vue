@@ -1,21 +1,23 @@
 <template>
-  <div>
-    <div>Main Page</div>
+  <main>
     <CarsList/>
-    <CarCard/>
-  </div>
+  </main>
 </template>
 
 <script>
 import CarsList from '@/components/AppCarsList';
-import CarCard from '@/components/AppCarCard';
 
 export default {
     name: 'MainPage',
-    components: { CarCard, CarsList },
+    components: { CarsList },
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+main {
+    width: 80%;
+    margin: 0 auto;
+    padding: 40px 0;
+    flex: 1 0 auto;
+}
 </style>

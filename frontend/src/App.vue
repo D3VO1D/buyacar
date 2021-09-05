@@ -17,4 +17,10 @@ export default {
 
 <style lang="scss">
 @import 'index';
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 </style>

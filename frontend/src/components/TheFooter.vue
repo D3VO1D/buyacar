@@ -42,9 +42,7 @@ export default {
     padding: 24px 0;
     font-family: $logo-font;
 
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    flex-shrink: 0;
 
     &__section {
         list-style-type: none;
