@@ -6,7 +6,7 @@ from app.services import string_to_json_array
 
 
 class Command(BaseCommand):
-    help = """Database generation from ads.csv Try running: 
+    help = """Database generation from backend/ads.csv Try running: 
               python manage.py generate_database --num_rows=100 --num_photos=5 or 
               python manage.py generate_database --num_photos=5"""
 
