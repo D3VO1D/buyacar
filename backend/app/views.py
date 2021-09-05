@@ -10,5 +10,5 @@ class CarAdViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         p = int(self.request.query_params["p"])
-        cars_on_page = 50
-        return CarAdvertisement.objects.all()[(p-1)*cars_on_page:p*cars_on_page]
+        per_page = 25
+        return CarAdvertisement.objects.all()[(p-1)*per_page:p*per_page]
