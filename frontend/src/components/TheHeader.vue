@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    name: 'Header',
+    name: 'TheHeader',
 };
 </script>
 
@@ -24,14 +24,20 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    padding: 24px 0;
+    font-family: $logo-font;
 
     &__logo {
-        font-family: $logo-font;
+        font-size: 32px;
     }
 
     &__logo-link {
         color: $white;
         text-decoration: none;
+    }
+
+    &__motto {
+        font-size: 22px;
     }
 }
 </style>
