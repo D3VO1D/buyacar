@@ -1,9 +1,18 @@
 <template>
   <div id="app">
+    <Header/>
     <router-view/>
   </div>
 </template>
 
-<style lang="scss">
+<script>
+import Header from '@/components/TheHeader';
 
+export default {
+    components: { Header },
+};
+</script>
+
+<style lang="scss">
+@use 'index';
 </style>

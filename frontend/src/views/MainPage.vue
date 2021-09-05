@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import CarsList from '@/components/CarsList';
-import CarCard from '@/components/CarCard';
+import CarsList from '@/components/AppCarsList';
+import CarCard from '@/components/AppCarCard';
 
 export default {
     name: 'MainPage',
