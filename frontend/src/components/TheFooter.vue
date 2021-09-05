@@ -17,7 +17,8 @@
                 info@name.com
             </li>
             <li>
-                +7 495 755-55-77
+                <font-awesome-icon class="footer__icon" :icon="['fas', 'phone-alt']" />
+                <span>+7 495 755-55-77</span>
             </li>
         </ul>
     </footer>
@@ -60,6 +61,10 @@ export default {
         color: $divider-color;
         height: 1px;
         border: none;
+    }
+
+    &__icon {
+        margin-right: 12px;
     }
 }
 
