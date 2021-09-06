@@ -57,7 +57,7 @@
 
 <script>
 export default {
-    name: 'CarCard',
+    name: 'AppCarCard',
     props: {
         car: {
             required: true,

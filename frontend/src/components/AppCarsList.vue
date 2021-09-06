@@ -1,6 +1,6 @@
 <template>
     <div>
-        <CarCard
+        <AppCarCard
             v-for="car in 5"
             :key="car"
             :car="{car}"
@@ -9,18 +9,16 @@
 </template>
 
 <script>
-import CarCard from '@/components/AppCarCard';
+import AppCarCard from '@/components/AppCarCard';
 
 export default {
-    name: 'CarsList',
-    components: { CarCard },
-    data() {
-        return {
-            cars: [],
-        };
-    },
-    created() {
-        // TODO: API call
+    name: 'AppCarsList',
+    components: { AppCarCard },
+    props: {
+        cars: {
+            type: Array,
+            required: true,
+        },
     },
 };
 </script>
