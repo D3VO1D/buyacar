@@ -1,3 +1,4 @@
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import viewsets
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -10,7 +11,10 @@ class CarAdViewSet(viewsets.ModelViewSet):
     serializer_class = CarAdSerializer
 
     def get_queryset(self):
-        p = int(self.request.query_params["p"])
+        try:
+            p = int(self.request.query_params["p"])
+        except MultiValueDictKeyError:
+            p = 1
         per_page = 25
         paginator = Paginator(self.queryset, per_page)
         try:
