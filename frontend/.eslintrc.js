@@ -43,5 +43,6 @@ module.exports = {
             mjs: 'never',
             vue: 'never',
         }],
+        'import/prefer-default-export': 'off',
     },
 };

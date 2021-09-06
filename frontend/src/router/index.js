@@ -9,14 +9,32 @@ const routes = [
     {
         path: '/',
         name: 'Main Page',
+        redirect: '/cars',
+    },
+    {
+        path: '/cars',
+        name: 'Cars',
         component: MainPage,
+        props: (route) => ({ page: parseInt(route.query.page, 10) || 1 }),
     },
 ];
+
+const scrollBehavior = (to, from, savedPosition) => {
+    if (savedPosition) {
+        return savedPosition;
+    }
+    return {
+        x: 0,
+        y: 0,
+        behavior: 'smooth',
+    };
+};
 
 const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes,
+    scrollBehavior,
 });
 
 export default router;
