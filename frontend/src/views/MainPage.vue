@@ -3,10 +3,10 @@
         <AppCarsList :cars="cars"/>
         <div class="pagination-container">
             <vue-paginate-al
-                :currentPage="currentPage"
+                :currentPage="page"
                 :totalPage="maxPage"
                 customActiveBGColor="#DB3727"
-                @btnClick="getPageContent"
+                @btnClick="pageClicked"
             />
         </div>
     </main>
@@ -20,7 +20,7 @@ export default {
     name: 'MainPage',
     components: { AppCarsList },
     props: {
-        currentPage: {
+        page: {
             type: Number,
             default: 1,
         },
@@ -33,18 +33,29 @@ export default {
         };
     },
     created() {
-        this.getPageContent();
+        this.getCars(this.page);
     },
     methods: {
-        getPageContent(page = 1) {
+        getCars(page = 1) {
             API.getCars(page)
                 .then((res) => {
-                    const { count, totalPages, results } = res.data;
+                    const {
+                        count,
+                        totalPages,
+                        results,
+                    } = res.data;
                     this.resultsCount = count;
                     this.cars = results;
                     this.maxPage = totalPages;
                 })
                 .catch((err) => console.log(err));
+        },
+        pageClicked(newPage) {
+            this.$router.push({
+                path: '/cars',
+                query: { page: newPage },
+            });
+            this.getCars(newPage);
         },
     },
 };
