@@ -6,7 +6,7 @@
                 :currentPage="currentPage"
                 :totalPage="maxPage"
                 customActiveBGColor="#DB3727"
-                @btnClick="pageClick"
+                @btnClick="getPageContent"
             />
         </div>
     </main>
@@ -14,6 +14,7 @@
 
 <script>
 import AppCarsList from '@/components/AppCarsList';
+import { API } from '@/services/api';
 
 export default {
     name: 'MainPage',
@@ -27,17 +28,24 @@ export default {
     data() {
         return {
             cars: [],
-            maxPage: 100,
+            maxPage: 1,
+            resultsCount: 0,
         };
     },
     created() {
-        // TODO: API call
-        this.cars = [];
-        this.maxPage = 10;
+        this.getPageContent();
     },
     methods: {
-        pageClick(n) {
-            console.log(n);
+        getPageContent(page = 1) {
+            API.getCars(page)
+                .then((res) => {
+                    console.log(res);
+                    const { count, totalPages, results } = res.data;
+                    this.resultsCount = count;
+                    this.cars = results;
+                    this.maxPage = totalPages;
+                })
+                .catch((err) => console.log(err));
         },
     },
 };
