@@ -39,7 +39,6 @@ export default {
         getPageContent(page = 1) {
             API.getCars(page)
                 .then((res) => {
-                    console.log(res);
                     const { count, totalPages, results } = res.data;
                     this.resultsCount = count;
                     this.cars = results;

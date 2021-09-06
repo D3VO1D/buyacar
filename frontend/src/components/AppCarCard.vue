@@ -2,51 +2,62 @@
     <div class="card">
         <div class="card__main">
             <div class="card__thumb">
-                <img class="card__image" src="https://avatars.mds.yandex.net/get-autoru-vos/4395583/e3e19b3f147e183ebbdcc0fc45078bbd/320x240"/>
+                <img class="card__image" :src="car.photos[0]" :alt="title"/>
             </div>
             <div class="card__description">
                 <div class="card__column">
                     <div class="card__column-row">
                         <div class="card__summary">
                             <h3 class="card__title">
-                                <a href="/" class="card__title-link">
-                                    Hyundai Creta II
+                                <a :href="car.url" class="card__title-link" target="_blank" rel="noreferrer">
+                                    {{ title }}
                                     <div class="card__clicker"></div>
                                 </a>
                             </h3>
                             <div class="card__tech-summary">
-                                <div>
-                                    <div class="card__cell">1.6 л./ 123 л.с. / Бензин</div>
-                                    <div class="card__cell">Автомат</div>
-                                    <div class="card__cell">Внедорожник 5 дв.</div>
+                                <div class="card__tech-summary-column">
+                                    <div v-if="present(car.power)" class="card__cell">{{ car.power }}</div>
+                                    <div v-if="present(present(car.transmission))" class="card__cell">
+                                        {{ car.transmission }}
+                                    </div>
                                 </div>
-                                <div>
-                                    <div class="card__cell">Передний</div>
-                                    <div class="card__cell">Серебристый</div>
+                                <div class="card__tech-summary-column">
+                                    <div v-if="present(car.drive)" class="card__cell">{{ car.drive }}</div>
+                                    <div v-if="present(car.body)" class="card__cell">{{ car.body }}</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card__price">1,656,000 $</div>
+                        <div class="card__price">
+                            {{ price }}
+                        </div>
                     </div>
 
                     <div class="card__column-row">
-                        <div class="card__additional-info">
-                            Москва
+                        <div v-if="present(car.location)" class="card__additional-info">
+                            {{ car.location }}
                         </div>
                     </div>
                 </div>
 
                 <div class="card__column">
-                    <div class="card__year">
-                        2021
+                    <div class="card__column-row">
+                        <div v-if="present(car.year)" class="card__year">
+                            {{ car.year }}
+                        </div>
                     </div>
                 </div>
 
                 <div class="card__column">
                     <div class="card__column-row">
-                        <div class="card__mileage">
-                            264,935 mi
+                        <div v-if="present(car.mileage)" class="card__mileage">
+                            {{ car.mileage }} mi
+                        </div>
+                    </div>
+
+                    <div class="card__column-row">
+                        <div v-if="present(car.source)" class="card__additional-info card__additional-info_align_right">
+                            {{ car.source }}
                         </div>
                     </div>
                 </div>
@@ -62,6 +73,25 @@ export default {
         car: {
             required: true,
             type: Object,
+        },
+    },
+    computed: {
+        title() {
+            if (!this.car.title || this.car.title === 'nan') {
+                return `${this.car.make} ${this.car.model}`;
+            }
+            return this.car.title;
+        },
+        price() {
+            if (this.car.price === 0) {
+                return 'Priceless';
+            }
+            return `${this.car.price} $`;
+        },
+    },
+    methods: {
+        present(property) {
+            return property && property !== 'nan';
         },
     },
 };
@@ -114,6 +144,10 @@ export default {
         border-radius: 8px;
     }
 
+    &__summary {
+        width: 290px;
+    }
+
     &__description {
         display: flex;
         padding: 0 16px;
@@ -124,7 +158,7 @@ export default {
     &__title, &__price {
         font-size: 17px;
         font-weight: 700;
-        margin: 0 16px 8px 0;
+        margin: 0 16px 16px 0;
     }
 
     &__title-link {
@@ -154,6 +188,10 @@ export default {
         margin-bottom: 8px;
     }
 
+    &__tech-summary-column:not(:last-child) {
+        width: 180px;
+    }
+
     &__cell {
         max-width: 180px;
         margin-right: 12px;
@@ -168,6 +206,11 @@ export default {
         margin: 8px 0 0;
         font-size: 13px;
         color: $secondary-text-color;
+
+        &_align_right {
+            flex-grow: 1;
+            text-align: right;
+        }
     }
 
     &__year, &__mileage {

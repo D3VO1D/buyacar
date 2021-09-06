@@ -1,9 +1,9 @@
 <template>
     <div>
         <AppCarCard
-            v-for="car in 5"
-            :key="car"
-            :car="{car}"
+            v-for="car in cars"
+            :key="car.id"
+            :car="car"
         />
     </div>
 </template>
