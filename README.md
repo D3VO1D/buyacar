@@ -1,6 +1,6 @@
 # buyacar.com
 
-## Как запустить
+## How to Run
 
 ### Linux
 
