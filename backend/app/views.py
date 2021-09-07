@@ -1,4 +1,3 @@
-from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
@@ -17,19 +16,6 @@ class CarAdStandardPagination(PageNumberPagination):
 
 
 class CarAdViewSet(viewsets.ModelViewSet):
-    queryset = CarAdvertisement.objects.all()
+    queryset = CarAdvertisement.objects.all().order_by('-id')
     serializer_class = CarAdSerializer
-
-    def get_queryset(self):
-        try:
-            p = int(self.request.query_params["p"])
-        except MultiValueDictKeyError:
-            p = 1
-        per_page = 25
-        paginator = Paginator(self.queryset, per_page)
-        try:
-            page = paginator.page(p)
-        except EmptyPage:
-            page = paginator.page(paginator.num_pages)
-        return page
     pagination_class = CarAdStandardPagination
