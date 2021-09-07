@@ -2,10 +2,11 @@ from django.db import models
 
 
 class CarAdvertisement(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
 
     source = models.CharField(max_length=128, null=True, blank=True)
     url = models.CharField(max_length=256, null=True, blank=True)
+    is_new = models.BooleanField(null=True, blank=True)
+    is_broken = models.BooleanField(null=True, blank=True)
     price = models.FloatField(null=True, blank=True)
     location = models.CharField(max_length=128, null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
@@ -20,7 +21,6 @@ class CarAdvertisement(models.Model):
     mileage = models.FloatField(null=True, blank=True)
     transmission = models.CharField(max_length=128, null=True, blank=True)
     drive = models.CharField(max_length=128, null=True, blank=True)
-    condition = models.CharField(max_length=128, null=True, blank=True)
     power = models.FloatField(null=True, blank=True)
 
     def __str__(self):
