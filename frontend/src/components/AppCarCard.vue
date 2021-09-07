@@ -2,7 +2,10 @@
     <div class="card">
         <div class="card__main">
             <div class="card__thumb">
-                <img class="card__image" :src="car.photos[0]" :alt="title"/>
+                <GalleryOnHover
+                    :photos="car.photos"
+                    :placeholder-url="placeholderPhotoUrl"
+                />
             </div>
             <div class="card__description">
                 <div class="card__column">
@@ -67,8 +70,11 @@
 </template>
 
 <script>
+import GalleryOnHover from '@/components/GalleryOnHover';
+
 export default {
     name: 'AppCarCard',
+    components: { GalleryOnHover },
     props: {
         car: {
             required: true,
@@ -87,6 +93,9 @@ export default {
                 return 'Priceless';
             }
             return `${this.car.price} $`;
+        },
+        placeholderPhotoUrl() {
+            return `https://via.placeholder.com/200x150?text=${this.title}`;
         },
     },
     methods: {
@@ -134,14 +143,7 @@ export default {
     &__thumb {
         flex-shrink: 0;
         width: 205px;
-    }
-
-    &__image {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 8px;
+        z-index: 1000;
     }
 
     &__summary {
