@@ -3,7 +3,7 @@
         <div class="card__main">
             <div class="card__thumb">
                 <GalleryOnHover
-                    :photos="car.photos"
+                    :photos="previewPhotos"
                     :placeholder-url="placeholderPhotoUrl"
                 />
             </div>
@@ -54,7 +54,7 @@
                 <div class="card__column">
                     <div class="card__column-row">
                         <div v-if="present(car.mileage)" class="card__mileage">
-                            {{ car.mileage }} mi
+                            {{ mileage }} mi
                         </div>
                     </div>
 
@@ -93,7 +93,14 @@ export default {
                 return 'Priceless';
             }
             const USFormat = Intl.NumberFormat('en-US');
-            return `${USFormat.format(this.car.price)} $`;
+            return `$${USFormat.format(this.car.price)}`;
+        },
+        mileage() {
+            const USFormat = Intl.NumberFormat('en-US');
+            return USFormat.format(this.car.mileage);
+        },
+        previewPhotos() {
+            return this.car.photos.slice(0, 5);
         },
         placeholderPhotoUrl() {
             return `https://via.placeholder.com/200x150?text=${this.title}`;
