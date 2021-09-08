@@ -92,7 +92,8 @@ export default {
             if (this.car.price === 0) {
                 return 'Priceless';
             }
-            return `${this.car.price} $`;
+            const USFormat = Intl.NumberFormat('en-US');
+            return `${USFormat.format(this.car.price)} $`;
         },
         placeholderPhotoUrl() {
             return `https://via.placeholder.com/200x150?text=${this.title}`;
