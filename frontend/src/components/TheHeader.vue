@@ -7,7 +7,7 @@
             </router-link>
         </h1>
         <h2 class="header__motto">
-            All cars for sale in the US
+            All cars are here
         </h2>
     </header>
 </template>

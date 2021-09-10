@@ -63,8 +63,8 @@ export default {
     &__cover {
         display: block;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: 150px;
+        object-fit: contain;
         border-radius: 8px;
     }
 
@@ -74,6 +74,7 @@ export default {
         height: 100%;
         top: 0;
         display: flex;
+        z-index: 1000;
     }
 
     &:not(:hover) &__button {
@@ -85,7 +86,6 @@ export default {
         flex: 1;
         min-height: 8px;
         opacity: 1;
-        transition: opacity .3s;
 
         &:after {
             position: absolute;
@@ -95,7 +95,6 @@ export default {
             height: 3px;
             content: "";
             background: $whitish;
-            transition: background-color .3s;
         }
 
         &:hover:after {
