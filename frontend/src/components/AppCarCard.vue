@@ -98,7 +98,7 @@ export default {
             return this.car.title;
         },
         price() {
-            if (this.car.price === 0) {
+            if (!this.car.price) {
                 return 'Priceless';
             }
             const USFormat = Intl.NumberFormat('en-US');
