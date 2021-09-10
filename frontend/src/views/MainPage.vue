@@ -52,7 +52,7 @@ export default {
         },
         pageClicked(newPage) {
             this.$router.push({
-                path: '/cars',
+                name: 'Main Page',
                 query: { page: newPage },
             });
             this.getCars(newPage);

@@ -1,7 +1,10 @@
 <template>
     <header class="header">
         <h1 class="header__logo">
-            <router-link :to="{ name: 'Main Page'}" class="header__logo-link">buyacar.com</router-link>
+            <router-link :to="{ name: 'Main Page'}" class="header__logo-link">
+                <img class="header__logo-img" src="@/assets/logo.svg" alt="logo"/>
+                WHOLE CARS
+            </router-link>
         </h1>
         <h2 class="header__motto">
             All cars for sale in the US
@@ -29,6 +32,12 @@ export default {
 
     &__logo {
         font-size: 32px;
+    }
+
+    &__logo-img {
+        width: 45px;
+        height: 45px;
+        vertical-align: bottom;
     }
 
     &__logo-link {
