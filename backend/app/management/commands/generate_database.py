@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 continue
             new_car_ad = CarAdvertisement.objects.create(source=car.source,
                                                          url=car.url,
-                                                         is_new=True if car.is_new == "1" else False,
+                                                         is_new=car.is_new,
                                                          is_broken=car.is_broken,
                                                          price=car.price,
                                                          location=car.location,
