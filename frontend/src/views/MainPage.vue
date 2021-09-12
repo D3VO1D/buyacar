@@ -1,5 +1,6 @@
 <template>
     <main>
+        <Filters/>
         <AppCarsList :cars="cars"/>
         <div class="pagination-container">
             <vue-paginate-al
@@ -15,10 +16,11 @@
 <script>
 import AppCarsList from '@/components/AppCarsList';
 import { API } from '@/services/api';
+import Filters from '@/components/Filters';
 
 export default {
     name: 'MainPage',
-    components: { AppCarsList },
+    components: { Filters, AppCarsList },
     props: {
         page: {
             type: Number,
@@ -63,6 +65,7 @@ export default {
 
 <style lang="scss" scoped>
 main {
+    width: fit-content;
     padding: 40px 0 40px calc(10% - 16px);
 }
 

@@ -95,7 +95,7 @@ export default {
     },
     computed: {
         title() {
-            if (!this.car.title || this.car.title === 'nan') {
+            if (this.present(this.car.make) || this.present(this.car.model)) {
                 return `${this.car.make} ${this.car.model}`;
             }
             return this.car.title;
@@ -123,7 +123,7 @@ export default {
     },
     methods: {
         present(property) {
-            return property !== 'nan';
+            return property !== 'nan' && property !== '';
         },
         preloadPhotos() {
             this.previewPhotos.map((photo) => {
