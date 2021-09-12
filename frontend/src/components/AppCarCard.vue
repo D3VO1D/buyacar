@@ -90,6 +90,9 @@ export default {
             type: Object,
         },
     },
+    created() {
+        this.preloadPhotos();
+    },
     computed: {
         title() {
             if (!this.car.title || this.car.title === 'nan') {
@@ -121,6 +124,13 @@ export default {
     methods: {
         present(property) {
             return property !== 'nan';
+        },
+        preloadPhotos() {
+            this.previewPhotos.map((photo) => {
+                const img = new Image();
+                img.src = photo;
+                return img;
+            });
         },
     },
 };
