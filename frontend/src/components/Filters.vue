@@ -17,12 +17,98 @@
                 </div>
             </div>
         </div>
+        <div class="filters__row">
+            <div class="filters__column">
+                <BaseInput
+                    class="filters__item_large"
+                    placeholder="Make"
+                    :autocomplete-options="makeOptions"
+                    v-model="make"
+                />
+            </div>
+
+            <div class="filters__column">
+                <BaseInput
+                    class="filters__item_large"
+                    placeholder="Model"
+                    :autocomplete-options="modelOptions"
+                    v-model="model"
+                />
+            </div>
+        </div>
+        <div class="filters__row">
+            <div class="filters__column">
+                <BaseSelect
+                    class="filters__item_small"
+                    placeholder="Body"
+                    :options="bodyOptions"
+                    v-model="body"
+                />
+
+                <BaseSelect
+                    class="filters__item_small"
+                    placeholder="Transmission"
+                    :options="transmissionOptions"
+                    v-model="transmission"
+                />
+            </div>
+
+            <div class="filters__column">
+                <BaseSelect
+                    class="filters__item_small"
+                    placeholder="Drive"
+                    :options="driveOptions"
+                    v-model="drive"
+                />
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import BaseInput from '@/components/Base/BaseInput';
+import BaseSelect from '@/components/Base/BaseSelect';
+
 export default {
     name: 'Filters',
+    components: {
+        BaseSelect,
+        BaseInput,
+    },
+    data() {
+        // TODO: API calls for Make and Model options
+        return {
+            make: '',
+            makeOptions: [
+                'Audi',
+                'BMW',
+                'Ford',
+            ],
+            model: '',
+            modelOptions: [
+                'X3',
+                'X5',
+                'X7',
+            ],
+            drive: '',
+            driveOptions: [
+                'AWD',
+                'RWD',
+                'FWD',
+            ],
+            transmission: '',
+            transmissionOptions: [
+                'Automatic',
+                'Manual',
+            ],
+            body: '',
+            bodyOptions: [
+                'Hatchback',
+                'Coupe',
+                'Convertible',
+            ],
+        };
+    },
 };
 </script>
 
@@ -46,15 +132,25 @@ export default {
     }
 
     &__column {
+        width: 280px;
         display: flex;
-        flex: 1;
-        flex-shrink: 0;
         align-items: center;
-        min-width: 0;
         margin-left: 20px;
 
         &:first-child {
             margin-left: 0;
+        }
+    }
+
+    &__item_large {
+        width: 100%;
+    }
+
+    &__item_small {
+        width: calc(50% - 5px);
+
+        &:first-of-type {
+            margin-right: 10px;
         }
     }
 }
