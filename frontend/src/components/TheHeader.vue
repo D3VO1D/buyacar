@@ -25,9 +25,9 @@ export default {
     background-color: $accent-color;
     color: $white;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    padding: 24px 0;
+    padding: 24px 10%;
     font-family: $logo-font;
 
     &__logo {

@@ -130,7 +130,7 @@ export default {
 @import '@/_vars';
 
 .card {
-    width: 70%;
+    width: fit-content;
     position: relative;
     padding: 16px;
     background-color: $white;
@@ -191,7 +191,8 @@ export default {
         font-size: 17px;
         font-weight: 700;
         min-width: 120px;
-        text-align: center;
+        text-align: right;
+        margin-right: 20px;
     }
 
     &__link {
@@ -247,15 +248,16 @@ export default {
     &__year, &__mileage {
         font-size: 17px;
         margin-bottom: 8px;
-        text-align: center;
     }
 
     &__year {
-        min-width: 55px;
+        min-width: 60px;
+        text-align: left;
     }
 
     &__mileage {
-        min-width: 85px;
+        min-width: 100px;
+        text-align: right;
     }
 
     &__clicker {

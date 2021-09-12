@@ -63,10 +63,7 @@ export default {
 
 <style lang="scss" scoped>
 main {
-    width: 80%;
-    margin: 0 auto;
-    padding: 40px 0;
-    flex: 1 0 auto;
+    padding: 40px 0 40px calc(10% - 16px);
 }
 
 .pagination-container {
