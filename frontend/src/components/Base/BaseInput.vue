@@ -1,5 +1,5 @@
 <template>
-    <div class="input-container">
+    <div :class="['input-container', `input-container_borders-${bordersType}`]">
         <input
             class="input-container__input"
             type="text"
@@ -21,6 +21,11 @@ export default {
             type: String,
             required: true,
         },
+        bordersType: {
+            type: String,
+            default: 'all',
+            validator: (value) => value === 'all' || value === 'left' || value === 'right',
+        },
     },
 };
 </script>
@@ -34,12 +39,25 @@ export default {
     height: 36px;
     background-color: $white;
     border: 1px solid rgba(0, 0, 0, .12);
-    border-radius: 8px;
     padding: 0 8px;
 
     &:hover {
         cursor: text;
         border: 1px solid #157ee1;
+    }
+
+    &_borders-all {
+        border-radius: 8px;
+    }
+
+    &_borders-left {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+
+    &_borders-right {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
     }
 
     &__input {

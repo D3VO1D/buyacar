@@ -2,7 +2,8 @@
     <div class="select-container" v-click-outside="clickOutside">
         <div
             class="select-container__select"
-            :class="{'select-container__has-chosen-value': !!selectedOptions.length}"
+            :class="[{'select-container__has-chosen-value': !!selectedOptions.length},
+                    `select-container__select_borders-${bordersType}`]"
             @click="showOptions = !showOptions"
             @keyup.esc="resetSelections"
         >
@@ -96,6 +97,11 @@ export default {
             type: String,
             default: 'Any',
         },
+        bordersType: {
+            type: String,
+            default: 'all',
+            validator: (value) => value === 'all' || value === 'left' || value === 'right',
+        },
     },
     data() {
         return {
@@ -173,7 +179,6 @@ export default {
         height: 36px;
         background-color: $white;
         border: 1px solid rgba(0, 0, 0, .12);
-        border-radius: 8px;
         padding-left: 8px;
         display: flex;
         justify-content: space-between;
@@ -182,6 +187,20 @@ export default {
         &:hover {
             cursor: pointer;
             border: 1px solid #157ee1;
+        }
+
+        &_borders-all {
+            border-radius: 8px;
+        }
+
+        &_borders-left {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        &_borders-right {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
         }
     }
 

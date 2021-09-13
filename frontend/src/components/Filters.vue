@@ -101,7 +101,7 @@
         <div class="filters__row">
             <div class="filters__column">
                 <BaseSelect
-                    class="filters__item_small"
+                    class="filters__item_grouped"
                     placeholder="Year, from"
                     :options="yearOptions"
                     :selectedOptions="yearFrom"
@@ -109,10 +109,11 @@
                     @resetSelectedOptions="yearFrom = []"
                     selectionMode="single"
                     resetText="Reset"
+                    bordersType="left"
                 />
 
                 <BaseSelect
-                    class="filters__item_small"
+                    class="filters__item_grouped"
                     placeholder="to"
                     :options="yearOptions"
                     :selectedOptions="yearTo"
@@ -120,34 +121,39 @@
                     @resetSelectedOptions="yearTo = []"
                     selectionMode="single"
                     resetText="Reset"
+                    bordersType="right"
                 />
             </div>
 
             <div class="filters__column">
                 <BaseInput
-                    class="filters__item_small"
+                    class="filters__item_grouped"
                     placeholder="Mileage, from"
                     v-model="mileageFrom"
+                    bordersType="left"
                 />
 
                 <BaseInput
-                    class="filters__item_small"
+                    class="filters__item_grouped"
                     placeholder="to"
                     v-model="mileageTo"
+                    bordersType="right"
                 />
             </div>
 
             <div class="filters__column">
                 <BaseInput
-                    class="filters__item_small"
+                    class="filters__item_grouped"
                     placeholder="Price, from"
                     v-model="priceFrom"
+                    bordersType="left"
                 />
 
                 <BaseInput
-                    class="filters__item_small"
+                    class="filters__item_grouped"
                     placeholder="to"
                     v-model="priceTo"
+                    bordersType="right"
                 />
             </div>
         </div>
@@ -256,15 +262,21 @@ export default {
         }
     }
 
-    &__item_large {
-        width: 100%;
-    }
+    &__item {
+        &_large {
+            width: 100%;
+        }
 
-    &__item_small {
-        width: calc(50% - 5px);
+        &_small {
+            width: calc(50% - 5px);
 
-        &:first-of-type {
-            margin-right: 10px;
+            &:first-of-type {
+                margin-right: 10px;
+            }
+        }
+
+        &_grouped {
+            width: 50%;
         }
     }
 }
