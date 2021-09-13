@@ -4,16 +4,31 @@
             <div class="filters__column">
                 <div class="radio-toolbar">
                     <input class="radio-toolbar__radio" type="radio" id="select-all"
-                           name="toolbar" value="all" checked>
+                           name="toolbar-1" value="all" checked>
                     <label class="radio-toolbar__label" for="select-all">All</label>
 
                     <input class="radio-toolbar__radio" type="radio" id="select-new"
-                           name="toolbar" value="new">
+                           name="toolbar-1" value="new">
                     <label class="radio-toolbar__label" for="select-new">New</label>
 
                     <input class="radio-toolbar__radio" type="radio" id="select-used"
-                           name="toolbar" value="used">
+                           name="toolbar-1" value="used">
                     <label class="radio-toolbar__label" for="select-used">Used</label>
+                </div>
+            </div>
+            <div class="filters__column">
+                <div class="radio-toolbar">
+                    <input class="radio-toolbar__radio" type="radio" id="select-all-2"
+                           name="toolbar-2" value="all">
+                    <label class="radio-toolbar__label" for="select-all-2">All</label>
+
+                    <input class="radio-toolbar__radio" type="radio" id="select-working"
+                           name="toolbar-2" value="new" checked>
+                    <label class="radio-toolbar__label" for="select-working">Working</label>
+
+                    <input class="radio-toolbar__radio" type="radio" id="select-broken"
+                           name="toolbar-2" value="used">
+                    <label class="radio-toolbar__label" for="select-broken">Broken</label>
                 </div>
             </div>
         </div>
@@ -72,6 +87,12 @@
                     @selectOption="selectOption"
                     @resetSelectedOptions="drive = []"
                 />
+
+                <BaseCheckbox
+                    class="filters__item_small"
+                    label="With photos"
+                    v-model="withPhotos"
+                />
             </div>
         </div>
     </div>
@@ -79,10 +100,12 @@
 
 <script>
 import BaseSelect from '@/components/Base/BaseSelect';
+import BaseCheckbox from '@/components/Base/BaseCheckbox';
 
 export default {
     name: 'Filters',
     components: {
+        BaseCheckbox,
         BaseSelect,
     },
     data() {
@@ -117,6 +140,7 @@ export default {
                 'Coupe',
                 'Convertible',
             ],
+            withPhotos: true,
         };
     },
     methods: {
