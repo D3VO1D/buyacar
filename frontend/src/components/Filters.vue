@@ -19,21 +19,21 @@
         </div>
         <div class="filters__row">
             <div class="filters__column">
-                <BaseInput
-                    class="filters__item_large"
-                    placeholder="Make"
-                    :autocomplete-options="makeOptions"
-                    v-model="make"
-                />
+<!--                <BaseInput-->
+<!--                    class="filters__item_large"-->
+<!--                    placeholder="Make"-->
+<!--                    :autocomplete-options="makeOptions"-->
+<!--                    v-model="make"-->
+<!--                />-->
             </div>
 
             <div class="filters__column">
-                <BaseInput
-                    class="filters__item_large"
-                    placeholder="Model"
-                    :autocomplete-options="modelOptions"
-                    v-model="model"
-                />
+<!--                <BaseInput-->
+<!--                    class="filters__item_large"-->
+<!--                    placeholder="Model"-->
+<!--                    :autocomplete-options="modelOptions"-->
+<!--                    v-model="model"-->
+<!--                />-->
             </div>
         </div>
         <div class="filters__row">
@@ -42,14 +42,18 @@
                     class="filters__item_small"
                     placeholder="Body"
                     :options="bodyOptions"
-                    v-model="body"
+                    :selectedOptions="body"
+                    @selectOption="selectOption"
+                    @resetSelectedOptions="body = []"
                 />
 
                 <BaseSelect
                     class="filters__item_small"
                     placeholder="Transmission"
                     :options="transmissionOptions"
-                    v-model="transmission"
+                    :selectedOptions="transmission"
+                    @selectOption="selectOption"
+                    @resetSelectedOptions="transmission = []"
                 />
             </div>
 
@@ -58,7 +62,9 @@
                     class="filters__item_small"
                     placeholder="Drive"
                     :options="driveOptions"
-                    v-model="drive"
+                    :selectedOptions="drive"
+                    @selectOption="selectOption"
+                    @resetSelectedOptions="drive = []"
                 />
             </div>
         </div>
@@ -66,48 +72,56 @@
 </template>
 
 <script>
-import BaseInput from '@/components/Base/BaseInput';
 import BaseSelect from '@/components/Base/BaseSelect';
 
 export default {
     name: 'Filters',
     components: {
         BaseSelect,
-        BaseInput,
     },
     data() {
         // TODO: API calls for Make and Model options
         return {
-            make: '',
+            make: [],
             makeOptions: [
                 'Audi',
                 'BMW',
                 'Ford',
             ],
-            model: '',
+            model: [],
             modelOptions: [
                 'X3',
                 'X5',
                 'X7',
             ],
-            drive: '',
+            drive: [],
             driveOptions: [
                 'AWD',
                 'RWD',
                 'FWD',
             ],
-            transmission: '',
+            transmission: [],
             transmissionOptions: [
                 'Automatic',
                 'Manual',
             ],
-            body: '',
+            body: [],
             bodyOptions: [
                 'Hatchback',
                 'Coupe',
                 'Convertible',
             ],
         };
+    },
+    methods: {
+        selectOption(list, newOption) {
+            const index = list.indexOf(newOption);
+            if (index === -1) {
+                list.push(newOption);
+                return;
+            }
+            list.splice(index, 1);
+        },
     },
 };
 </script>
