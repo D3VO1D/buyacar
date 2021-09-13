@@ -13,8 +13,9 @@
                     :placeholder="inputPlaceholder"
                     v-model="inputValue"
                     @input="showOptions = true"
-                    @focus="showChevron = false"
-                    @blur="showChevron = true"
+                    @focus="focusInput"
+                    @blur="blurInput"
+                    ref="input"
                 />
 
                 <span class="select-container__arrow" v-if="showChevron">
@@ -41,7 +42,6 @@
             <li
                 class="select-container__option"
                 @click="resetSelections"
-                v-if="!inputValue"
             >
                 <font-awesome-icon class="select-container__icon" :icon="['fas', 'times']"/>
                 <span>Any</span>
@@ -50,7 +50,7 @@
                 class="select-container__option"
                 v-for="(option, index) in filteredOptions"
                 :key="option"
-                @click.prevent="selectOption(option)"
+                @mousedown.prevent="selectOption(option)"
             >
                 <font-awesome-icon
                     class="select-container__icon"
@@ -92,9 +92,10 @@ export default {
         return {
             showOptions: false,
             showChevron: true,
-            userChoseOption: false,
             id: Math.random(),
             inputValue: '',
+            tempInputValue: '',
+            userChoseOption: false,
         };
     },
     computed: {
@@ -107,10 +108,7 @@ export default {
                 .indexOf(this.inputValue.toLowerCase()) !== -1);
         },
         inputPlaceholder() {
-            if (this.userChoseOption) {
-                return this.inputValue;
-            }
-            return this.placeholder;
+            return this.tempInputValue || this.placeholder;
         },
     },
     methods: {
@@ -122,14 +120,31 @@ export default {
             }
             // if user typed sth and then selected item from dropdown, set his selected to that value
             this.inputValue = option;
+            this.tempInputValue = option;
             this.showOptions = false;
+            this.showChevron = true;
             this.$emit('selectOption', this.selectedOptions, option, 'single');
+            this.$refs.input.blur();
         },
         resetSelections() {
             this.userChoseOption = false;
             this.showOptions = false;
             this.inputValue = '';
             this.$emit('resetSelectedOptions');
+        },
+        focusInput() {
+            this.showChevron = false;
+            if (this.userChoseOption) {
+                this.tempInputValue = this.inputValue;
+                this.inputValue = '';
+            }
+        },
+        blurInput() {
+            this.showChevron = true;
+            if (this.userChoseOption) {
+                this.inputValue = this.tempInputValue;
+                this.tempInputValue = '';
+            }
         },
     },
 };
