@@ -1,5 +1,5 @@
 <template>
-    <div class="select-container">
+    <div class="select-container" v-click-outside="clickOutside">
         <div
             class="select-container__select"
             :class="{'select-container__has-chosen-value': !!selectedOptions.length}"
@@ -145,6 +145,9 @@ export default {
                 this.inputValue = this.tempInputValue;
                 this.tempInputValue = '';
             }
+        },
+        clickOutside() {
+            this.showOptions = false;
         },
     },
 };
