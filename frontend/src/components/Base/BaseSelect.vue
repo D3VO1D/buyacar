@@ -99,11 +99,12 @@ export default {
     },
     computed: {
         filteredOptions() {
-            if (!this.withInput || !this.inputValue) {
+            if (!this.withInput) {
                 return this.options;
             }
             // if user entered sth, we should autocomplete and suggest filtered options
-            return this.options.filter((option) => option.indexOf(this.inputValue) !== -1);
+            return this.options.filter((option) => option.toLowerCase()
+                .indexOf(this.inputValue.toLowerCase()) !== -1);
         },
         inputPlaceholder() {
             if (this.userChoseOption) {
@@ -115,7 +116,7 @@ export default {
     methods: {
         selectOption(option) {
             this.userChoseOption = true;
-            if (!this.withInput || !this.inputValue) {
+            if (!this.withInput) {
                 this.$emit('selectOption', this.selectedOptions, option, 'multiple');
                 return;
             }
