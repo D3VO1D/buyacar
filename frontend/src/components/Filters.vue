@@ -19,21 +19,27 @@
         </div>
         <div class="filters__row">
             <div class="filters__column">
-<!--                <BaseInput-->
-<!--                    class="filters__item_large"-->
-<!--                    placeholder="Make"-->
-<!--                    :autocomplete-options="makeOptions"-->
-<!--                    v-model="make"-->
-<!--                />-->
+                <BaseSelect
+                    class="filters__item_large"
+                    placeholder="Make"
+                    :options="makeOptions"
+                    :selectedOptions="make"
+                    @selectOption="selectOption"
+                    @resetSelectedOptions="make = []"
+                    with-input
+                />
             </div>
 
             <div class="filters__column">
-<!--                <BaseInput-->
-<!--                    class="filters__item_large"-->
-<!--                    placeholder="Model"-->
-<!--                    :autocomplete-options="modelOptions"-->
-<!--                    v-model="model"-->
-<!--                />-->
+                <BaseSelect
+                    class="filters__item_large"
+                    placeholder="Model"
+                    :options="modelOptions"
+                    :selectedOptions="model"
+                    @selectOption="selectOption"
+                    @resetSelectedOptions="model = []"
+                    with-input
+                />
             </div>
         </div>
         <div class="filters__row">
@@ -114,7 +120,12 @@ export default {
         };
     },
     methods: {
-        selectOption(list, newOption) {
+        selectOption(list, newOption, mode = 'multiple') {
+            if (mode === 'single') {
+                list.splice(0);
+                list.push(newOption);
+                return;
+            }
             const index = list.indexOf(newOption);
             if (index === -1) {
                 list.push(newOption);

@@ -4,39 +4,58 @@
             class="select-container__select"
             :class="{'select-container__has-chosen-value': !!selectedOptions.length}"
             @click="showOptions = !showOptions"
+            @keyup.esc="resetSelections"
         >
-            <span class="select-container__value">
-                {{ selectedOptions.length ? selectedOptions.join(', ') : placeholder }}
-            </span>
-            <span class="select-container__value-counter" v-if="selectedOptions.length > 1">
-                ({{ selectedOptions.length }})
-            </span>
+            <template v-if="withInput">
+                <input
+                    class="input"
+                    type="text"
+                    :placeholder="inputPlaceholder"
+                    v-model="inputValue"
+                    @input="showOptions = true"
+                    @focus="showChevron = false"
+                    @blur="showChevron = true"
+                />
 
-            <span class="select-container__arrow" v-if="!showOptions">
-                <font-awesome-icon :icon="['fas', 'chevron-down']"/>
-            </span>
-            <span class="select-container__arrow" v-if="showOptions">
-                <font-awesome-icon :icon="['fas', 'chevron-up']"/>
-            </span>
+                <span class="select-container__arrow" v-if="showChevron">
+                    <font-awesome-icon :icon="['fas', 'chevron-down']"/>
+                </span>
+            </template>
+            <template v-else>
+                <span class="select-container__value">
+                    {{ selectedOptions.length ? selectedOptions.join(', ') : placeholder }}
+                </span>
+                <span class="select-container__value-counter" v-if="selectedOptions.length > 1">
+                    ({{ selectedOptions.length }})
+                </span>
+
+                <span class="select-container__arrow" v-if="!showOptions">
+                    <font-awesome-icon :icon="['fas', 'chevron-down']"/>
+                </span>
+                <span class="select-container__arrow" v-if="showOptions">
+                    <font-awesome-icon :icon="['fas', 'chevron-up']"/>
+                </span>
+            </template>
         </div>
         <ul class="select-container__options" v-if="showOptions">
             <li
                 class="select-container__option"
-                @click="$emit('resetSelectedOptions')"
+                @click="resetSelections"
+                v-if="!inputValue"
             >
                 <font-awesome-icon class="select-container__icon" :icon="['fas', 'times']"/>
                 <span>Any</span>
             </li>
             <li
                 class="select-container__option"
-                v-for="(option, index) in options"
+                v-for="(option, index) in filteredOptions"
                 :key="option"
-                @click.prevent="$emit('selectOption', selectedOptions, option)"
+                @click.prevent="selectOption(option)"
             >
                 <font-awesome-icon
                     class="select-container__icon"
                     :icon="['fas', 'check']"
-                    v-visible="selectedOptions.indexOf(options[index]) !== -1"
+                    v-visible="selectedOptions.indexOf(filteredOptions[index]) !== -1"
                 />
 
                 <label class="select-container__label">
@@ -51,12 +70,66 @@
 <script>
 export default {
     name: 'BaseSelect',
-    props: ['options', 'selectedOptions', 'placeholder'],
+    props: {
+        options: {
+            type: Array,
+            required: true,
+        },
+        selectedOptions: {
+            type: Array,
+            default: () => [],
+        },
+        placeholder: {
+            type: String,
+            default: '',
+        },
+        withInput: {
+            type: Boolean,
+            default: false,
+        },
+    },
     data() {
         return {
             showOptions: false,
+            showChevron: true,
+            userChoseOption: false,
             id: Math.random(),
+            inputValue: '',
         };
+    },
+    computed: {
+        filteredOptions() {
+            if (!this.withInput || !this.inputValue) {
+                return this.options;
+            }
+            // if user entered sth, we should autocomplete and suggest filtered options
+            return this.options.filter((option) => option.indexOf(this.inputValue) !== -1);
+        },
+        inputPlaceholder() {
+            if (this.userChoseOption) {
+                return this.inputValue;
+            }
+            return this.placeholder;
+        },
+    },
+    methods: {
+        selectOption(option) {
+            this.userChoseOption = true;
+            if (!this.withInput || !this.inputValue) {
+                this.$emit('selectOption', this.selectedOptions, option, 'multiple');
+                return;
+            }
+            // if user typed sth and then selected item from dropdown, set his selected to that value
+            this.inputValue = option;
+            this.showOptions = false;
+            this.$emit('selectOption', this.selectedOptions, option, 'single');
+        },
+        resetSelections() {
+            this.userChoseOption = false;
+            this.showOptions = false;
+            this.inputValue = '';
+            this.$emit('resetSelectedOptions');
+        },
     },
 };
 </script>
@@ -157,5 +230,16 @@ export default {
     &__option input {
         display: none;
     }
+}
+
+.input {
+    outline: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    font-size: 15px;
+    border: transparent;
+    margin-right: 8px;
+    background-color: inherit;
 }
 </style>
