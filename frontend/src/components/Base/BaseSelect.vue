@@ -44,7 +44,7 @@
                 @click="resetSelections"
             >
                 <font-awesome-icon class="select-container__icon" :icon="['fas', 'times']"/>
-                <span>Any</span>
+                <span>{{ resetText }}</span>
             </li>
             <li
                 class="select-container__option"
@@ -91,6 +91,10 @@ export default {
             type: String,
             default: 'multiple',
             validator: (value) => value === 'single' || value === 'multiple',
+        },
+        resetText: {
+            type: String,
+            default: 'Any',
         },
     },
     data() {

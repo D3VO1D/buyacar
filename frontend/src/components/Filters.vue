@@ -108,6 +108,7 @@
                     @selectOption="selectOption"
                     @resetSelectedOptions="yearFrom = []"
                     selectionMode="single"
+                    resetText="Reset"
                 />
 
                 <BaseSelect
@@ -118,6 +119,35 @@
                     @selectOption="selectOption"
                     @resetSelectedOptions="yearTo = []"
                     selectionMode="single"
+                    resetText="Reset"
+                />
+            </div>
+
+            <div class="filters__column">
+                <BaseInput
+                    class="filters__item_small"
+                    placeholder="Mileage, from"
+                    v-model="mileageFrom"
+                />
+
+                <BaseInput
+                    class="filters__item_small"
+                    placeholder="to"
+                    v-model="mileageTo"
+                />
+            </div>
+
+            <div class="filters__column">
+                <BaseInput
+                    class="filters__item_small"
+                    placeholder="Price, from"
+                    v-model="priceFrom"
+                />
+
+                <BaseInput
+                    class="filters__item_small"
+                    placeholder="to"
+                    v-model="priceTo"
                 />
             </div>
         </div>
@@ -127,10 +157,12 @@
 <script>
 import BaseSelect from '@/components/Base/BaseSelect';
 import BaseCheckbox from '@/components/Base/BaseCheckbox';
+import BaseInput from '@/components/Base/BaseInput';
 
 export default {
     name: 'Filters',
     components: {
+        BaseInput,
         BaseCheckbox,
         BaseSelect,
     },
@@ -170,8 +202,10 @@ export default {
             yearFrom: [],
             yearTo: [],
             yearOptions: Array.from(new Array(40), (x, i) => i + 1980),
-            mileage: [],
-            price: [],
+            mileageFrom: '',
+            mileageTo: '',
+            priceFrom: '',
+            priceTo: '',
         };
     },
     methods: {
