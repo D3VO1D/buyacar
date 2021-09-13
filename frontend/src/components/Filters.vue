@@ -41,6 +41,7 @@
                     :selectedOptions="make"
                     @selectOption="selectOption"
                     @resetSelectedOptions="make = []"
+                    selectionMode="single"
                     with-input
                 />
             </div>
@@ -53,6 +54,7 @@
                     :selectedOptions="model"
                     @selectOption="selectOption"
                     @resetSelectedOptions="model = []"
+                    selectionMode="single"
                     with-input
                 />
             </div>
@@ -92,6 +94,30 @@
                     class="filters__item_small"
                     label="With photos"
                     v-model="withPhotos"
+                />
+            </div>
+        </div>
+
+        <div class="filters__row">
+            <div class="filters__column">
+                <BaseSelect
+                    class="filters__item_small"
+                    placeholder="Year, from"
+                    :options="yearOptions"
+                    :selectedOptions="yearFrom"
+                    @selectOption="selectOption"
+                    @resetSelectedOptions="yearFrom = []"
+                    selectionMode="single"
+                />
+
+                <BaseSelect
+                    class="filters__item_small"
+                    placeholder="to"
+                    :options="yearOptions"
+                    :selectedOptions="yearTo"
+                    @selectOption="selectOption"
+                    @resetSelectedOptions="yearTo = []"
+                    selectionMode="single"
                 />
             </div>
         </div>
@@ -141,6 +167,11 @@ export default {
                 'Convertible',
             ],
             withPhotos: true,
+            yearFrom: [],
+            yearTo: [],
+            yearOptions: Array.from(new Array(40), (x, i) => i + 1980),
+            mileage: [],
+            price: [],
         };
     },
     methods: {

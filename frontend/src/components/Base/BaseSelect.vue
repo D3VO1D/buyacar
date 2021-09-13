@@ -87,6 +87,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        selectionMode: {
+            type: String,
+            default: 'multiple',
+            validator: (value) => value === 'single' || value === 'multiple',
+        },
     },
     data() {
         return {
@@ -114,16 +119,16 @@ export default {
     methods: {
         selectOption(option) {
             this.userChoseOption = true;
+            this.showOptions = false;
             if (!this.withInput) {
-                this.$emit('selectOption', this.selectedOptions, option, 'multiple');
+                this.$emit('selectOption', this.selectedOptions, option, this.selectionMode);
                 return;
             }
             // if user typed sth and then selected item from dropdown, set his selected to that value
             this.inputValue = option;
             this.tempInputValue = option;
-            this.showOptions = false;
             this.showChevron = true;
-            this.$emit('selectOption', this.selectedOptions, option, 'single');
+            this.$emit('selectOption', this.selectedOptions, option, this.selectionMode);
             this.$refs.input.blur();
         },
         resetSelections() {
@@ -211,6 +216,8 @@ export default {
         border-radius: 8px;
         background-color: $white;
         box-shadow: 0 10px 30px 0 rgb(0 0 0 / 10%);
+        max-height: 200px;
+        overflow: auto;
     }
 
     &__option {
