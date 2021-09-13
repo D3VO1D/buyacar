@@ -102,7 +102,7 @@
             <div class="filters__column">
                 <BaseSelect
                     class="filters__item_grouped"
-                    placeholder="Year, from"
+                    placeholder="Year from"
                     :options="yearOptions"
                     :selectedOptions="yearFrom"
                     @selectOption="selectOption"
@@ -128,7 +128,7 @@
             <div class="filters__column">
                 <BaseInput
                     class="filters__item_grouped"
-                    placeholder="Mileage, from"
+                    placeholder="Mileage from, mi"
                     v-model="mileageFrom"
                     bordersType="left"
                 />
@@ -144,7 +144,7 @@
             <div class="filters__column">
                 <BaseInput
                     class="filters__item_grouped"
-                    placeholder="Price, from"
+                    placeholder="Price from, $"
                     v-model="priceFrom"
                     bordersType="left"
                 />
