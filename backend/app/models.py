@@ -26,4 +26,7 @@ class CarAdvertisement(models.Model):
     def __str__(self):
         return '{} {} {}'.format(self.id, self.make, self.model)
 
+    class Meta:
+        db_table = 'ads'
+
 

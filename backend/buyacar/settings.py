@@ -8,6 +8,13 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+# Initialize environment variables
+
+env = environ.Env()
+
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -16,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y4*jk%5zys%vlzhv&m!-u$wmb5@%%6b)x6cy2n^)(t3p=xkq4)'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -36,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'app',
     'django_filters',
+    'ipinfo_django',
 
     'corsheaders'
 ]
@@ -53,7 +61,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ipinfo_django.middleware.IPinfo'
 ]
+
+IPINFO_TOKEN = env('IPINFO_TOKEN')
+IPINFO_SETTINGS = {
+    'cache_options': {
+        'ttl':30,
+        'maxsize': 128
+    },
+    # 'countries_file': 'custom_countries.json'
+}
+IPINFO_FILTER = lambda request: request.scheme == 'http'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080"
@@ -82,19 +101,14 @@ WSGI_APPLICATION = 'buyacar.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'OPTIONS': {
-#             'read_default_file': '/etc/mysql/my.cnf',
-#         },
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'web',
+        'USER': 'admin',
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': 3306,
     }
 }
 
