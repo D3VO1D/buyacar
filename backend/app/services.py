@@ -7,7 +7,8 @@ from .models import CarAdvertisement
 
 def string_to_json_array(string, max_len_of_array):
     array = string[1:-1].split(', ')
-    clipped_array = array[0:max_len_of_array] if len(array) > max_len_of_array else array[0:len(array)]
+    clipped_array = array[0:max_len_of_array] \
+        if len(array) > max_len_of_array else array[0:len(array)]
     for i in range(len(clipped_array)):
         clipped_array[i] = clipped_array[i].replace("\"", "")
     return clipped_array if clipped_array != [""] else []
@@ -42,4 +43,4 @@ def get_models_and_count(queryset, request):
 
 
 def get_min_year():
-    return int(CarAdvertisement.objects.values_list('year').order_by('price')[0][0])
+    return int(CarAdvertisement.objects.exclude(year=0.0).order_by('year')[0].year)
