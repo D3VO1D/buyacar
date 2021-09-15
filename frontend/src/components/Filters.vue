@@ -31,6 +31,9 @@
                     <label class="radio-toolbar__label" for="select-broken">Broken</label>
                 </div>
             </div>
+            <div class="filters__column filters__column_align_right">
+                <BaseLocation/>
+            </div>
         </div>
         <div class="filters__row">
             <div class="filters__column">
@@ -164,10 +167,12 @@
 import BaseSelect from '@/components/Base/BaseSelect';
 import BaseCheckbox from '@/components/Base/BaseCheckbox';
 import BaseInput from '@/components/Base/BaseInput';
+import BaseLocation from '@/components/Base/BaseLocation';
 
 export default {
     name: 'Filters',
     components: {
+        BaseLocation,
         BaseInput,
         BaseCheckbox,
         BaseSelect,
@@ -259,6 +264,10 @@ export default {
 
         &:first-child {
             margin-left: 0;
+        }
+
+        &_align_right {
+            justify-content: right;
         }
     }
 
