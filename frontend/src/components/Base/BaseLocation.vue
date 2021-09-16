@@ -44,6 +44,8 @@
 
 <script>
 import { getStatesCities } from '@/utils/cities';
+import { isValidUSZipCode } from '@/utils/zip';
+import { getPlacesForZIP } from '@/services/api';
 
 export default {
     name: 'BaseLocation',
@@ -68,6 +70,25 @@ export default {
     },
     methods: {
         loadOptions() {
+            // user can write either a state or city name, or a valid zip code
+
+            if (isValidUSZipCode(this.userLocationInput)) {
+                getPlacesForZIP(this.userLocationInput)
+                    .then((res) => {
+                        const { places } = res.data;
+                        this.options = places.map((place) => (
+                            {
+                                name: place['place name'],
+                                stateCode: place['state abbreviation'],
+                                longitude: place.longitude,
+                                latitude: place.latitude,
+                            }
+                        ));
+                    })
+                    .catch((err) => console.log(err));
+                return;
+            }
+
             if (this.userLocationInput.length < this.startSearchingOffset) {
                 this.options = [];
                 return;

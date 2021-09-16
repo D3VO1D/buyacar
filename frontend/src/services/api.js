@@ -18,4 +18,11 @@ class Api {
     }
 }
 
+export const getPlacesForZIP = (zipCode) => axios.get(`https://api.zippopotam.us/us/${zipCode}`, {
+    headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+    },
+});
+
 export const API = new Api();
