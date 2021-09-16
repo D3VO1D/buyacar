@@ -1,163 +1,178 @@
 <template>
-    <div class="filters">
-        <div class="filters__row filters__row_header">
-            <div class="filters__column">
-                <div class="radio-toolbar">
-                    <input class="radio-toolbar__radio" type="radio" id="select-all"
-                           name="toolbar-1" value="all" checked>
-                    <label class="radio-toolbar__label" for="select-all">All</label>
+    <div>
+        <div class="filters">
+            <div class="filters__row filters__row_header">
+                <div class="filters__column">
+                    <div class="radio-toolbar">
+                        <input class="radio-toolbar__radio" type="radio" id="select-all"
+                               name="toolbar-1" value="all" checked>
+                        <label class="radio-toolbar__label" for="select-all">All</label>
 
-                    <input class="radio-toolbar__radio" type="radio" id="select-new"
-                           name="toolbar-1" value="new">
-                    <label class="radio-toolbar__label" for="select-new">New</label>
+                        <input class="radio-toolbar__radio" type="radio" id="select-new"
+                               name="toolbar-1" value="new">
+                        <label class="radio-toolbar__label" for="select-new">New</label>
 
-                    <input class="radio-toolbar__radio" type="radio" id="select-used"
-                           name="toolbar-1" value="used">
-                    <label class="radio-toolbar__label" for="select-used">Used</label>
+                        <input class="radio-toolbar__radio" type="radio" id="select-used"
+                               name="toolbar-1" value="used">
+                        <label class="radio-toolbar__label" for="select-used">Used</label>
+                    </div>
+                </div>
+                <div class="filters__column">
+                    <div class="radio-toolbar">
+                        <input class="radio-toolbar__radio" type="radio" id="select-all-2"
+                               name="toolbar-2" value="all">
+                        <label class="radio-toolbar__label" for="select-all-2">All</label>
+
+                        <input class="radio-toolbar__radio" type="radio" id="select-working"
+                               name="toolbar-2" value="new" checked>
+                        <label class="radio-toolbar__label" for="select-working">Working</label>
+
+                        <input class="radio-toolbar__radio" type="radio" id="select-broken"
+                               name="toolbar-2" value="used">
+                        <label class="radio-toolbar__label" for="select-broken">Broken</label>
+                    </div>
+                </div>
+                <div class="filters__column filters__column_align_right">
+                    <BaseLocation/>
                 </div>
             </div>
-            <div class="filters__column">
-                <div class="radio-toolbar">
-                    <input class="radio-toolbar__radio" type="radio" id="select-all-2"
-                           name="toolbar-2" value="all">
-                    <label class="radio-toolbar__label" for="select-all-2">All</label>
+            <div class="filters__row">
+                <div class="filters__column">
+                    <BaseSelect
+                        class="filters__item_large"
+                        placeholder="Make"
+                        :options="makeOptions"
+                        :selectedOptions="filters.make"
+                        @selectOption="selectOption"
+                        @resetSelectedOptions="filters.make = []"
+                        selectionMode="single"
+                        with-input
+                    />
+                </div>
 
-                    <input class="radio-toolbar__radio" type="radio" id="select-working"
-                           name="toolbar-2" value="new" checked>
-                    <label class="radio-toolbar__label" for="select-working">Working</label>
-
-                    <input class="radio-toolbar__radio" type="radio" id="select-broken"
-                           name="toolbar-2" value="used">
-                    <label class="radio-toolbar__label" for="select-broken">Broken</label>
+                <div class="filters__column">
+                    <BaseSelect
+                        class="filters__item_large"
+                        placeholder="Model"
+                        :options="modelOptions"
+                        :selectedOptions="filters.model"
+                        @selectOption="selectOption"
+                        @resetSelectedOptions="filters.model = []"
+                        selectionMode="single"
+                        with-input
+                    />
                 </div>
             </div>
-            <div class="filters__column filters__column_align_right">
-                <BaseLocation/>
+            <div class="filters__row">
+                <div class="filters__column">
+                    <BaseSelect
+                        class="filters__item_small"
+                        placeholder="Body"
+                        :options="bodyOptions"
+                        :selectedOptions="filters.body"
+                        @selectOption="selectOption"
+                        @resetSelectedOptions="filters.body = []"
+                    />
+
+                    <BaseSelect
+                        class="filters__item_small"
+                        placeholder="Transmission"
+                        :options="transmissionOptions"
+                        :selectedOptions="filters.transmission"
+                        @selectOption="selectOption"
+                        @resetSelectedOptions="filters.transmission = []"
+                    />
+                </div>
+
+                <div class="filters__column">
+                    <BaseSelect
+                        class="filters__item_small"
+                        placeholder="Drive"
+                        :options="driveOptions"
+                        :selectedOptions="filters.drive"
+                        @selectOption="selectOption"
+                        @resetSelectedOptions="filters.drive = []"
+                    />
+
+                    <BaseCheckbox
+                        class="filters__item_small"
+                        label="With photos"
+                        v-model="filters.withPhotos"
+                    />
+                </div>
+            </div>
+
+            <div class="filters__row">
+                <div class="filters__column">
+                    <BaseSelect
+                        class="filters__item_grouped"
+                        placeholder="Year from"
+                        :options="yearOptions"
+                        :selectedOptions="filters.yearFrom"
+                        @selectOption="selectOption"
+                        @resetSelectedOptions="filters.yearFrom = []"
+                        selectionMode="single"
+                        resetText="Reset"
+                        bordersType="left"
+                    />
+
+                    <BaseSelect
+                        class="filters__item_grouped"
+                        placeholder="to"
+                        :options="yearOptions"
+                        :selectedOptions="filters.yearTo"
+                        @selectOption="selectOption"
+                        @resetSelectedOptions="filters.yearTo = []"
+                        selectionMode="single"
+                        resetText="Reset"
+                        bordersType="right"
+                    />
+                </div>
+
+                <div class="filters__column">
+                    <BaseInput
+                        class="filters__item_grouped"
+                        placeholder="Mileage from, mi"
+                        v-model="filters.mileageFrom"
+                        bordersType="left"
+                    />
+
+                    <BaseInput
+                        class="filters__item_grouped"
+                        placeholder="to"
+                        v-model="filters.mileageTo"
+                        bordersType="right"
+                    />
+                </div>
+
+                <div class="filters__column">
+                    <BaseInput
+                        class="filters__item_grouped"
+                        placeholder="Price from, $"
+                        v-model="filters.priceFrom"
+                        bordersType="left"
+                    />
+
+                    <BaseInput
+                        class="filters__item_grouped"
+                        placeholder="to"
+                        v-model="filters.priceTo"
+                        bordersType="right"
+                    />
+                </div>
             </div>
         </div>
-        <div class="filters__row">
-            <div class="filters__column">
-                <BaseSelect
-                    class="filters__item_large"
-                    placeholder="Make"
-                    :options="makeOptions"
-                    :selectedOptions="make"
-                    @selectOption="selectOption"
-                    @resetSelectedOptions="make = []"
-                    selectionMode="single"
-                    with-input
-                />
+        <div class="filters__hint-top">
+            <div class="filters__hint-title">
+                <svg class="filters__hint-arrow-icon" viewBox="0 0 24 24" id="arrow-rounded">
+                    <path fill-rule="evenodd" fill="currentColor"
+                          d="M15.483 9.297l-3.9 3.9-3.9-3.9a.99.99 0 00-1.4
+                    1.4l4.593 4.593a1 1 0 001.414 0l4.593-4.593a.99.99 0 10-1.4-1.4z"></path>
+                </svg>
+                {{ appliedFilters }}
             </div>
-
-            <div class="filters__column">
-                <BaseSelect
-                    class="filters__item_large"
-                    placeholder="Model"
-                    :options="modelOptions"
-                    :selectedOptions="model"
-                    @selectOption="selectOption"
-                    @resetSelectedOptions="model = []"
-                    selectionMode="single"
-                    with-input
-                />
-            </div>
-        </div>
-        <div class="filters__row">
-            <div class="filters__column">
-                <BaseSelect
-                    class="filters__item_small"
-                    placeholder="Body"
-                    :options="bodyOptions"
-                    :selectedOptions="body"
-                    @selectOption="selectOption"
-                    @resetSelectedOptions="body = []"
-                />
-
-                <BaseSelect
-                    class="filters__item_small"
-                    placeholder="Transmission"
-                    :options="transmissionOptions"
-                    :selectedOptions="transmission"
-                    @selectOption="selectOption"
-                    @resetSelectedOptions="transmission = []"
-                />
-            </div>
-
-            <div class="filters__column">
-                <BaseSelect
-                    class="filters__item_small"
-                    placeholder="Drive"
-                    :options="driveOptions"
-                    :selectedOptions="drive"
-                    @selectOption="selectOption"
-                    @resetSelectedOptions="drive = []"
-                />
-
-                <BaseCheckbox
-                    class="filters__item_small"
-                    label="With photos"
-                    v-model="withPhotos"
-                />
-            </div>
-        </div>
-
-        <div class="filters__row">
-            <div class="filters__column">
-                <BaseSelect
-                    class="filters__item_grouped"
-                    placeholder="Year from"
-                    :options="yearOptions"
-                    :selectedOptions="yearFrom"
-                    @selectOption="selectOption"
-                    @resetSelectedOptions="yearFrom = []"
-                    selectionMode="single"
-                    resetText="Reset"
-                    bordersType="left"
-                />
-
-                <BaseSelect
-                    class="filters__item_grouped"
-                    placeholder="to"
-                    :options="yearOptions"
-                    :selectedOptions="yearTo"
-                    @selectOption="selectOption"
-                    @resetSelectedOptions="yearTo = []"
-                    selectionMode="single"
-                    resetText="Reset"
-                    bordersType="right"
-                />
-            </div>
-
-            <div class="filters__column">
-                <BaseInput
-                    class="filters__item_grouped"
-                    placeholder="Mileage from, mi"
-                    v-model="mileageFrom"
-                    bordersType="left"
-                />
-
-                <BaseInput
-                    class="filters__item_grouped"
-                    placeholder="to"
-                    v-model="mileageTo"
-                    bordersType="right"
-                />
-            </div>
-
-            <div class="filters__column">
-                <BaseInput
-                    class="filters__item_grouped"
-                    placeholder="Price from, $"
-                    v-model="priceFrom"
-                    bordersType="left"
-                />
-
-                <BaseInput
-                    class="filters__item_grouped"
-                    placeholder="to"
-                    v-model="priceTo"
-                    bordersType="right"
-                />
+            <div class="filters__hint-results-count">
+                {{ resultsCount }} results
             </div>
         </div>
     </div>
@@ -177,47 +192,67 @@ export default {
         BaseCheckbox,
         BaseSelect,
     },
+    props: {
+        resultsCount: {
+            type: Number,
+            default: 0,
+        },
+    },
     data() {
         // TODO: API calls for Make and Model options
         return {
-            make: [],
+            filters: {
+                make: [],
+                model: [],
+                drive: [],
+                transmission: [],
+                body: [],
+                withPhotos: true,
+                yearFrom: [],
+                yearTo: [],
+                mileageFrom: '',
+                mileageTo: '',
+                priceFrom: '',
+                priceTo: '',
+            },
             makeOptions: [
                 'Audi',
                 'BMW',
                 'Ford',
             ],
-            model: [],
             modelOptions: [
                 'X3',
                 'X5',
                 'X7',
             ],
-            drive: [],
             driveOptions: [
                 'AWD',
                 'RWD',
                 'FWD',
             ],
-            transmission: [],
             transmissionOptions: [
                 'Automatic',
                 'Manual',
             ],
-            body: [],
             bodyOptions: [
                 'Hatchback',
                 'Coupe',
                 'Convertible',
             ],
-            withPhotos: true,
-            yearFrom: [],
-            yearTo: [],
             yearOptions: Array.from(new Array(40), (x, i) => i + 1980),
-            mileageFrom: '',
-            mileageTo: '',
-            priceFrom: '',
-            priceTo: '',
         };
+    },
+    computed: {
+        appliedFilters() {
+            return Object.keys(this.filters)
+                .reduce((acc, key) => {
+                    const value = this.filters[key];
+                    if (value !== undefined && value.length !== 0) {
+                        acc[key] = this.filters[key];
+                    }
+                    return acc;
+                }, {});
+        },
     },
     methods: {
         selectOption(list, newOption, mode = 'multiple') {
@@ -287,6 +322,49 @@ export default {
         &_grouped {
             width: 50%;
         }
+    }
+
+    &__hint-top {
+        top: 0;
+        font-size: 15px;
+        position: fixed;
+        z-index: 3000;
+        //top: -60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        overflow: hidden;
+        width: 920px;
+        height: 44px;
+        border-radius: 0 0 8px 8px;
+        background: #fff;
+        box-shadow: 0 3px 14px rgb(0 0 0 / 12%);
+        transition: top .2s;
+        margin-left: 16px;
+    }
+
+    &__hint-title {
+        line-height: 44px;
+        transition: color .3s ease;
+
+        &:hover {
+            cursor: pointer;
+            color: $accent-color;
+        }
+    }
+
+    &__hint-arrow-icon {
+        width: 24px;
+        height: 24px;
+        margin: 0 8px 0 16px;
+        vertical-align: middle;
+        transform: rotate(180deg) translateY(2px);
+    }
+
+    &__hint-results-count {
+        line-height: 44px;
+        margin: 0 24px 0 auto;
+        color: grey;
     }
 }
 

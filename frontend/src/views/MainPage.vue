@@ -1,6 +1,6 @@
 <template>
     <main>
-        <Filters/>
+        <Filters :resultsCount="resultsCount" />
         <AppCarsList :cars="cars"/>
         <div class="pagination-container">
             <vue-paginate-al

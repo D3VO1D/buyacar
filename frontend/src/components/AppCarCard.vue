@@ -194,7 +194,7 @@ export default {
     &__title {
         font-size: 17px;
         font-weight: 700;
-        transition: color 0.3s;
+        transition: color 0.3s ease;
     }
 
     &__price {
