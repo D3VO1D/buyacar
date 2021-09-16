@@ -1,5 +1,5 @@
 <template>
-    <div class="location">
+    <div class="location" v-click-outside="hideSearchBox">
         <div class="location__select" @click="showSearchBox = !showSearchBox">
             <div class="location__select-icon">
                 <svg viewBox="0 0 24 24" id="geo">
@@ -23,7 +23,7 @@
                     />
                 </div>
             </div>
-            <ul class="location__options" v-if="showSearchBox && options">
+            <ul class="location__options" v-if="options">
                 <li
                     class="location__option"
                     v-for="option in options"
@@ -111,6 +111,9 @@ export default {
             }
             this.location = chosenLocation;
             this.userLocationInput = chosenLocation;
+            this.showSearchBox = false;
+        },
+        hideSearchBox() {
             this.showSearchBox = false;
         },
     },
