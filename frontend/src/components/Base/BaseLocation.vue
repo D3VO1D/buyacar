@@ -12,8 +12,8 @@
             </div>
             <div class="location__text">{{ text }}</div>
         </div>
-        <div class="location__search">
-            <div class="location__search-box" v-if="showSearchBox">
+        <div class="location__search" v-if="showSearchBox">
+            <div class="location__search-box">
                 <div class="location__dropdown-input-container">
                     <input
                         class="location__dropdown-input"
@@ -38,6 +38,7 @@
                     </div>
                 </li>
             </ul>
+            <BaseLoader v-if="isLoading"/>
         </div>
     </div>
 </template>
@@ -46,9 +47,11 @@
 import { getStatesCities } from '@/utils/cities';
 import { isValidUSZipCode } from '@/utils/zip';
 import { getPlacesForZIP } from '@/services/api';
+import BaseLoader from '@/components/Base/BaseLoader';
 
 export default {
     name: 'BaseLocation',
+    components: { BaseLoader },
     data() {
         return {
             location: '',
@@ -58,6 +61,7 @@ export default {
             allOptions: [],
             userLocationInput: '',
             startSearchingOffset: 3,
+            isLoading: false,
         };
     },
     created() {
@@ -71,8 +75,8 @@ export default {
     methods: {
         loadOptions() {
             // user can write either a state or city name, or a valid zip code
-
             if (isValidUSZipCode(this.userLocationInput)) {
+                this.isLoading = true;
                 getPlacesForZIP(this.userLocationInput)
                     .then((res) => {
                         const { places } = res.data;
@@ -85,7 +89,10 @@ export default {
                             }
                         ));
                     })
-                    .catch((err) => console.log(err));
+                    .catch((err) => console.log(err))
+                    .finally(() => {
+                        this.isLoading = false;
+                    });
                 return;
             }
 
@@ -98,7 +105,12 @@ export default {
                 .startsWith(this.userLocationInput.toLowerCase()));
         },
         selectLocation(option) {
-            this.location = option.name;
+            let chosenLocation = option.name;
+            if (option.stateCode) {
+                chosenLocation += `, ${option.stateCode}`;
+            }
+            this.location = chosenLocation;
+            this.userLocationInput = chosenLocation;
             this.showSearchBox = false;
         },
     },
