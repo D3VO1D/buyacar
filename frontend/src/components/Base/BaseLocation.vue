@@ -27,14 +27,14 @@
                 <li
                     class="location__option"
                     v-for="option in options"
-                    :key="option"
+                    :key="`${option.name}${option.longitude}${option.latitude}`"
                     @click="selectLocation(option)"
                 >
                     <div class="location__option-region">
-                        {{ option }}
+                        {{ option.name }}
                     </div>
                     <div class="location__option-parent-region">
-                        (parent region)
+                        {{ option.stateCode }}
                     </div>
                 </li>
             </ul>
@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import { getStatesCities } from '@/utils/cities';
+
 export default {
     name: 'BaseLocation',
     data() {
@@ -51,8 +53,13 @@ export default {
             locationOffset: 0,
             showSearchBox: false,
             options: [],
+            allOptions: [],
             userLocationInput: '',
+            startSearchingOffset: 3,
         };
+    },
+    created() {
+        this.allOptions = getStatesCities();
     },
     computed: {
         text() {
@@ -61,11 +68,16 @@ export default {
     },
     methods: {
         loadOptions() {
-            // TODO: fetch cities matching user input
-            this.options = [];
+            if (this.userLocationInput.length < this.startSearchingOffset) {
+                this.options = [];
+                return;
+            }
+
+            this.options = this.allOptions.filter((option) => option.name.toLowerCase()
+                .startsWith(this.userLocationInput.toLowerCase()));
         },
         selectLocation(option) {
-            this.location = option;
+            this.location = option.name;
             this.showSearchBox = false;
         },
     },
