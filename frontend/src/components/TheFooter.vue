@@ -2,9 +2,6 @@
     <footer class="footer">
         <ul class="footer__section">
             <li>
-                <span class="logo">buyacar</span> offers an outstanding selection of cars.
-            </li>
-            <li>
                 We gathered all cars for sale in the US market to allow you easily find the best car to buy.
             </li>
         </ul>
@@ -39,7 +36,7 @@ export default {
     gap: 12px;
     background-color: $footer-color;
     color: $footer-text-color;
-    padding: 24px 0;
+    padding: 24px 10%;
     font-family: $logo-font;
 
     flex-shrink: 0;

@@ -1,44 +1,53 @@
 <template>
     <div class="card">
         <div class="card__main">
-            <div class="card__thumb">
-                <GalleryOnHover
-                    :photos="car.photos"
-                    :placeholder-url="placeholderPhotoUrl"
-                />
-            </div>
+            <a :href="car.url" class="card__link" target="_blank" rel="noreferrer">
+                <div class="card__thumb">
+                    <GalleryOnHover
+                        :photos="previewPhotos"
+                        :placeholder-url="placeholderPhotoUrl"
+                    />
+                </div>
+                <div class="card__clicker"></div>
+            </a>
             <div class="card__description">
                 <div class="card__column">
                     <div class="card__column-row">
-                        <div class="card__summary">
-                            <h3 class="card__title">
-                                <a :href="car.url" class="card__title-link" target="_blank" rel="noreferrer">
-                                    {{ title }}
-                                    <div class="card__clicker"></div>
-                                </a>
-                            </h3>
-                            <div class="card__tech-summary">
-                                <div class="card__tech-summary-column">
-                                    <div v-if="present(car.power)" class="card__cell">{{ car.power }}</div>
-                                    <div v-if="present(present(car.transmission))" class="card__cell">
-                                        {{ car.transmission }}
-                                    </div>
+                        <h3 class="card__title">
+                            {{ title }}
+                        </h3>
+                    </div>
+
+                    <div class="card__column-row">
+                        <div class="card__tech-summary">
+                            <div class="card__tech-summary-column">
+                                <div v-if="present(car.power) && car.power !== 0" class="card__cell">
+                                    {{ car.power }}
                                 </div>
-                                <div class="card__tech-summary-column">
-                                    <div v-if="present(car.drive)" class="card__cell">{{ car.drive }}</div>
-                                    <div v-if="present(car.body)" class="card__cell">{{ car.body }}</div>
+                                <div v-else class="card__cell">&nbsp;</div>
+                                <div v-if="present(car.transmission)" class="card__cell">
+                                    {{ car.transmission }}
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="card__price">
-                            {{ price }}
+                            <div class="card__tech-summary-column">
+                                <div v-if="present(car.drive)" class="card__cell">{{ car.drive }}</div>
+                                <div v-else class="card__cell">&nbsp;</div>
+                                <div v-if="present(car.body)" class="card__cell">{{ car.body }}</div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="card__column-row">
                         <div v-if="present(car.location)" class="card__additional-info">
                             {{ car.location }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card__column">
+                    <div class="card__column-row">
+                        <div class="card__price">
+                            {{ price }}
                         </div>
                     </div>
                 </div>
@@ -54,7 +63,7 @@
                 <div class="card__column">
                     <div class="card__column-row">
                         <div v-if="present(car.mileage)" class="card__mileage">
-                            {{ car.mileage }} mi
+                            {{ mileage }}
                         </div>
                     </div>
 
@@ -81,18 +90,32 @@ export default {
             type: Object,
         },
     },
+    created() {
+        this.preloadPhotos();
+    },
     computed: {
         title() {
-            if (!this.car.title || this.car.title === 'nan') {
+            if (this.present(this.car.make) || this.present(this.car.model)) {
                 return `${this.car.make} ${this.car.model}`;
             }
             return this.car.title;
         },
         price() {
-            if (this.car.price === 0) {
+            if (!this.car.price) {
                 return 'Priceless';
             }
-            return `${this.car.price} $`;
+            const USFormat = Intl.NumberFormat('en-US');
+            return `$${USFormat.format(this.car.price)}`;
+        },
+        mileage() {
+            if (!this.car.mileage) {
+                return 'New';
+            }
+            const USFormat = Intl.NumberFormat('en-US');
+            return `${USFormat.format(this.car.mileage)} mi`;
+        },
+        previewPhotos() {
+            return this.car.photos.slice(0, 5);
         },
         placeholderPhotoUrl() {
             return `https://via.placeholder.com/200x150?text=${this.title}`;
@@ -100,7 +123,14 @@ export default {
     },
     methods: {
         present(property) {
-            return property && property !== 'nan';
+            return property !== 'nan' && property !== '';
+        },
+        preloadPhotos() {
+            this.previewPhotos.map((photo) => {
+                const img = new Image();
+                img.src = photo;
+                return img;
+            });
         },
     },
 };
@@ -110,14 +140,15 @@ export default {
 @import '@/_vars';
 
 .card {
-    width: 70%;
+    width: fit-content;
     position: relative;
     padding: 16px;
     background-color: $white;
 
     &:hover {
-        z-index: 1000;
+        z-index: 1;
         border-radius: 8px;
+        background-color: #fff;
         box-shadow: 0 5px 20px 0 $card-shadow-color;
     }
 
@@ -136,6 +167,14 @@ export default {
         display: none;
     }
 
+    &:hover + .card::before {
+        display: none;
+    }
+
+    &:hover .card__title {
+        color: $accent-color;
+    }
+
     &__main {
         display: flex;
     }
@@ -143,11 +182,6 @@ export default {
     &__thumb {
         flex-shrink: 0;
         width: 205px;
-        z-index: 1000;
-    }
-
-    &__summary {
-        width: 290px;
     }
 
     &__description {
@@ -157,19 +191,23 @@ export default {
         width: 100%;
     }
 
-    &__title, &__price {
+    &__title {
         font-size: 17px;
         font-weight: 700;
-        margin: 0 16px 16px 0;
+        transition: color 0.3s ease;
     }
 
-    &__title-link {
+    &__price {
+        font-size: 17px;
+        font-weight: 700;
+        min-width: 120px;
+        text-align: right;
+        margin-right: 20px;
+    }
+
+    &__link {
         color: $text-color;
         text-decoration: none;
-
-        &:hover {
-            color: $accent-color;
-        }
     }
 
     &__column {
@@ -187,16 +225,18 @@ export default {
 
     &__tech-summary {
         display: flex;
-        margin-bottom: 8px;
     }
 
-    &__tech-summary-column:not(:last-child) {
+    &__tech-summary-column:first-child {
         width: 180px;
+    }
+
+    &__tech-summary-column:last-child {
+        min-width: 80px;
     }
 
     &__cell {
         max-width: 180px;
-        margin-right: 12px;
         font-size: 15px;
         overflow: hidden;
         white-space: nowrap;
@@ -218,6 +258,16 @@ export default {
     &__year, &__mileage {
         font-size: 17px;
         margin-bottom: 8px;
+    }
+
+    &__year {
+        min-width: 60px;
+        text-align: left;
+    }
+
+    &__mileage {
+        min-width: 100px;
+        text-align: right;
     }
 
     &__clicker {

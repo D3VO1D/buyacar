@@ -1,6 +1,8 @@
 <template>
     <div class="gallery-hover">
-        <img class="gallery-hover__cover" :src="coverSrc">
+        <div class="gallery-hover__cover-container">
+            <img class="gallery-hover__cover" :src="coverSrc">
+        </div>
         <div
             class="gallery-hover__button-container"
             v-if="photos.length > 1"
@@ -60,11 +62,19 @@ export default {
 .gallery-hover {
     position: relative;
 
-    &__cover {
-        display: block;
+    &__cover-container {
+        position: relative;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: 150px;
+    }
+
+    &__cover {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        max-height: 100%;
+        object-fit: contain;
         border-radius: 8px;
     }
 
@@ -74,6 +84,7 @@ export default {
         height: 100%;
         top: 0;
         display: flex;
+        z-index: 1000;
     }
 
     &:not(:hover) &__button {
@@ -85,7 +96,6 @@ export default {
         flex: 1;
         min-height: 8px;
         opacity: 1;
-        transition: opacity .3s;
 
         &:after {
             position: absolute;
@@ -95,7 +105,6 @@ export default {
             height: 3px;
             content: "";
             background: $whitish;
-            transition: background-color .3s;
         }
 
         &:hover:after {

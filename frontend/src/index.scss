@@ -16,3 +16,38 @@ body {
 html, body {
   height: 100%;
 }
+
+.form-control {
+  position: relative;
+}
+
+.form-control input,
+.form-control select {
+  outline: none;
+  display: block;
+  width: 100%;
+  font-size: 15px;
+  resize: none;
+  border: 1px solid rgba(0, 0, 0, .12);
+  background-color: $white;
+  color: grey;
+  border-radius: 8px;
+  height: 36px;
+  padding-left: 8px;
+
+  &:hover {
+    cursor: pointer;
+    border: 1px solid #157ee1;
+  }
+}
+
+.form-control input {
+  &:active, &:focus {
+    cursor: text;
+    border: 1px solid #157ee1;
+  }
+}
+
+input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}

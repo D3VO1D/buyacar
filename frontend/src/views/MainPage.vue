@@ -1,5 +1,12 @@
 <template>
     <main>
+        <Filters
+            :minAvailableYear="minYear"
+            :userCity="userCity"
+            :availableMakes="availableMakes"
+            :availableModels="availableModels"
+            :resultsCount="resultsCount"
+        />
         <AppCarsList :cars="cars"/>
         <div class="pagination-container">
             <vue-paginate-al
@@ -15,10 +22,14 @@
 <script>
 import AppCarsList from '@/components/AppCarsList';
 import { API } from '@/services/api';
+import Filters from '@/components/Filters';
 
 export default {
     name: 'MainPage',
-    components: { AppCarsList },
+    components: {
+        Filters,
+        AppCarsList,
+    },
     props: {
         page: {
             type: Number,
@@ -30,9 +41,25 @@ export default {
             cars: [],
             maxPage: 1,
             resultsCount: 0,
+            minYear: 2000,
+            userCity: 'New York',
+            availableMakes: [
+                'Audi',
+                'BMW',
+                'Ford',
+            ],
+            availableModels: [
+                'X3',
+                'X5',
+                'X7',
+            ],
         };
     },
     created() {
+        // this.getMinYear();
+        // this.getUserCity();
+        // this.getAvailableMakes();
+
         this.getCars(this.page);
     },
     methods: {
@@ -50,9 +77,30 @@ export default {
                 })
                 .catch((err) => console.log(err));
         },
+        getMinYear() {
+            API.getMinYear()
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => console.log(err));
+        },
+        getUserCity() {
+            API.getUserCity()
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => console.log(err));
+        },
+        getAvailableMakes() {
+            API.getMakes()
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => console.log(err));
+        },
         pageClicked(newPage) {
             this.$router.push({
-                path: '/cars',
+                name: 'Main Page',
                 query: { page: newPage },
             });
             this.getCars(newPage);
@@ -63,10 +111,8 @@ export default {
 
 <style lang="scss" scoped>
 main {
-    width: 80%;
-    margin: 0 auto;
-    padding: 40px 0;
-    flex: 1 0 auto;
+    width: fit-content;
+    padding: 40px 0 40px calc(10% - 16px);
 }
 
 .pagination-container {
