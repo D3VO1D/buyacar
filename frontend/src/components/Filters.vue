@@ -33,7 +33,10 @@
                     </div>
                 </div>
                 <div class="filters__column filters__column_align_right">
-                    <BaseLocation/>
+                    <BaseLocation
+                        :userCity="userCity"
+                        @changeLocation="changeUserLocation"
+                    />
                 </div>
             </div>
             <div class="filters__row">
@@ -41,7 +44,7 @@
                     <BaseSelect
                         class="filters__item_large"
                         placeholder="Make"
-                        :options="makeOptions"
+                        :options="availableMakes"
                         :selectedOptions="filters.make"
                         @selectOption="selectOption"
                         @resetSelectedOptions="filters.make = []"
@@ -54,7 +57,7 @@
                     <BaseSelect
                         class="filters__item_large"
                         placeholder="Model"
-                        :options="modelOptions"
+                        :options="availableModels"
                         :selectedOptions="filters.model"
                         @selectOption="selectOption"
                         @resetSelectedOptions="filters.model = []"
@@ -253,13 +256,28 @@ export default {
         BaseSelect,
     },
     props: {
+        minAvailableYear: {
+            type: Number,
+            default: 2000,
+        },
+        userCity: {
+            type: String,
+            default: '',
+        },
+        availableMakes: {
+            type: Array,
+            default: () => [],
+        },
+        availableModels: {
+            type: Array,
+            default: () => [],
+        },
         resultsCount: {
             type: Number,
             default: 0,
         },
     },
     data() {
-        // TODO: API calls for Make and Model options
         return {
             filters: {
                 make: [],
@@ -274,17 +292,9 @@ export default {
                 mileageTo: '',
                 priceFrom: '',
                 priceTo: '',
+                longitude: 0,
+                latitude: 0,
             },
-            makeOptions: [
-                'Audi',
-                'BMW',
-                'Ford',
-            ],
-            modelOptions: [
-                'X3',
-                'X5',
-                'X7',
-            ],
             driveOptions: [
                 'AWD',
                 'RWD',
@@ -298,18 +308,30 @@ export default {
                 'Hatchback',
                 'Coupe',
                 'Convertible',
+                'Sedan',
+                'SUV',
+                'Pickup Truck',
+                'Commercial',
+                'Minivan',
+                'Wagon',
             ],
-            yearOptions: Array.from(new Array(40), (x, i) => i + 1980),
             showHintTop: false,
             showAvailableModels: false,
         };
     },
     computed: {
+        yearOptions() {
+            // an array of [min_available_year; current_year]
+            const currentYear = new Date().getFullYear() - this.minAvailableYear;
+            return Array.from(new Array(currentYear), (x, i) => i + this.minAvailableYear);
+        },
         appliedFilters() {
+            // select not empty values from filters object
             return Object.keys(this.filters)
                 .reduce((acc, key) => {
                     const value = this.filters[key];
-                    if (value !== undefined && value.length !== 0) {
+                    // either a 'truthy' primitive or a non-empty object
+                    if ((value && typeof value !== 'object') || (value.length !== undefined && value.length !== 0)) {
                         acc[key] = this.filters[key];
                     }
                     return acc;
@@ -369,13 +391,17 @@ export default {
             const isVisible = rect.bottom > 0;
             this.showHintTop = !isVisible;
         },
+        changeUserLocation(location) {
+            this.filters.longitude = location.longitude;
+            this.filters.latitude = location.latitude;
+        },
     },
     watch: {
         filters: {
             handler(val) {
-                console.log(val);
-                // TODO: filters integration
-                this.showAvailableModels = !!val.make.length;
+                console.log(this.appliedFilters);
+                // TODO: create GET request with filters
+                this.showAvailableModels = !!val.make.length && !val.model.length;
             },
             deep: true,
         },

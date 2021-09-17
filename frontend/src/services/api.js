@@ -13,8 +13,20 @@ class Api {
         });
     }
 
-    getCars(page = 1) {
-        return this.apiClient.get(`/api/v1/cars?page=${page}`);
+    getCars(page = 1, filtersQuery = '') {
+        return this.apiClient.get(`/api/v1/cars?page=${page}${filtersQuery}`);
+    }
+
+    getMinYear() {
+        return this.apiClient.get('/api/v1/min_year');
+    }
+
+    getUserCity() {
+        return this.apiClient.get('/api/v1/usercity');
+    }
+
+    getMakes() {
+        return this.apiClient.get('/api/v1/makes');
     }
 }
 

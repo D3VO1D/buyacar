@@ -1,6 +1,12 @@
 <template>
     <main>
-        <Filters :resultsCount="resultsCount" />
+        <Filters
+            :minAvailableYear="minYear"
+            :userCity="userCity"
+            :availableMakes="availableMakes"
+            :availableModels="availableModels"
+            :resultsCount="resultsCount"
+        />
         <AppCarsList :cars="cars"/>
         <div class="pagination-container">
             <vue-paginate-al
@@ -20,7 +26,10 @@ import Filters from '@/components/Filters';
 
 export default {
     name: 'MainPage',
-    components: { Filters, AppCarsList },
+    components: {
+        Filters,
+        AppCarsList,
+    },
     props: {
         page: {
             type: Number,
@@ -32,9 +41,25 @@ export default {
             cars: [],
             maxPage: 1,
             resultsCount: 0,
+            minYear: 2000,
+            userCity: 'New York',
+            availableMakes: [
+                'Audi',
+                'BMW',
+                'Ford',
+            ],
+            availableModels: [
+                'X3',
+                'X5',
+                'X7',
+            ],
         };
     },
     created() {
+        // this.getMinYear();
+        // this.getUserCity();
+        // this.getAvailableMakes();
+
         this.getCars(this.page);
     },
     methods: {
@@ -49,6 +74,27 @@ export default {
                     this.resultsCount = count;
                     this.cars = results;
                     this.maxPage = totalPages;
+                })
+                .catch((err) => console.log(err));
+        },
+        getMinYear() {
+            API.getMinYear()
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => console.log(err));
+        },
+        getUserCity() {
+            API.getUserCity()
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => console.log(err));
+        },
+        getAvailableMakes() {
+            API.getMakes()
+                .then((res) => {
+                    console.log(res.data);
                 })
                 .catch((err) => console.log(err));
         },

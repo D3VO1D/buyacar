@@ -52,6 +52,12 @@ import BaseLoader from '@/components/Base/BaseLoader';
 export default {
     name: 'BaseLocation',
     components: { BaseLoader },
+    props: {
+        userCity: {
+            type: String,
+            default: '',
+        },
+    },
     data() {
         return {
             location: '',
@@ -69,7 +75,7 @@ export default {
     },
     computed: {
         text() {
-            return this.location || 'Choose location';
+            return this.location || this.userCity || 'Choose location';
         },
     },
     methods: {
@@ -112,6 +118,7 @@ export default {
             this.location = chosenLocation;
             this.userLocationInput = chosenLocation;
             this.showSearchBox = false;
+            this.$emit('changeLocation', option);
         },
         hideSearchBox() {
             this.showSearchBox = false;
