@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="filters">
+        <div class="filters" ref="filtersBlock">
             <div class="filters__row filters__row_header">
                 <div class="filters__column">
                     <div class="radio-toolbar">
@@ -162,14 +162,14 @@
                 </div>
             </div>
         </div>
-        <div class="filters__hint-top">
-            <div class="filters__hint-title">
+        <div class="filters__hint-top" v-if="showHintTop">
+            <div class="filters__hint-title" @click="scrollToTop">
                 <svg class="filters__hint-arrow-icon" viewBox="0 0 24 24" id="arrow-rounded">
                     <path fill-rule="evenodd" fill="currentColor"
                           d="M15.483 9.297l-3.9 3.9-3.9-3.9a.99.99 0 00-1.4
                     1.4l4.593 4.593a1 1 0 001.414 0l4.593-4.593a.99.99 0 10-1.4-1.4z"></path>
                 </svg>
-                {{ appliedFilters }}
+                {{ appliedFiltersMessage }}
             </div>
             <div class="filters__hint-results-count">
                 {{ resultsCount }} results
@@ -240,6 +240,7 @@ export default {
                 'Convertible',
             ],
             yearOptions: Array.from(new Array(40), (x, i) => i + 1980),
+            showHintTop: false,
         };
     },
     computed: {
@@ -253,6 +254,33 @@ export default {
                     return acc;
                 }, {});
         },
+        appliedFiltersMessage() {
+            const appliedFiltersInfo = [];
+            let appliedFiltersCount = 0;
+            Object.entries(this.appliedFilters)
+                .forEach(([key, value]) => {
+                    switch (key) {
+                    case 'make':
+                    case 'model':
+                        appliedFiltersInfo.push(value);
+                        break;
+                    case 'withPhotos':
+                        break;
+                    default:
+                        appliedFiltersCount += 1;
+                        break;
+                    }
+                });
+            let result = (appliedFiltersInfo.length) ? appliedFiltersInfo.join(' ') : 'Any model';
+            result += (appliedFiltersCount) ? `, ${appliedFiltersCount} parameters` : '';
+            return result;
+        },
+    },
+    created() {
+        window.addEventListener('scroll', this.onScroll);
+    },
+    destroyed() {
+        window.removeEventListener('scroll', this.onScroll);
     },
     methods: {
         selectOption(list, newOption, mode = 'multiple') {
@@ -267,6 +295,18 @@ export default {
                 return;
             }
             list.splice(index, 1);
+        },
+        scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+        },
+        onScroll() {
+            const { filtersBlock } = this.$refs;
+            const rect = filtersBlock.getBoundingClientRect();
+            const isVisible = rect.bottom > 0;
+            this.showHintTop = !isVisible;
         },
     },
 };
@@ -329,7 +369,6 @@ export default {
         font-size: 15px;
         position: fixed;
         z-index: 3000;
-        //top: -60px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -340,7 +379,6 @@ export default {
         background: #fff;
         box-shadow: 0 3px 14px rgb(0 0 0 / 12%);
         transition: top .2s;
-        margin-left: 16px;
     }
 
     &__hint-title {
