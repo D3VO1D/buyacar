@@ -1,7 +1,7 @@
 <template>
     <header class="header">
         <h1 class="header__logo">
-            <router-link :to="{ name: 'Main Page'}" class="header__logo-link">
+            <router-link :to="{ name: 'Main Page', query: { page: 1 } }" class="header__logo-link">
                 <img class="header__logo-img" src="@/assets/logo.svg" alt="logo"/>
                 WHOLE CARS
             </router-link>

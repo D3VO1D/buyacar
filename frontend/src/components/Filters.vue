@@ -162,6 +162,66 @@
                 </div>
             </div>
         </div>
+        <div class="filters__available-models" v-if="showAvailableModels">
+            <div class="filters__models-items">
+                <div class="filters__models-column">
+                    <div class="filters__models-item">
+                        <div class="filters__models-item-name">
+                            X5
+                        </div>
+                        <div class="filters__models-item-count">
+                            11
+                        </div>
+                    </div>
+
+                    <div class="filters__models-item">
+                        <div class="filters__models-item-name">
+                            X7
+                        </div>
+                        <div class="filters__models-item-count">
+                            1311
+                        </div>
+                    </div>
+
+                    <div class="filters__models-item">
+                        <div class="filters__models-item-name">
+                            12314
+                        </div>
+                        <div class="filters__models-item-count">
+                            51
+                        </div>
+                    </div>
+                </div>
+                <div class="filters__models-column">
+                    <div class="filters__models-item">
+                        <div class="filters__models-item-name">
+                            X5
+                        </div>
+                        <div class="filters__models-item-count">
+                            11
+                        </div>
+                    </div>
+
+                    <div class="filters__models-item">
+                        <div class="filters__models-item-name">
+                            X7
+                        </div>
+                        <div class="filters__models-item-count">
+                            1311
+                        </div>
+                    </div>
+
+                    <div class="filters__models-item">
+                        <div class="filters__models-item-name">
+                            12314
+                        </div>
+                        <div class="filters__models-item-count">
+                            51
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="filters__hint-top" v-if="showHintTop">
             <div class="filters__hint-title" @click="scrollToTop">
                 <svg class="filters__hint-arrow-icon" viewBox="0 0 24 24" id="arrow-rounded">
@@ -241,6 +301,7 @@ export default {
             ],
             yearOptions: Array.from(new Array(40), (x, i) => i + 1980),
             showHintTop: false,
+            showAvailableModels: false,
         };
     },
     computed: {
@@ -307,6 +368,16 @@ export default {
             const rect = filtersBlock.getBoundingClientRect();
             const isVisible = rect.bottom > 0;
             this.showHintTop = !isVisible;
+        },
+    },
+    watch: {
+        filters: {
+            handler(val) {
+                console.log(val);
+                // TODO: filters integration
+                this.showAvailableModels = !!val.make.length;
+            },
+            deep: true,
         },
     },
 };
@@ -403,6 +474,67 @@ export default {
         line-height: 44px;
         margin: 0 24px 0 auto;
         color: grey;
+    }
+
+    &__available-models {
+        padding: 24px 16px 9px;
+        margin-bottom: 15px;
+        margin-left: 16px;
+    }
+
+    &__models-items {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    &__models-column {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__models-item {
+        font-size: 15px;
+        line-height: 18px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        width: 210px;
+        margin: 0 12px 15px 0;
+        white-space: nowrap;
+    }
+
+    &__models-item-name {
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+        flex-shrink: 0;
+        max-width: 84%;
+        padding-right: 8px;
+        text-overflow: ellipsis;
+        font-size: 15px;
+        color: #157ee1;
+
+        &:hover {
+            cursor: pointer;
+            color: $accent-color;
+        }
+    }
+
+    &__models-item-count {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        width: 100%;
+        margin-left: auto;
+        color: grey;
+
+        &::before {
+            width: 100%;
+            margin-right: 8px;
+            margin-bottom: 4px;
+            content: "";
+            border-bottom: 1px solid #e0e0e0
+        }
     }
 }
 
