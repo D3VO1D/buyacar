@@ -31,40 +31,42 @@
                     ({{ selectedOptions.length }})
                 </span>
 
-                <span class="select-container__arrow" v-if="!showOptions">
-                    <font-awesome-icon :icon="['fas', 'chevron-down']"/>
-                </span>
-                <span class="select-container__arrow" v-if="showOptions">
-                    <font-awesome-icon :icon="['fas', 'chevron-up']"/>
+                <span class="select-container__arrow rotate">
+                    <font-awesome-icon
+                        :class="{'rotate': true, 'rotate-up': showOptions}"
+                        :icon="['fas', 'chevron-down']"
+                    />
                 </span>
             </template>
         </div>
-        <ul class="select-container__options" v-if="showOptions">
-            <li
-                class="select-container__option"
-                @click="resetSelections"
-            >
-                <font-awesome-icon class="select-container__icon" :icon="['fas', 'times']"/>
-                <span>{{ resetText }}</span>
-            </li>
-            <li
-                class="select-container__option"
-                v-for="(option, index) in filteredOptions"
-                :key="option"
-                @mousedown.prevent="selectOption(option)"
-            >
-                <font-awesome-icon
-                    class="select-container__icon"
-                    :icon="['fas', 'check']"
-                    v-visible="selectedOptions.indexOf(filteredOptions[index]) !== -1"
-                />
+        <transition name="options-fade">
+            <ul class="select-container__options" v-if="showOptions">
+                <li
+                    class="select-container__option"
+                    @click="resetSelections"
+                >
+                    <font-awesome-icon class="select-container__icon" :icon="['fas', 'times']"/>
+                    <span>{{ resetText }}</span>
+                </li>
+                <li
+                    class="select-container__option"
+                    v-for="(option, index) in filteredOptions"
+                    :key="option"
+                    @mousedown.prevent="selectOption(option)"
+                >
+                    <font-awesome-icon
+                        class="select-container__icon"
+                        :icon="['fas', 'check']"
+                        v-visible="selectedOptions.indexOf(filteredOptions[index]) !== -1"
+                    />
 
-                <label class="select-container__label">
-                    <input type="checkbox" :value="option"/>
-                    {{ option }}
-                </label>
-            </li>
-        </ul>
+                    <label class="select-container__label">
+                        <input type="checkbox" :value="option"/>
+                        {{ option }}
+                    </label>
+                </li>
+            </ul>
+        </transition>
     </div>
 </template>
 
@@ -290,5 +292,26 @@ export default {
     border: transparent;
     margin-right: 8px;
     background-color: inherit;
+}
+
+.rotate {
+    -moz-transition: all 0.1s linear;
+    -webkit-transition: all 0.1s linear;
+    transition: all 0.1s linear;
+}
+
+.rotate-up {
+    transform-origin: center center;
+    -ms-transform: rotate(-180deg);
+    -moz-transform: rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+}
+
+.options-fade-enter-active, .options-fade-leave-active {
+    transition: opacity .5s;
+}
+.options-fade-enter, .options-fade-leave-to {
+    opacity: 0;
 }
 </style>
