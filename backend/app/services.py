@@ -3,7 +3,7 @@ from collections import Counter
 import ipinfo
 
 from .models import CarAdvertisement
-
+from django.db.models import Count
 
 def string_to_json_array(string, max_len_of_array):
     array = string[1:-1].split(', ')
@@ -33,14 +33,36 @@ def get_client_ip(request):
     return ip
 
 
+def get_client_city_region_as_json(request):
+    ip_details = get_ip_details(get_client_ip(request))
+    result = {
+        'city': ip_details.city,
+        'region': ip_details.region
+    }
+    return result
+
+
 def get_models_and_count(queryset, request):
     # if make is chosen, it has to show the models and their count
     if request.query_params.get("make", None):
-        c = Counter(queryset.values_list("model"))  # count('year').distinct() doesn't work here
-        return sorted([{'model': i[0], 'count': c[i]} for i in c],
-                      key=lambda x: -x["count"])
+        return queryset.values('model').annotate(count=Count('model')).order_by('-count')
     return []
 
+
+def get_makes_and_count(request):
+    return CarAdvertisement.objects.values('make').annotate(count=Count('make')).order_by('-count')
+
+def get_ordered_by_distance_queryset(request, queryset):
+    ip = get_client_ip(request)
+    ip_data = get_ip_details(ip)
+    latitude, longitude = float(ip_data.latitude), float(ip_data.longitude)
+    sorted_list = sorted(
+        queryset, key=lambda x: (latitude - x.latitude) ** 2 + \
+                                (longitude - x.longitude) ** 2)
+    pk_list = [x.id for x in sorted_list]
+    ordering = 'FIELD(`id`, %s)' % ','.join(str(id) for id in pk_list)
+    return CarAdvertisement.objects.filter(pk__in=pk_list).extra(
+        select={'ordering': ordering}, order_by=('ordering',))
 
 def get_min_year():
     return int(CarAdvertisement.objects.exclude(year=0.0).order_by('year')[0].year)
