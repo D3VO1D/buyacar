@@ -164,25 +164,30 @@
                     />
                 </div>
             </div>
+
+            <div class="filters-row" v-if="appliedFiltersCount">
+                <div class="filters__column">
+                    <!-- TODO: reset filters button -->
+                </div>
+            </div>
         </div>
         <div class="filters__below-selects">
-<!--            TODO: fix resetting -->
             <BaseSelect
                 class="filters__item_small"
-                placeholder="Per page"
+                placeholder="50 per page"
                 :options="itemsPerPageOptions"
-                v-model="filters.itemsPerPage"
-                :resetText="'50'"
+                :selectedOptions="filters.itemsPerPage"
+                resetText="50 per page"
                 @selectOption="selectOption"
-                @resetSelectedOptions="filters.itemsPerPage = 50"
+                @resetSelectedOptions="filters.itemsPerPage = []"
                 selectionMode="single"
             />
 
             <BaseSelect
                 class="filters__item_small"
-                placeholder="Сортировка"
+                placeholder="Sort by"
                 :options="sortByOptions"
-                v-model="filters.sortBy"
+                :selectedOptions="filters.sortBy"
                 resetText="Default"
                 @selectOption="selectOption"
                 @resetSelectedOptions="filters.sortBy = []"
@@ -349,9 +354,9 @@ export default {
                 'Year ↓',
             ],
             itemsPerPageOptions: [
-                100,
-                150,
-                200,
+                '100 per page',
+                '150 per page',
+                '200 per page',
             ],
             showHintTop: false,
             showAvailableModels: false,
@@ -363,22 +368,20 @@ export default {
             const currentYear = new Date().getFullYear() - this.minAvailableYear;
             return Array.from(new Array(currentYear), (x, i) => i + this.minAvailableYear);
         },
-        perPageMessage() {
-            return `${this.filters.itemsPerPage} per page`;
-        },
         appliedFilters() {
             // select not empty values from filters object
             return Object.keys(this.filters)
                 .reduce((acc, key) => {
                     const value = this.filters[key];
                     // either a 'truthy' primitive or a non-empty object
-                    if ((value && typeof value !== 'object') || (value.length !== undefined && value.length !== 0)) {
+                    if ((value !== '' && value !== 0 && typeof value !== 'object')
+                        || (value.length !== undefined && value.length !== 0)) {
                         acc[key] = this.filters[key];
                     }
                     return acc;
                 }, {});
         },
-        appliedFiltersMessage() {
+        appliedFiltersInfo() {
             const appliedFiltersInfo = [];
             let appliedFiltersCount = 0;
             Object.entries(this.appliedFilters)
@@ -395,9 +398,16 @@ export default {
                         break;
                     }
                 });
+            return [appliedFiltersInfo, appliedFiltersCount];
+        },
+        appliedFiltersMessage() {
+            const [appliedFiltersInfo, appliedFiltersCount] = this.appliedFiltersInfo;
             let result = (appliedFiltersInfo.length) ? appliedFiltersInfo.join(' ') : 'Any model';
             result += (appliedFiltersCount) ? `, ${appliedFiltersCount} parameters` : '';
             return result;
+        },
+        appliedFiltersCount() {
+            return this.appliedFiltersInfo[1];
         },
     },
     created() {
