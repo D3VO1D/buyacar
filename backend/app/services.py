@@ -1,9 +1,9 @@
 from django.conf import settings
-from collections import Counter
 import ipinfo
 
 from .models import CarAdvertisement
 from django.db.models import Count
+
 
 def string_to_json_array(string, max_len_of_array):
     array = string[1:-1].split(', ')
@@ -52,6 +52,7 @@ def get_models_and_count(queryset, request):
 def get_makes_and_count(request):
     return CarAdvertisement.objects.values('make').annotate(count=Count('make')).order_by('-count')
 
+
 def get_ordered_by_distance_queryset(request, queryset):
     ip = get_client_ip(request)
     ip_data = get_ip_details(ip)
@@ -63,6 +64,7 @@ def get_ordered_by_distance_queryset(request, queryset):
     ordering = 'FIELD(`id`, %s)' % ','.join(str(id) for id in pk_list)
     return CarAdvertisement.objects.filter(pk__in=pk_list).extra(
         select={'ordering': ordering}, order_by=('ordering',))
+
 
 def get_min_year():
     return int(CarAdvertisement.objects.exclude(year=0.0).order_by('year')[0].year)

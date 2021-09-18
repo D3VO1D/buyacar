@@ -4,8 +4,6 @@ from rest_framework.filters import OrderingFilter
 from .models import CarAdvertisement
 from .services import get_ordered_by_distance_queryset
 
-
-
 DRIVE_CHOICES = (
     ("AWD", "AWD"),
     ("RWD", "RWD"),
@@ -59,8 +57,8 @@ class CarAdFilter(filters.FilterSet):
                   'make', 'model', 'mileage_from', 'mileage_to', 'drive', 'transmission',
                   'body', 'only_with_photos']
 
-class DistanceOrderingFilter(OrderingFilter):
 
+class DistanceOrderingFilter(OrderingFilter):
     def filter_queryset(self, request, queryset, view):
         ordering = self.get_ordering(request, queryset, view)
         if not ordering:
