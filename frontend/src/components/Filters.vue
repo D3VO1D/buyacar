@@ -165,6 +165,30 @@
                 </div>
             </div>
         </div>
+        <div class="filters__below-selects">
+<!--            TODO: fix resetting -->
+            <BaseSelect
+                class="filters__item_small"
+                placeholder="Per page"
+                :options="itemsPerPageOptions"
+                v-model="filters.itemsPerPage"
+                :resetText="'50'"
+                @selectOption="selectOption"
+                @resetSelectedOptions="filters.itemsPerPage = 50"
+                selectionMode="single"
+            />
+
+            <BaseSelect
+                class="filters__item_small"
+                placeholder="Сортировка"
+                :options="sortByOptions"
+                v-model="filters.sortBy"
+                resetText="Default"
+                @selectOption="selectOption"
+                @resetSelectedOptions="filters.sortBy = []"
+                selectionMode="single"
+            />
+        </div>
         <div class="filters__available-models" v-if="showAvailableModels">
             <div class="filters__models-items">
                 <div class="filters__models-column">
@@ -294,6 +318,8 @@ export default {
                 priceTo: '',
                 longitude: 0,
                 latitude: 0,
+                sortBy: [],
+                itemsPerPage: [],
             },
             driveOptions: [
                 'AWD',
@@ -315,6 +341,18 @@ export default {
                 'Minivan',
                 'Wagon',
             ],
+            sortByOptions: [
+                'Distance',
+                'Price ↑',
+                'Price ↓',
+                'Year ↑',
+                'Year ↓',
+            ],
+            itemsPerPageOptions: [
+                100,
+                150,
+                200,
+            ],
             showHintTop: false,
             showAvailableModels: false,
         };
@@ -324,6 +362,9 @@ export default {
             // an array of [min_available_year; current_year]
             const currentYear = new Date().getFullYear() - this.minAvailableYear;
             return Array.from(new Array(currentYear), (x, i) => i + this.minAvailableYear);
+        },
+        perPageMessage() {
+            return `${this.filters.itemsPerPage} per page`;
         },
         appliedFilters() {
             // select not empty values from filters object
@@ -500,6 +541,13 @@ export default {
         line-height: 44px;
         margin: 0 24px 0 auto;
         color: grey;
+    }
+
+    &__below-selects {
+        width: 280px;
+        display: flex;
+        margin-left: auto;
+        margin-right: 0;
     }
 
     &__available-models {

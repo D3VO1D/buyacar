@@ -56,9 +56,9 @@ export default {
         };
     },
     created() {
-        // this.getMinYear();
-        // this.getUserCity();
-        // this.getAvailableMakes();
+        this.getMinYear();
+        this.getUserCity();
+        this.getAvailableMakes();
 
         this.getCars(this.page);
     },
@@ -81,6 +81,7 @@ export default {
             API.getMinYear()
                 .then((res) => {
                     console.log(res.data);
+                    this.minYear = res.data.min_year;
                 })
                 .catch((err) => console.log(err));
         },
@@ -88,6 +89,8 @@ export default {
             API.getUserCity()
                 .then((res) => {
                     console.log(res.data);
+                    const { data } = res;
+                    this.userCity = `${data.city}, ${data.region}`;
                 })
                 .catch((err) => console.log(err));
         },

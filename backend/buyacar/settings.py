@@ -67,7 +67,7 @@ MIDDLEWARE = [
 IPINFO_TOKEN = env('IPINFO_TOKEN')
 IPINFO_SETTINGS = {
     'cache_options': {
-        'ttl':30,
+        'ttl': 30,
         'maxsize': 128
     },
     # 'countries_file': 'custom_countries.json'
@@ -101,14 +101,21 @@ WSGI_APPLICATION = 'buyacar.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'web',
+#         'USER': 'admin',
+#         'PASSWORD': env('DATABASE_PASSWORD'),
+#         'HOST': env('DATABASE_HOST'),
+#         'PORT': 3306,
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'web',
-        'USER': 'admin',
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': env('DATABASE_HOST'),
-        'PORT': 3306,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
