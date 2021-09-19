@@ -165,9 +165,20 @@
                 </div>
             </div>
 
-            <div class="filters-row" v-if="appliedFiltersCount">
+            <div class="filters__row filters__row_last">
                 <div class="filters__column">
-                    <!-- TODO: reset filters button -->
+                    <div class="filters__reset-filters" v-if="appliedFiltersCount" @click="resetFilters">
+                        Reset filters
+                        <font-awesome-icon class="filters__reset-filters-icon" :icon="['fas', 'times']"/>
+                    </div>
+                </div>
+                <div class="filters__column">
+                </div>
+                <div class="filters__column">
+                    <div class="filters__results-count" v-if="resultsCount">
+                        {{ resultsCount }} results
+                    </div>
+                    <!-- TODO: nothing found text -->
                 </div>
             </div>
         </div>
@@ -446,6 +457,26 @@ export default {
             this.filters.longitude = location.longitude;
             this.filters.latitude = location.latitude;
         },
+        resetFilters() {
+            this.filters = {
+                make: [],
+                model: [],
+                drive: [],
+                transmission: [],
+                body: [],
+                withPhotos: true,
+                yearFrom: [],
+                yearTo: [],
+                mileageFrom: '',
+                mileageTo: '',
+                priceFrom: '',
+                priceTo: '',
+                longitude: 0,
+                latitude: 0,
+                sortBy: [],
+                itemsPerPage: [],
+            };
+        },
     },
     watch: {
         filters: {
@@ -476,6 +507,10 @@ export default {
 
         &_header {
             margin-top: 0;
+        }
+
+        &_last {
+            margin-bottom: 0;
         }
     }
 
@@ -510,6 +545,32 @@ export default {
         &_grouped {
             width: 50%;
         }
+    }
+
+    &__reset-filters {
+        color: grey;
+        font-size: 15px;
+        line-height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: color .3s ease;
+
+        &:hover {
+            color: $accent-color;
+            cursor: pointer;
+        }
+    }
+
+    &__reset-filters-icon {
+        margin-left: 8px;
+    }
+
+    &__results-count {
+        font-size: 15px;
+        color: grey;
+        margin-left: auto;
+        margin-right: 0;
     }
 
     &__hint-top {

@@ -4,6 +4,7 @@
             class="input-container__input"
             type="text"
             :placeholder="placeholder"
+            :value="value"
             @input="$emit('input', $event.target.value)"
         />
     </div>
