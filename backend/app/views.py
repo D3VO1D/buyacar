@@ -46,14 +46,12 @@ class MinYearView(APIView):
 
 
 class UserCityView(APIView):
-
     def get(self, request, format=None):
         result = get_client_city_region_as_json(request)
         return Response(result)
 
 
 class CarMakesView(APIView):
-
     def get(self, request, format=None):
         result = get_makes_and_count(request)
         return Response(result)

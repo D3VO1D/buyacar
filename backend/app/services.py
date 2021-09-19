@@ -47,7 +47,6 @@ def get_client_city_region_as_json(request):
     return result
 
 
-
 def get_models_and_count(queryset, request):
     # if make is chosen, it has to show the models and their count
     if request.query_params.get("make", None):
@@ -57,7 +56,6 @@ def get_models_and_count(queryset, request):
 
 def get_makes_and_count(request):
     return CarAdvertisement.objects.values('make').annotate(count=Count('make')).order_by('-count')
-
 
 
 def get_min_year():
