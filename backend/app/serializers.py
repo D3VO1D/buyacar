@@ -6,4 +6,6 @@ from .models import CarAdvertisement
 class CarAdSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarAdvertisement
-        fields = "__all__"
+        fields = ['id', 'source', 'url', 'is_new', 'is_broken', 'price', 'location', 'latitude', 'longitude',
+                  'photos', 'title', 'make', 'model', 'year', 'body', 'vin', 'mileage', 'transmission',
+                  'drive', 'power']
