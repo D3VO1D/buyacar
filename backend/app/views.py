@@ -4,7 +4,6 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
-
 from .models import CarAdvertisement
 from .serializers import CarAdSerializer
 from .filters import CarAdFilter, DistanceOrderingFilter

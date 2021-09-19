@@ -9,11 +9,6 @@ const routes = [
     {
         path: '/',
         name: 'Main Page',
-        redirect: '/cars',
-    },
-    {
-        path: '/cars',
-        name: 'Cars',
         component: MainPage,
         props: (route) => ({ page: parseInt(route.query.page, 10) || 1 }),
     },
