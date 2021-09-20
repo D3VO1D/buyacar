@@ -1,8 +1,9 @@
 from django_filters import rest_framework as filters
 from rest_framework.filters import OrderingFilter
+from django.db.models import FloatField, Value
 
 from .models import CarAdvertisement
-from .services import get_ordered_by_distance_queryset
+from .services import get_ip_details, get_client_ip, get_locations_nearby_coords
 
 DRIVE_CHOICES = (
     ("AWD", "AWD"),
@@ -35,9 +36,9 @@ class CarAdFilter(filters.FilterSet):
     year_to = filters.NumberFilter(field_name="year", lookup_expr='lte')
     mileage_from = filters.NumberFilter(field_name="year", lookup_expr='gte')
     mileage_to = filters.NumberFilter(field_name="year", lookup_expr='lte')
-    drive = filters.ChoiceFilter(choices=DRIVE_CHOICES)
+    drive = filters.MultipleChoiceFilter(choices=DRIVE_CHOICES)
     transmission = filters.ChoiceFilter(choices=TRANSMISSION_CHOICES)
-    body = filters.ChoiceFilter(choices=BODY_CHOICES)
+    body = filters.MultipleChoiceFilter(choices=BODY_CHOICES)
     only_with_photos = filters.BooleanFilter(field_name="photos", method="has_photos", label="Only with photos")
 
     def has_photos(self, queryset, name, value):
@@ -53,16 +54,29 @@ class CarAdFilter(filters.FilterSet):
 
     class Meta:
         model = CarAdvertisement
-        fields = ['is_new', 'is_broken', 'price_from', 'price_to', 'year_from', 'year_to',
-                  'make', 'model', 'mileage_from', 'mileage_to', 'drive', 'transmission',
-                  'body', 'only_with_photos']
+        fields = ['is_new', 'is_broken', 'make', 'model']
 
 
 class DistanceOrderingFilter(OrderingFilter):
+
     def filter_queryset(self, request, queryset, view):
         ordering = self.get_ordering(request, queryset, view)
-        if not ordering:
-            queryset = get_ordered_by_distance_queryset(request, queryset)
+
+        request_latitude = request.query_params.get('latitude', None)
+        request_longitude = request.query_params.get('longitude', None)
+        request_city = request.query_params.get('city', None)
+        distance = request.query_params.get('distance', 100)
+
+        if request_latitude and request_longitude and request_city:
+            latitude, longitude, city = request_latitude, request_longitude, request_city
         else:
+            ip_data = get_ip_details(get_client_ip(request))
+            latitude, longitude, city = ip_data.latitude, ip_data.longitude, ip_data.city
+
+        if not ordering:
+            queryset = get_locations_nearby_coords(latitude, longitude, queryset, distance, city).order_by("distance")
+
+        else:
+            queryset = get_locations_nearby_coords(latitude, longitude, queryset, distance, city)
             queryset = super(DistanceOrderingFilter, self).filter_queryset(request, queryset, view)
         return queryset
