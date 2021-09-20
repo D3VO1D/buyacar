@@ -42,7 +42,7 @@ export default {
             maxPage: 1,
             resultsCount: 0,
             minYear: 2000,
-            userCity: 'New York',
+            userCity: '',
             availableMakes: [
                 'Audi',
                 'BMW',
@@ -57,8 +57,8 @@ export default {
     },
     created() {
         this.getMinYear();
-        this.getUserCity();
         this.getAvailableMakes();
+        this.getUserCity();
 
         this.getCars(this.page);
     },

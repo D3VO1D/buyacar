@@ -22,6 +22,10 @@
                         v-model="userLocationInput"
                     />
                 </div>
+                <div class="location__reset-location" v-if="location || userCity" @click="resetLocation">
+                    Reset location
+                    <font-awesome-icon class="location__reset-location-icon" :icon="['fas', 'times']"/>
+                </div>
             </div>
             <ul class="location__options" v-if="options">
                 <li
@@ -123,11 +127,20 @@ export default {
         hideSearchBox() {
             this.showSearchBox = false;
         },
+        resetLocation() {
+            this.location = '';
+            this.userLocationInput = '';
+            this.options = [];
+            this.showSearchBox = false;
+            this.$emit('resetLocation');
+        },
     },
 };
 </script>
 
 <style lang="scss" scoped>
+@import '@/_vars.scss';
+
 .location {
     position: relative;
 
@@ -162,6 +175,25 @@ export default {
 
     &__search-box {
         padding: 20px 15px;
+    }
+
+    &__reset-location {
+        color: grey;
+        font-size: 15px;
+        line-height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: color .3s ease;
+
+        &:hover {
+            color: $accent-color;
+            cursor: pointer;
+        }
+    }
+
+    &__reset-location-icon {
+        margin-left: 8px;
     }
 
     &__dropdown-input-container {

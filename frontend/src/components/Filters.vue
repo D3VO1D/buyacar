@@ -34,8 +34,9 @@
                 </div>
                 <div class="filters__column filters__column_align_right">
                     <BaseLocation
-                        :userCity="userCity"
+                        :userCity="filters.location"
                         @changeLocation="changeUserLocation"
+                        @resetLocation="resetLocation"
                     />
                 </div>
             </div>
@@ -336,6 +337,7 @@ export default {
                 latitude: 0,
                 sortBy: [],
                 itemsPerPage: [],
+                location: this.userCity,
             },
             driveOptions: [
                 'AWD',
@@ -454,8 +456,17 @@ export default {
             this.showHintTop = !isVisible;
         },
         changeUserLocation(location) {
+            this.filters.location = location.name;
+            if (location.stateCode) {
+                this.filters.location = `, ${location.stateCode}`;
+            }
             this.filters.longitude = location.longitude;
             this.filters.latitude = location.latitude;
+        },
+        resetLocation() {
+            this.filters.location = '';
+            this.filters.longitude = 0;
+            this.filters.latitude = 0;
         },
         resetFilters() {
             this.filters = {
@@ -475,6 +486,7 @@ export default {
                 latitude: 0,
                 sortBy: [],
                 itemsPerPage: [],
+                location: '',
             };
         },
     },
@@ -486,6 +498,9 @@ export default {
                 this.showAvailableModels = !!val.make.length && !val.model.length;
             },
             deep: true,
+        },
+        userCity(val) {
+            this.filters.location = val;
         },
     },
 };
