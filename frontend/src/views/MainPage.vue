@@ -6,6 +6,7 @@
             :availableMakes="availableMakes"
             :availableModels="availableModels"
             :resultsCount="resultsCount"
+            @changeFilters="changeFilters"
         />
         <AppCarsList :cars="cars"/>
         <div class="pagination-container">
@@ -43,16 +44,9 @@ export default {
             resultsCount: 0,
             minYear: 2000,
             userCity: '',
-            availableMakes: [
-                'Audi',
-                'BMW',
-                'Ford',
-            ],
-            availableModels: [
-                'X3',
-                'X5',
-                'X7',
-            ],
+            availableMakes: [],
+            availableModels: [],
+            filtersQueryString: '',
         };
     },
     created() {
@@ -63,8 +57,8 @@ export default {
         this.getCars(this.page);
     },
     methods: {
-        getCars(page = 1) {
-            API.getCars(page)
+        getCars(page = 1, filters = '') {
+            API.getCars(page, filters)
                 .then((res) => {
                     const {
                         count,
@@ -80,7 +74,6 @@ export default {
         getMinYear() {
             API.getMinYear()
                 .then((res) => {
-                    console.log(res.data);
                     this.minYear = res.data.min_year;
                 })
                 .catch((err) => console.log(err));
@@ -88,7 +81,6 @@ export default {
         getUserCity() {
             API.getUserCity()
                 .then((res) => {
-                    console.log(res.data);
                     const { data } = res;
                     this.userCity = `${data.city}, ${data.region}`;
                 })
@@ -97,7 +89,7 @@ export default {
         getAvailableMakes() {
             API.getMakes()
                 .then((res) => {
-                    console.log(res.data);
+                    this.availableMakes = res.data.map((item) => item.make);
                 })
                 .catch((err) => console.log(err));
         },
@@ -107,6 +99,10 @@ export default {
                 query: { page: newPage },
             });
             this.getCars(newPage);
+        },
+        changeFilters(filters) {
+            // TODO: create GET request with filters
+            console.log(filters);
         },
     },
 };

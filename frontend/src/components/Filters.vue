@@ -63,6 +63,7 @@
                         @selectOption="selectOption"
                         @resetSelectedOptions="filters.model = []"
                         selectionMode="single"
+                        :disabled="!filters.make.length"
                         with-input
                     />
                 </div>
@@ -378,8 +379,8 @@ export default {
     computed: {
         yearOptions() {
             // an array of [min_available_year; current_year]
-            const currentYear = new Date().getFullYear() - this.minAvailableYear;
-            return Array.from(new Array(currentYear), (x, i) => i + this.minAvailableYear);
+            const yearsRange = new Date().getFullYear() - this.minAvailableYear + 1;
+            return Array.from(new Array(yearsRange), (x, i) => i + this.minAvailableYear);
         },
         appliedFilters() {
             // select not empty values from filters object
@@ -493,9 +494,8 @@ export default {
     watch: {
         filters: {
             handler(val) {
-                console.log(this.appliedFilters);
-                // TODO: create GET request with filters
                 this.showAvailableModels = !!val.make.length && !val.model.length;
+                this.$emit('changeFilters', this.appliedFilters);
             },
             deep: true,
         },

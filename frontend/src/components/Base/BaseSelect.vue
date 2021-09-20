@@ -3,23 +3,30 @@
         <div
             class="select-container__select"
             :class="[{'select-container__has-chosen-value': !!selectedOptions.length},
+                    {'select-container_disabled': disabled},
                     `select-container__select_borders-${bordersType}`]"
-            @click="showOptions = !showOptions"
+            @click="showOptions = (disabled) ? false : !showOptions"
             @keyup.esc="resetSelections"
         >
             <template v-if="withInput">
                 <input
                     class="input"
+                    :class="{'disabled': disabled}"
                     type="text"
                     :placeholder="inputPlaceholder"
                     v-model="inputValue"
-                    @input="showOptions = true"
+                    :disabled="disabled"
+                    @input="showOptions = !disabled"
                     @focus="focusInput"
                     @blur="blurInput"
                     ref="input"
                 />
 
-                <span class="select-container__arrow" v-if="showChevron">
+                <span
+                    class="select-container__arrow"
+                    :class="{'select-container__arrow_disabled': disabled}"
+                    v-if="showChevron"
+                >
                     <font-awesome-icon :icon="['fas', 'chevron-down']"/>
                 </span>
             </template>
@@ -90,6 +97,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
         selectionMode: {
             type: String,
             default: 'multiple',
@@ -150,6 +161,8 @@ export default {
             this.$emit('resetSelectedOptions');
         },
         focusInput() {
+            if (this.disabled) return;
+
             this.showChevron = false;
             if (this.userChoseOption) {
                 this.tempInputValue = this.inputValue;
@@ -157,6 +170,8 @@ export default {
             }
         },
         blurInput() {
+            if (this.disabled) return;
+
             this.showChevron = true;
             if (this.userChoseOption) {
                 this.inputValue = this.tempInputValue;
@@ -217,6 +232,15 @@ export default {
         margin-right: 4px;
     }
 
+    &_disabled {
+        border-color: rgba(0, 0, 0, .08);
+
+        &:hover {
+            cursor: default;
+            border: 1px solid rgba(0, 0, 0, .08);
+        }
+    }
+
     &__has-chosen-value {
         border: 1px solid rgba(21, 126, 225, .5);
         background-color: #eef4fa;
@@ -231,6 +255,10 @@ export default {
         line-height: 36px;
         padding-right: 8px;
         opacity: .543;
+
+        &_disabled {
+            opacity: .2;
+        }
     }
 
     &__options {
@@ -292,6 +320,10 @@ export default {
     border: transparent;
     margin-right: 8px;
     background-color: inherit;
+
+    &:disabled::placeholder {
+        color: rgba(0, 0, 0, .24);
+    }
 }
 
 .rotate {
@@ -311,6 +343,7 @@ export default {
 .options-fade-enter-active, .options-fade-leave-active {
     transition: opacity .5s;
 }
+
 .options-fade-enter, .options-fade-leave-to {
     opacity: 0;
 }
