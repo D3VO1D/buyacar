@@ -689,13 +689,13 @@ export default {
     }
 
     &__label {
-        display: inline-block;
         padding: 10px 20px;
         font-size: 15px;
         border: 1px solid rgba(0, 0, 0, .12);
         background-color: $white;
         color: grey;
         height: 36px;
+        line-height: 36px;
         text-align: center;
 
         &:hover {

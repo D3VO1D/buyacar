@@ -11,14 +11,13 @@
         <div v-if="resultsCount !== 0">
             <AppCarsList :cars="cars" />
             <div class="pagination-container">
-                <!-- <vue-paginate-al
+                <vue-paginate-al
                     :currentPage="page"
                     :totalPage="maxPage"
-                    customActiveBGColor="#f0f0f0"
-                    activeBGColor="#157ee1"
-                    withNextPrev="false"
+                    customActiveBGColor="#DB3727"
+                    :withNextPrev="false"
                     @btnClick="pageClicked"
-                /> -->
+                />
             </div>
         </div>
         <p v-else class="no-results">
