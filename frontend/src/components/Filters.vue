@@ -32,7 +32,7 @@
                         <label class="radio-toolbar__label" for="select-broken">Broken</label>
                     </div>
                 </div>
-                <div class="filters__column filters__column_align_right">
+                <div class="filters__column filters__column_align-right">
                     <BaseLocation
                         :userCity="filters.location"
                         @changeLocation="changeUserLocation"
@@ -100,7 +100,7 @@
                     />
 
                     <BaseCheckbox
-                        class="filters__item_small"
+                        class="filters__item_small filters__item_align-right"
                         label="With photos"
                         v-model="filters.only_with_photo"
                     />
@@ -540,8 +540,8 @@ export default {
             margin-left: 0;
         }
 
-        &_align_right {
-            justify-content: right;
+        &_align-right {
+            justify-content: flex-end;
         }
     }
 
@@ -560,6 +560,10 @@ export default {
 
         &_grouped {
             width: 50%;
+        }
+
+        &_align-right {
+            justify-content: flex-end;
         }
     }
 
@@ -633,8 +637,7 @@ export default {
     &__below-selects {
         width: 280px;
         display: flex;
-        margin-left: auto;
-        margin-right: 0;
+        margin: 0 0 16px auto;
     }
 
     &__available-models {

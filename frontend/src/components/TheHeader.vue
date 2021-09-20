@@ -3,7 +3,7 @@
         <h1 class="header__logo">
             <router-link :to="{ name: 'Main Page', query: { page: 1 } }" class="header__logo-link">
                 <img class="header__logo-img" src="@/assets/logo.svg" alt="logo"/>
-                WHOLE CARS
+                <span class="header__logo-name">WHOLE CARS</span>
             </router-link>
         </h1>
         <h2 class="header__motto">
@@ -37,7 +37,8 @@ export default {
     &__logo-img {
         width: 45px;
         height: 45px;
-        vertical-align: bottom;
+        vertical-align: text-bottom;
+        margin-right: 4px;
     }
 
     &__logo-link {
