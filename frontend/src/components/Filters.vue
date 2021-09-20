@@ -6,30 +6,42 @@
                     <div class="radio-toolbar">
                         <input class="radio-toolbar__radio" type="radio" id="select-all"
                                name="toolbar-1" value="all" checked>
-                        <label class="radio-toolbar__label" for="select-all">All</label>
+                        <label class="radio-toolbar__label" for="select-all" @click="filters.is_new = null">
+                            All
+                        </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-new"
                                name="toolbar-1" value="new">
-                        <label class="radio-toolbar__label" for="select-new">New</label>
+                        <label class="radio-toolbar__label" for="select-new" @click="filters.is_new = true">
+                            New
+                        </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-used"
                                name="toolbar-1" value="used">
-                        <label class="radio-toolbar__label" for="select-used">Used</label>
+                        <label class="radio-toolbar__label" for="select-used" @click="filters.is_new = false">
+                            Used
+                        </label>
                     </div>
                 </div>
                 <div class="filters__column">
                     <div class="radio-toolbar">
                         <input class="radio-toolbar__radio" type="radio" id="select-all-2"
                                name="toolbar-2" value="all">
-                        <label class="radio-toolbar__label" for="select-all-2">All</label>
+                        <label class="radio-toolbar__label" for="select-all-2">
+                            All
+                        </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-working"
                                name="toolbar-2" value="new" checked>
-                        <label class="radio-toolbar__label" for="select-working">Working</label>
+                        <label class="radio-toolbar__label" for="select-working" @click="filters.is_broken = false">
+                            Working
+                        </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-broken"
                                name="toolbar-2" value="used">
-                        <label class="radio-toolbar__label" for="select-broken">Broken</label>
+                        <label class="radio-toolbar__label" for="select-broken" @click="filters.is_broken = true">
+                            Broken
+                        </label>
                     </div>
                 </div>
                 <div class="filters__column filters__column_align-right">
@@ -177,10 +189,12 @@
                 <div class="filters__column">
                 </div>
                 <div class="filters__column">
-                    <div class="filters__results-count" v-if="resultsCount">
+                    <div class="filters__results-count" v-if="resultsCount > 0">
                         {{ resultsCount }} results
                     </div>
-                    <!-- TODO: nothing found text -->
+                    <div class="filters__results-count" v-else-if="resultsCount === 0">
+                        No results
+                    </div>
                 </div>
             </div>
         </div>
@@ -279,6 +293,8 @@ export default {
         // snake case is used to provide valid querystring for backend
         return {
             filters: {
+                is_new: null,
+                is_broken: false,
                 make: [],
                 model: [],
                 drive: [],
@@ -347,8 +363,8 @@ export default {
                 .reduce((acc, key) => {
                     const value = this.filters[key];
                     // either a 'truthy' primitive or a non-empty object
-                    if ((value !== '' && value !== 0 && typeof value !== 'object')
-                        || (value.length !== undefined && value.length !== 0)) {
+                    if ((value && typeof value !== 'object')
+                        || (value?.length !== undefined && value.length !== 0)) {
                         acc[key] = this.filters[key];
                     }
                     return acc;

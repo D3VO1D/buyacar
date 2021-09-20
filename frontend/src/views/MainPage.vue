@@ -8,15 +8,22 @@
             :resultsCount="resultsCount"
             @changeFilters="changeFilters"
         />
-        <AppCarsList :cars="cars"/>
-        <div class="pagination-container">
-            <vue-paginate-al
-                :currentPage="page"
-                :totalPage="maxPage"
-                customActiveBGColor="#DB3727"
-                @btnClick="pageClicked"
-            />
+        <div v-if="resultsCount !== 0">
+            <AppCarsList :cars="cars" />
+            <div class="pagination-container">
+                <!-- <vue-paginate-al
+                    :currentPage="page"
+                    :totalPage="maxPage"
+                    customActiveBGColor="#f0f0f0"
+                    activeBGColor="#157ee1"
+                    withNextPrev="false"
+                    @btnClick="pageClicked"
+                /> -->
+            </div>
         </div>
+        <p v-else class="no-results">
+            Unfortunately, we could not find any cars for you. Consider trying later or changing the filters.
+        </p>
     </main>
 </template>
 
@@ -41,8 +48,9 @@ export default {
     data() {
         return {
             cars: [],
+            isLoading: false,
             maxPage: 1,
-            resultsCount: 0,
+            resultsCount: null,
             minYear: 2000,
             userCity: '',
             availableMakes: [],
@@ -120,5 +128,15 @@ main {
 
 .pagination-container {
     padding: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.no-results {
+    padding: 0 16px;
+    font-size: 24px;
+    max-width: 920px;
+    margin: 32px auto;
+    text-align: center;
 }
 </style>
