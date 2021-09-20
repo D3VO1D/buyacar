@@ -38,7 +38,7 @@ export default {
         width: 45px;
         height: 45px;
         vertical-align: text-bottom;
-        margin-right: 4px;
+        margin-right: 8px;
     }
 
     &__logo-link {

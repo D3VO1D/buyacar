@@ -65,10 +65,12 @@ export default {
                         count,
                         totalPages,
                         results,
+                        models,
                     } = res.data;
                     this.resultsCount = count;
                     this.cars = results;
                     this.maxPage = totalPages;
+                    this.availableModels = models;
                 })
                 .catch((err) => console.log(err));
         },

@@ -58,12 +58,12 @@
                     <BaseSelect
                         class="filters__item_large"
                         placeholder="Model"
-                        :options="availableModels"
+                        :options="modelsList"
                         :selectedOptions="filters.model"
                         @selectOption="selectOption"
                         @resetSelectedOptions="filters.model = []"
                         selectionMode="single"
-                        :disabled="!filters.make.length"
+                        :disabled="!modelsList.length"
                         with-input
                     />
                 </div>
@@ -207,62 +207,18 @@
                 selectionMode="single"
             />
         </div>
-        <div class="filters__available-models" v-if="showAvailableModels">
+        <div class="filters__available-models" v-if="modelsList.length && !filters.model.length">
             <div class="filters__models-items">
-                <div class="filters__models-column">
-                    <div class="filters__models-item">
-                        <div class="filters__models-item-name">
-                            X5
-                        </div>
-                        <div class="filters__models-item-count">
-                            11
-                        </div>
+                <div
+                    class="filters__models-item"
+                    v-for="model in availableModels"
+                    :key="model.model"
+                >
+                    <div class="filters__models-item-name">
+                        {{ model.model }}
                     </div>
-
-                    <div class="filters__models-item">
-                        <div class="filters__models-item-name">
-                            X7
-                        </div>
-                        <div class="filters__models-item-count">
-                            1311
-                        </div>
-                    </div>
-
-                    <div class="filters__models-item">
-                        <div class="filters__models-item-name">
-                            12314
-                        </div>
-                        <div class="filters__models-item-count">
-                            51
-                        </div>
-                    </div>
-                </div>
-                <div class="filters__models-column">
-                    <div class="filters__models-item">
-                        <div class="filters__models-item-name">
-                            X5
-                        </div>
-                        <div class="filters__models-item-count">
-                            11
-                        </div>
-                    </div>
-
-                    <div class="filters__models-item">
-                        <div class="filters__models-item-name">
-                            X7
-                        </div>
-                        <div class="filters__models-item-count">
-                            1311
-                        </div>
-                    </div>
-
-                    <div class="filters__models-item">
-                        <div class="filters__models-item-name">
-                            12314
-                        </div>
-                        <div class="filters__models-item-count">
-                            51
-                        </div>
+                    <div class="filters__models-item-count">
+                        {{ model.count }}
                     </div>
                 </div>
             </div>
@@ -374,7 +330,6 @@ export default {
                 '200 per page',
             ],
             showHintTop: false,
-            showAvailableModels: false,
         };
     },
     computed: {
@@ -382,6 +337,9 @@ export default {
             // an array of [min_available_year; current_year]
             const yearsRange = new Date().getFullYear() - this.minAvailableYear + 1;
             return Array.from(new Array(yearsRange), (x, i) => i + this.minAvailableYear);
+        },
+        modelsList() {
+            return this.availableModels.map((item) => item.model);
         },
         appliedFilters() {
             // select not empty values from filters object
@@ -494,8 +452,7 @@ export default {
     },
     watch: {
         filters: {
-            handler(val) {
-                this.showAvailableModels = !!val.make.length && !val.model.length;
+            handler() {
                 this.$emit('changeFilters', this.appliedFilters);
             },
             deep: true,
@@ -649,11 +606,6 @@ export default {
     &__models-items {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-    }
-
-    &__models-column {
-        display: flex;
-        flex-direction: column;
     }
 
     &__models-item {
