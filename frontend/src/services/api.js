@@ -14,7 +14,7 @@ class Api {
     }
 
     getCars(page = 1, filtersQuery = '') {
-        return this.apiClient.get(`/api/v1/cars?page=${page}${filtersQuery}`);
+        return this.apiClient.get(`/api/v1/cars?page=${page}&${filtersQuery}`);
     }
 
     getMinYear() {

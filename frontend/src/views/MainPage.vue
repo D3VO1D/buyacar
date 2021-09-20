@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import qs from 'qs';
 import AppCarsList from '@/components/AppCarsList';
 import { API } from '@/services/api';
 import Filters from '@/components/Filters';
@@ -98,11 +99,12 @@ export default {
                 name: 'Main Page',
                 query: { page: newPage },
             });
-            this.getCars(newPage);
+            this.getCars(newPage, this.filtersQueryString);
         },
         changeFilters(filters) {
-            // TODO: create GET request with filters
-            console.log(filters);
+            this.filtersQueryString = qs.stringify(filters, { indices: false });
+            console.log(this.filtersQueryString);
+            this.getCars(this.page, this.filtersQueryString);
         },
     },
 };

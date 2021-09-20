@@ -102,7 +102,7 @@
                     <BaseCheckbox
                         class="filters__item_small"
                         label="With photos"
-                        v-model="filters.withPhotos"
+                        v-model="filters.only_with_photo"
                     />
                 </div>
             </div>
@@ -113,9 +113,9 @@
                         class="filters__item_grouped"
                         placeholder="Year from"
                         :options="yearOptions"
-                        :selectedOptions="filters.yearFrom"
+                        :selectedOptions="filters.year_from"
                         @selectOption="selectOption"
-                        @resetSelectedOptions="filters.yearFrom = []"
+                        @resetSelectedOptions="filters.year_from = []"
                         selectionMode="single"
                         resetText="Reset"
                         bordersType="left"
@@ -125,9 +125,9 @@
                         class="filters__item_grouped"
                         placeholder="to"
                         :options="yearOptions"
-                        :selectedOptions="filters.yearTo"
+                        :selectedOptions="filters.year_to"
                         @selectOption="selectOption"
-                        @resetSelectedOptions="filters.yearTo = []"
+                        @resetSelectedOptions="filters.year_to = []"
                         selectionMode="single"
                         resetText="Reset"
                         bordersType="right"
@@ -138,14 +138,14 @@
                     <BaseInput
                         class="filters__item_grouped"
                         placeholder="Mileage from, mi"
-                        v-model="filters.mileageFrom"
+                        v-model="filters.mileage_from"
                         bordersType="left"
                     />
 
                     <BaseInput
                         class="filters__item_grouped"
                         placeholder="to"
-                        v-model="filters.mileageTo"
+                        v-model="filters.mileage_to"
                         bordersType="right"
                     />
                 </div>
@@ -154,14 +154,14 @@
                     <BaseInput
                         class="filters__item_grouped"
                         placeholder="Price from, $"
-                        v-model="filters.priceFrom"
+                        v-model="filters.price_from"
                         bordersType="left"
                     />
 
                     <BaseInput
                         class="filters__item_grouped"
                         placeholder="to"
-                        v-model="filters.priceTo"
+                        v-model="filters.price_to"
                         bordersType="right"
                     />
                 </div>
@@ -189,10 +189,10 @@
                 class="filters__item_small"
                 placeholder="50 per page"
                 :options="itemsPerPageOptions"
-                :selectedOptions="filters.itemsPerPage"
+                :selectedOptions="filters.items_per_page"
                 resetText="50 per page"
                 @selectOption="selectOption"
-                @resetSelectedOptions="filters.itemsPerPage = []"
+                @resetSelectedOptions="filters.items_per_page = []"
                 selectionMode="single"
             />
 
@@ -200,10 +200,10 @@
                 class="filters__item_small"
                 placeholder="Sort by"
                 :options="sortByOptions"
-                :selectedOptions="filters.sortBy"
+                :selectedOptions="filters.sort_by"
                 resetText="Default"
                 @selectOption="selectOption"
-                @resetSelectedOptions="filters.sortBy = []"
+                @resetSelectedOptions="filters.sort_by = []"
                 selectionMode="single"
             />
         </div>
@@ -320,6 +320,7 @@ export default {
         },
     },
     data() {
+        // snake case is used to provide valid querystring for backend
         return {
             filters: {
                 make: [],
@@ -327,17 +328,17 @@ export default {
                 drive: [],
                 transmission: [],
                 body: [],
-                withPhotos: true,
-                yearFrom: [],
-                yearTo: [],
-                mileageFrom: '',
-                mileageTo: '',
-                priceFrom: '',
-                priceTo: '',
+                only_with_photo: true,
+                year_from: [],
+                year_to: [],
+                mileage_from: '',
+                mileage_to: '',
+                price_from: '',
+                price_to: '',
                 longitude: 0,
                 latitude: 0,
-                sortBy: [],
-                itemsPerPage: [],
+                sort_by: [],
+                items_per_page: [],
                 location: this.userCity,
             },
             driveOptions: [
@@ -476,17 +477,17 @@ export default {
                 drive: [],
                 transmission: [],
                 body: [],
-                withPhotos: true,
-                yearFrom: [],
-                yearTo: [],
-                mileageFrom: '',
-                mileageTo: '',
-                priceFrom: '',
-                priceTo: '',
+                only_with_photo: true,
+                year_from: [],
+                year_to: [],
+                mileage_from: '',
+                mileage_to: '',
+                price_from: '',
+                price_to: '',
                 longitude: 0,
                 latitude: 0,
-                sortBy: [],
-                itemsPerPage: [],
+                sort_by: [],
+                items_per_page: [],
                 location: '',
             };
         },
