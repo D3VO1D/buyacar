@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VuePaginateAl from 'vue-paginate-al';
+import VueContentPlaceholders from 'vue-content-placeholders';
 
 import App from './App';
 import router from './router';
@@ -17,6 +18,7 @@ import store from './store';
 
 library.add(faPhoneAlt, faChevronUp, faChevronDown, faTimes, faCheck);
 
+Vue.use(VueContentPlaceholders);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('vue-paginate-al', VuePaginateAl);
 

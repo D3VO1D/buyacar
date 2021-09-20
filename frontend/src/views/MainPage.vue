@@ -8,7 +8,21 @@
             :resultsCount="resultsCount"
             @changeFilters="changeFilters"
         />
-        <div v-if="resultsCount !== 0">
+        <div v-if="isLoading">
+            <content-placeholders
+                :rounded="true"
+                v-for="_ in 20"
+                :key="_"
+                class="loading-placeholder"
+            >
+                <content-placeholders-img class="loading-placeholder__image" />
+                <div>
+                    <content-placeholders-text :lines="1" class="loading-placeholder__title" />
+                    <content-placeholders-text :lines="2" />
+                </div>
+            </content-placeholders>
+        </div>
+        <div v-else-if="resultsCount !== 0">
             <AppCarsList :cars="cars" />
             <div class="pagination-container">
                 <vue-paginate-al
@@ -58,6 +72,7 @@ export default {
         };
     },
     created() {
+        this.isLoading = true;
         this.getMinYear();
         this.getAvailableMakes();
         this.getUserCity();
@@ -66,6 +81,7 @@ export default {
     },
     methods: {
         getCars(page = 1, filters = '') {
+            this.isLoading = true;
             API.getCars(page, filters)
                 .then((res) => {
                     const {
@@ -79,7 +95,10 @@ export default {
                     this.maxPage = totalPages;
                     this.availableModels = models;
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => console.log(err))
+                .finally(() => {
+                    this.isLoading = false;
+                });
         },
         getMinYear() {
             API.getMinYear()
@@ -137,5 +156,23 @@ main {
     max-width: 920px;
     margin: 32px auto;
     text-align: center;
+}
+
+.loading-placeholder {
+    width: 800px;
+    padding-left: 16px;
+    margin: 16px 0 32px 0;
+    display: flex;
+
+    &__image {
+        width: 200px;
+        height: 150px;
+        margin-right: 24px;
+    }
+
+    &__title {
+        width: 450px;
+        margin-bottom: 40px;;
+    }
 }
 </style>
