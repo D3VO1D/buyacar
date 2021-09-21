@@ -214,10 +214,10 @@
                 class="filters__item_small"
                 placeholder="Sort by"
                 :options="sortByOptions"
-                :selectedOptions="filters.sort_by"
+                :selectedOptions="filters.ordering"
                 resetText="Default"
                 @selectOption="selectOption"
-                @resetSelectedOptions="filters.sort_by = []"
+                @resetSelectedOptions="filters.ordering = []"
                 selectionMode="single"
             />
         </div>
@@ -228,7 +228,7 @@
                     v-for="model in availableModels"
                     :key="model.model"
                 >
-                    <div class="filters__models-item-name">
+                    <div class="filters__models-item-name" @click="filters.model = [model.model]">
                         {{ model.model }}
                     </div>
                     <div class="filters__models-item-count">
@@ -309,7 +309,7 @@ export default {
                 price_to: '',
                 longitude: 0,
                 latitude: 0,
-                sort_by: [],
+                ordering: [],
                 items_per_page: [],
                 location: this.userCity,
             },
@@ -334,11 +334,10 @@ export default {
                 'Wagon',
             ],
             sortByOptions: [
-                'Distance',
-                'Price ↑',
-                'Price ↓',
-                'Year ↑',
-                'Year ↓',
+                'price',
+                '-price',
+                'year',
+                '-year',
             ],
             itemsPerPageOptions: [
                 '100 per page',
@@ -460,7 +459,7 @@ export default {
                 price_to: '',
                 longitude: 0,
                 latitude: 0,
-                sort_by: [],
+                ordering: [],
                 items_per_page: [],
                 location: '',
             };

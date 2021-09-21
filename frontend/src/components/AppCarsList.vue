@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="cars-list">
         <AppCarCard
             v-for="car in cars"
             :key="car.id"
@@ -23,6 +23,10 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.cars-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 </style>

@@ -95,7 +95,7 @@ export default {
                     this.resultsCount = count;
                     this.cars = results;
                     this.maxPage = totalPages;
-                    this.availableModels = models;
+                    this.availableModels = models.slice(0, 12);
                 })
                 .catch((err) => console.log(err))
                 .finally(() => {
