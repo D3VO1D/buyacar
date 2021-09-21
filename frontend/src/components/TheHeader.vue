@@ -1,13 +1,13 @@
 <template>
     <header class="header">
         <h1 class="header__logo">
-            <router-link :to="{ name: 'Main Page'}" class="header__logo-link">
+            <router-link :to="{ name: 'Main Page', query: { page: 1 } }" class="header__logo-link">
                 <img class="header__logo-img" src="@/assets/logo.svg" alt="logo"/>
-                WHOLE CARS
+                <span class="header__logo-name">WHOLE CARS</span>
             </router-link>
         </h1>
         <h2 class="header__motto">
-            All cars for sale in the US
+            All cars are here
         </h2>
     </header>
 </template>
@@ -25,9 +25,9 @@ export default {
     background-color: $accent-color;
     color: $white;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    padding: 24px 0;
+    padding: 24px 10%;
     font-family: $logo-font;
 
     &__logo {
@@ -37,7 +37,8 @@ export default {
     &__logo-img {
         width: 45px;
         height: 45px;
-        vertical-align: bottom;
+        vertical-align: text-bottom;
+        margin-right: 8px;
     }
 
     &__logo-link {

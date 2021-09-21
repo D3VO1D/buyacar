@@ -2,7 +2,6 @@ from django.db import models
 
 
 class CarAdvertisement(models.Model):
-
     source = models.CharField(max_length=128, null=True, blank=True)
     url = models.CharField(max_length=256, null=True, blank=True)
     is_new = models.BooleanField(null=True, blank=True)
@@ -26,4 +25,5 @@ class CarAdvertisement(models.Model):
     def __str__(self):
         return '{} {} {}'.format(self.id, self.make, self.model)
 
-
+    class Meta:
+        db_table = 'ads'
