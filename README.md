@@ -13,10 +13,9 @@ pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
-python manage.py generate_database --num_rows=100 --num_photos=5
 
 2. Second terminal tab
-cd ../frontend
+cd frontend
 npm i
 npm run serve
 
@@ -34,10 +33,9 @@ pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
-python manage.py generate_database --num_rows=100 --num_photos=5
 
 2. Second terminal tab
-cd ../frontend
+cd frontend
 npm i
 npm run serve
 
