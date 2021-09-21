@@ -39,17 +39,15 @@ class CarAdFilter(filters.FilterSet):
     drive = filters.MultipleChoiceFilter(choices=DRIVE_CHOICES)
     transmission = filters.ChoiceFilter(choices=TRANSMISSION_CHOICES)
     body = filters.MultipleChoiceFilter(choices=BODY_CHOICES)
-    only_with_photos = filters.BooleanFilter(field_name="photos", method="has_photos", label="Only with photos")
+    only_with_photo = filters.BooleanFilter(field_name="photos", method="has_photos", label="Only with photo")
 
     def has_photos(self, queryset, name, value):
-        # Checks if "http" in photos. Works with our data, maybe needs to rethink
-        return queryset.filter(photos__icontains='http') if value else queryset
+        return queryset.exclude(photos__exact='[]') if value else queryset
 
     def __init__(self, data=None, *args, **kwargs):
         if data is not None:
             data = data.copy()
             data.setdefault("is_broken", False)
-            data.setdefault("only_with_photos", False)
         super(CarAdFilter, self).__init__(data, *args, **kwargs)
 
     class Meta:
@@ -64,11 +62,11 @@ class DistanceOrderingFilter(OrderingFilter):
 
         request_latitude = request.query_params.get('latitude', None)
         request_longitude = request.query_params.get('longitude', None)
-        request_city = request.query_params.get('city', None)
-        distance = request.query_params.get('distance', 100)
+        request_city = request.query_params.get('location', None)
+        distance = request.query_params.get('distance', 200)
 
         if request_latitude and request_longitude and request_city:
-            latitude, longitude, city = request_latitude, request_longitude, request_city
+            latitude, longitude, city = request_latitude, request_longitude, request_city.split(',')[0]
         else:
             ip_data = get_ip_details(get_client_ip(request))
             latitude, longitude, city = ip_data.latitude, ip_data.longitude, ip_data.city

@@ -22,6 +22,8 @@ class CarAdStandardPagination(PageNumberPagination):
         return response
 
     def paginate_queryset(self, queryset, request, view=None):
+        request_page_size = request.query_params.get('items_per_page', None)
+        self.page_size = int(request_page_size.split()[0]) if request_page_size else 50
         result = super(CarAdStandardPagination, self).paginate_queryset(queryset, request)
         self.additional_info = get_models_and_count(queryset, request)
         return result
