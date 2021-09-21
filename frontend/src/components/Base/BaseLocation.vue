@@ -185,6 +185,7 @@ export default {
         justify-content: center;
         align-items: center;
         transition: color .3s ease;
+        margin-top: 4px;
 
         &:hover {
             color: $accent-color;

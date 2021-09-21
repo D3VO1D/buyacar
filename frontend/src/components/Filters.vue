@@ -246,7 +246,7 @@
                 </svg>
                 {{ appliedFiltersMessage }}
             </div>
-            <div class="filters__hint-results-count">
+            <div class="filters__hint-results-count" v-if="resultsCount">
                 {{ resultsCount }} results
             </div>
         </div>
@@ -434,7 +434,7 @@ export default {
         changeUserLocation(location) {
             this.filters.location = location.name;
             if (location.stateCode) {
-                this.filters.location = `, ${location.stateCode}`;
+                this.filters.location += `, ${location.stateCode}`;
             }
             this.filters.longitude = location.longitude;
             this.filters.latitude = location.latitude;

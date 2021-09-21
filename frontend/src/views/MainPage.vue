@@ -8,7 +8,7 @@
             :resultsCount="resultsCount"
             @changeFilters="changeFilters"
         />
-        <div v-if="isLoading">
+        <div v-if="isLoading || requestsPending > 0">
             <content-placeholders
                 :rounded="true"
                 v-for="_ in 20"
@@ -62,6 +62,7 @@ export default {
         return {
             cars: [],
             isLoading: false,
+            requestsPending: 0,
             maxPage: 1,
             resultsCount: null,
             minYear: 2000,
@@ -82,6 +83,7 @@ export default {
     methods: {
         getCars(page = 1, filters = '') {
             this.isLoading = true;
+            ++this.requestsPending;
             API.getCars(page, filters)
                 .then((res) => {
                     const {
@@ -97,6 +99,7 @@ export default {
                 })
                 .catch((err) => console.log(err))
                 .finally(() => {
+                    --this.requestsPending;
                     this.isLoading = false;
                 });
         },
@@ -130,6 +133,7 @@ export default {
             this.getCars(newPage, this.filtersQueryString);
         },
         changeFilters(filters) {
+            this.userCity = filters.location;
             this.filtersQueryString = qs.stringify(filters, { indices: false });
             console.log(this.filtersQueryString);
             this.getCars(this.page, this.filtersQueryString);
