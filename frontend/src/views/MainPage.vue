@@ -2,7 +2,6 @@
     <main>
         <Filters
             :minAvailableYear="minYear"
-            :userCity="userCity"
             :availableMakes="availableMakes"
             :availableModels="availableModels"
             :resultsCount="resultsCount"
@@ -66,7 +65,6 @@ export default {
             maxPage: 1,
             resultsCount: null,
             minYear: 2000,
-            userCity: '',
             availableMakes: [],
             availableModels: [],
             filtersQueryString: '',
@@ -76,7 +74,6 @@ export default {
         this.isLoading = true;
         this.getMinYear();
         this.getAvailableMakes();
-        this.getUserCity();
 
         this.getCars(this.page);
     },
@@ -110,14 +107,6 @@ export default {
                 })
                 .catch((err) => console.log(err));
         },
-        getUserCity() {
-            API.getUserCity()
-                .then((res) => {
-                    const { data } = res;
-                    this.userCity = `${data.city}, ${data.region}`;
-                })
-                .catch((err) => console.log(err));
-        },
         getAvailableMakes() {
             API.getMakes()
                 .then((res) => {
@@ -133,10 +122,9 @@ export default {
             this.getCars(newPage, this.filtersQueryString);
         },
         changeFilters(filters) {
-            this.userCity = filters.location;
             this.filtersQueryString = qs.stringify(filters, { indices: false });
             console.log(this.filtersQueryString);
-            this.getCars(this.page, this.filtersQueryString);
+            this.pageClicked(1);
         },
     },
 };

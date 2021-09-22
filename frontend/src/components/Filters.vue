@@ -27,7 +27,7 @@
                     <div class="radio-toolbar">
                         <input class="radio-toolbar__radio" type="radio" id="select-all-2"
                                name="toolbar-2" value="all">
-                        <label class="radio-toolbar__label" for="select-all-2">
+                        <label class="radio-toolbar__label" for="select-all-2" @click="filters.is_broken = null">
                             All
                         </label>
 
@@ -198,6 +198,24 @@
                 </div>
             </div>
         </div>
+
+        <div class="filters__available-models" v-if="modelsList.length && !filters.model.length">
+            <div class="filters__models-items">
+                <div
+                    class="filters__models-item"
+                    v-for="model in availableModels"
+                    :key="model.model"
+                >
+                    <div class="filters__models-item-name" @click="filters.model = [model.model]">
+                        {{ model.model }}
+                    </div>
+                    <div class="filters__models-item-count">
+                        {{ model.count }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="filters__below-selects">
             <BaseSelect
                 class="filters__item_small"
@@ -215,28 +233,13 @@
                 placeholder="Sort by"
                 :options="sortByOptions"
                 :selectedOptions="filters.ordering"
-                resetText="Default"
+                resetText="Distance"
                 @selectOption="selectOption"
                 @resetSelectedOptions="filters.ordering = []"
                 selectionMode="single"
             />
         </div>
-        <div class="filters__available-models" v-if="modelsList.length && !filters.model.length">
-            <div class="filters__models-items">
-                <div
-                    class="filters__models-item"
-                    v-for="model in availableModels"
-                    :key="model.model"
-                >
-                    <div class="filters__models-item-name" @click="filters.model = [model.model]">
-                        {{ model.model }}
-                    </div>
-                    <div class="filters__models-item-count">
-                        {{ model.count }}
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="filters__hint-top" v-if="showHintTop">
             <div class="filters__hint-title" @click="scrollToTop">
                 <svg class="filters__hint-arrow-icon" viewBox="0 0 24 24" id="arrow-rounded">
@@ -271,10 +274,6 @@ export default {
         minAvailableYear: {
             type: Number,
             default: 2000,
-        },
-        userCity: {
-            type: String,
-            default: '',
         },
         availableMakes: {
             type: Array,
@@ -311,7 +310,7 @@ export default {
                 latitude: 0,
                 ordering: [],
                 items_per_page: [],
-                location: this.userCity,
+                location: '',
             },
             driveOptions: [
                 'AWD',
@@ -334,15 +333,15 @@ export default {
                 'Wagon',
             ],
             sortByOptions: [
-                'price',
-                '-price',
-                'year',
-                '-year',
+                'Price ↑',
+                'Price ↓',
+                'Year ↑',
+                'Year ↓',
             ],
             itemsPerPageOptions: [
+                '25 per page',
+                '50 per page',
                 '100 per page',
-                '150 per page',
-                '200 per page',
             ],
             showHintTop: false,
         };
@@ -351,7 +350,7 @@ export default {
         yearOptions() {
             // an array of [min_available_year; current_year]
             const yearsRange = new Date().getFullYear() - this.minAvailableYear + 1;
-            return Array.from(new Array(yearsRange), (x, i) => i + this.minAvailableYear);
+            return Array.from(new Array(yearsRange), (x, i) => i + this.minAvailableYear).reverse();
         },
         modelsList() {
             return this.availableModels.map((item) => item.model);
@@ -361,8 +360,8 @@ export default {
             return Object.keys(this.filters)
                 .reduce((acc, key) => {
                     const value = this.filters[key];
-                    // either a 'truthy' primitive or a non-empty object
-                    if ((value && typeof value !== 'object')
+                    // either a boolean, a 'truthy' primitive or a non-empty object
+                    if (typeof value === 'boolean' || (value && typeof value !== 'object')
                         || (value?.length !== undefined && value.length !== 0)) {
                         acc[key] = this.filters[key];
                     }
@@ -464,16 +463,25 @@ export default {
                 location: '',
             };
         },
+        sortByForQuery(param) {
+            return {
+                'Price ↑': '-price',
+                'Price ↓': 'price',
+                'Year ↑': '-year',
+                'Year ↓': 'year',
+            }[param];
+        },
     },
     watch: {
         filters: {
             handler() {
+                const { ordering } = this.appliedFilters;
+                if (ordering && ordering[0]) {
+                    this.appliedFilters.ordering = [this.sortByForQuery(ordering[0])];
+                }
                 this.$emit('changeFilters', this.appliedFilters);
             },
             deep: true,
-        },
-        userCity(val) {
-            this.filters.location = val;
         },
     },
 };
@@ -688,13 +696,13 @@ export default {
     }
 
     &__label {
+        display: inline-block;
+        width: calc(280px / 3);
         padding: 10px 20px;
         font-size: 15px;
         border: 1px solid rgba(0, 0, 0, .12);
         background-color: $white;
         color: grey;
-        height: 36px;
-        line-height: 36px;
         text-align: center;
 
         &:hover {
@@ -706,11 +714,13 @@ export default {
         &:first-of-type {
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
+            border-right: none;
         }
 
         &:last-of-type {
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
+            border-left: none;
         }
     }
 }

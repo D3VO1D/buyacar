@@ -17,7 +17,7 @@
                 <div class="location__dropdown-input-container">
                     <input
                         class="location__dropdown-input"
-                        placeholder="City or state"
+                        placeholder="City or ZIP code"
                         @input="loadOptions"
                         v-model="userLocationInput"
                     />
