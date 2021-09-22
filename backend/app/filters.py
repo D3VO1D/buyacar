@@ -34,8 +34,8 @@ class CarAdFilter(filters.FilterSet):
     price_to = filters.NumberFilter(field_name="price", lookup_expr='lte')
     year_from = filters.NumberFilter(field_name="year", lookup_expr='gte')
     year_to = filters.NumberFilter(field_name="year", lookup_expr='lte')
-    mileage_from = filters.NumberFilter(field_name="year", lookup_expr='gte')
-    mileage_to = filters.NumberFilter(field_name="year", lookup_expr='lte')
+    mileage_from = filters.NumberFilter(field_name="mileage", lookup_expr='gte')
+    mileage_to = filters.NumberFilter(field_name="mileage", lookup_expr='lte')
     drive = filters.MultipleChoiceFilter(choices=DRIVE_CHOICES)
     transmission = filters.ChoiceFilter(choices=TRANSMISSION_CHOICES)
     body = filters.MultipleChoiceFilter(choices=BODY_CHOICES)
@@ -47,7 +47,6 @@ class CarAdFilter(filters.FilterSet):
     def __init__(self, data=None, *args, **kwargs):
         if data is not None:
             data = data.copy()
-            data.setdefault("is_broken", False)
         super(CarAdFilter, self).__init__(data, *args, **kwargs)
 
     class Meta:
