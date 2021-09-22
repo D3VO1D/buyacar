@@ -1,11 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import CarAdvertisement
-from .serializers import CarAdSerializer
+from .serializers import CarAdSerializer, MakesSerializer
 from .filters import CarAdFilter, DistanceOrderingFilter
 from .services import get_models_and_count, get_min_year, get_client_city_region_as_json, get_makes_and_count
 
@@ -52,7 +52,10 @@ class UserCityView(APIView):
         return Response(result)
 
 
-class CarMakesView(APIView):
-    def get(self, request, format=None):
-        result = get_makes_and_count(request)
-        return Response(result)
+class CarMakesView(generics.ListCreateAPIView):
+    serializer_class = MakesSerializer
+
+    def list(self, request, format=None):
+        self.queryset = get_makes_and_count(request)
+        serializer = MakesSerializer(self.queryset, many=True)
+        return Response(serializer.data)

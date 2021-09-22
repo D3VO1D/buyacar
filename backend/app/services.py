@@ -55,8 +55,19 @@ def get_models_and_count(queryset, request):
 
 
 def get_makes_and_count(request):
-    return CarAdvertisement.objects.values('make').annotate(count=Count('make')).order_by('-count')
-
+    query = """
+        SELECT 1 as id, make 
+        FROM ( 
+            SELECT make, count(*) counter 
+            FROM ads
+            WHERE make <> '' 
+            GROUP BY make 
+            ORDER BY counter 
+            desc LIMIT 50 
+            ) m 
+        ORDER BY make asc
+    """
+    return CarAdvertisement.objects.raw(query)
 
 def get_min_year():
     return int(CarAdvertisement.objects.exclude(year=0.0).order_by('year')[0].year)
