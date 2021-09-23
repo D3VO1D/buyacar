@@ -58,10 +58,9 @@
                         class="filters__item_large"
                         placeholder="Make"
                         :options="availableMakes"
-                        :selectedOptions="filters.make"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.make = []"
-                        selectionMode="single"
+                        :selectedOption="filters.make"
+                        @selectOption="(option) => filters.make = option"
+                        @resetSelectedOptions="filters.make = ''"
                         with-input
                     />
                 </div>
@@ -71,10 +70,9 @@
                         class="filters__item_large"
                         placeholder="Model"
                         :options="modelsList"
-                        :selectedOptions="filters.model"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.model = []"
-                        selectionMode="single"
+                        :selectedOption="filters.model"
+                        @selectOption="(option) => filters.model = option"
+                        @resetSelectedOptions="filters.model = ''"
                         :disabled="!modelsList.length"
                         with-input
                     />
@@ -86,18 +84,18 @@
                         class="filters__item_small"
                         placeholder="Body"
                         :options="bodyOptions"
-                        :selectedOptions="filters.body"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.body = []"
+                        :selectedOption="filters.body"
+                        @selectOption="(option) => filters.body = option"
+                        @resetSelectedOptions="filters.body = ''"
                     />
 
                     <BaseSelect
                         class="filters__item_small"
                         placeholder="Transmission"
                         :options="transmissionOptions"
-                        :selectedOptions="filters.transmission"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.transmission = []"
+                        :selectedOption="filters.transmission"
+                        @selectOption="(option) => filters.transmission = option"
+                        @resetSelectedOptions="filters.transmission = ''"
                     />
                 </div>
 
@@ -106,9 +104,9 @@
                         class="filters__item_small"
                         placeholder="Drive"
                         :options="driveOptions"
-                        :selectedOptions="filters.drive"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.drive = []"
+                        :selectedOption="filters.drive"
+                        @selectOption="(option) => filters.drive = option"
+                        @resetSelectedOptions="filters.drive = ''"
                     />
 
                     <BaseCheckbox
@@ -125,10 +123,9 @@
                         class="filters__item_grouped"
                         placeholder="Year from"
                         :options="yearOptions"
-                        :selectedOptions="filters.year_from"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.year_from = []"
-                        selectionMode="single"
+                        :selectedOption="filters.year_from"
+                        @selectOption="(option) => filters.year_from = option"
+                        @resetSelectedOptions="filters.year_from = ''"
                         resetText="Reset"
                         bordersType="left"
                     />
@@ -137,10 +134,9 @@
                         class="filters__item_grouped"
                         placeholder="to"
                         :options="yearOptions"
-                        :selectedOptions="filters.year_to"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.year_to = []"
-                        selectionMode="single"
+                        :selectedOption="filters.year_to"
+                        @selectOption="(option) => filters.year_to = option"
+                        @resetSelectedOptions="filters.year_to = ''"
                         resetText="Reset"
                         bordersType="right"
                     />
@@ -199,14 +195,14 @@
             </div>
         </div>
 
-        <div class="filters__available-models" v-if="modelsList.length && !filters.model.length">
+        <div class="filters__available-models" v-if="modelsList.length && filters.make && !filters.model">
             <div class="filters__models-items">
                 <div
                     class="filters__models-item"
                     v-for="model in availableModels"
                     :key="model.model"
                 >
-                    <div class="filters__models-item-name" @click="filters.model = [model.model]">
+                    <div class="filters__models-item-name" @click="filters.model = model.model">
                         {{ model.model }}
                     </div>
                     <div class="filters__models-item-count">
@@ -221,22 +217,20 @@
                 class="filters__item_small"
                 placeholder="50 per page"
                 :options="itemsPerPageOptions"
-                :selectedOptions="filters.items_per_page"
+                :selectedOption="filters.items_per_page"
                 resetText="50 per page"
-                @selectOption="selectOption"
-                @resetSelectedOptions="filters.items_per_page = []"
-                selectionMode="single"
+                @selectOption="(option) => filters.items_per_page = option"
+                @resetSelectedOptions="filters.items_per_page = ''"
             />
 
             <BaseSelect
                 class="filters__item_small"
                 placeholder="Sort by"
                 :options="sortByOptions"
-                :selectedOptions="filters.ordering"
+                :selectedOption="filters.ordering"
                 resetText="Distance"
-                @selectOption="selectOption"
-                @resetSelectedOptions="filters.ordering = []"
-                selectionMode="single"
+                @selectOption="(option) => filters.ordering = option"
+                @resetSelectedOptions="filters.ordering = ''"
             />
         </div>
 
@@ -294,22 +288,22 @@ export default {
             filters: {
                 is_new: null,
                 is_broken: false,
-                make: [],
-                model: [],
-                drive: [],
-                transmission: [],
-                body: [],
+                make: '',
+                model: '',
+                drive: '',
+                transmission: '',
+                body: '',
                 only_with_photo: true,
-                year_from: [],
-                year_to: [],
+                year_from: '',
+                year_to: '',
                 mileage_from: '',
                 mileage_to: '',
                 price_from: '',
                 price_to: '',
                 longitude: 0,
                 latitude: 0,
-                ordering: [],
-                items_per_page: [],
+                ordering: '',
+                items_per_page: '',
                 location: '',
             },
             driveOptions: [
@@ -360,10 +354,9 @@ export default {
             return Object.keys(this.filters)
                 .reduce((acc, key) => {
                     const value = this.filters[key];
-                    // either a boolean, a 'truthy' primitive or a non-empty object
-                    if (typeof value === 'boolean' || (value && typeof value !== 'object')
-                        || (value?.length !== undefined && value.length !== 0)) {
-                        acc[key] = this.filters[key];
+                    // either a boolean or a 'truthy' value
+                    if (typeof value === 'boolean' || value) {
+                        acc[key] = value;
                     }
                     return acc;
                 }, {});
@@ -404,19 +397,6 @@ export default {
         window.removeEventListener('scroll', this.onScroll);
     },
     methods: {
-        selectOption(list, newOption, mode = 'multiple') {
-            if (mode === 'single') {
-                list.splice(0);
-                list.push(newOption);
-                return;
-            }
-            const index = list.indexOf(newOption);
-            if (index === -1) {
-                list.push(newOption);
-                return;
-            }
-            list.splice(index, 1);
-        },
         scrollToTop() {
             window.scrollTo({
                 top: 0,
@@ -444,22 +424,24 @@ export default {
         },
         resetFilters() {
             this.filters = {
-                make: [],
-                model: [],
-                drive: [],
-                transmission: [],
-                body: [],
+                is_new: null,
+                is_broken: false,
+                make: '',
+                model: '',
+                drive: '',
+                transmission: '',
+                body: '',
                 only_with_photo: true,
-                year_from: [],
-                year_to: [],
+                year_from: '',
+                year_to: '',
                 mileage_from: '',
                 mileage_to: '',
                 price_from: '',
                 price_to: '',
                 longitude: 0,
                 latitude: 0,
-                ordering: [],
-                items_per_page: [],
+                ordering: '',
+                items_per_page: '',
                 location: '',
             };
         },
@@ -476,8 +458,8 @@ export default {
         filters: {
             handler() {
                 const { ordering } = this.appliedFilters;
-                if (ordering && ordering[0]) {
-                    this.appliedFilters.ordering = [this.sortByForQuery(ordering[0])];
+                if (ordering) {
+                    this.appliedFilters.ordering = this.sortByForQuery(ordering);
                 }
                 this.$emit('changeFilters', this.appliedFilters);
             },

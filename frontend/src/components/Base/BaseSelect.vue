@@ -2,7 +2,7 @@
     <div class="select-container" v-click-outside="clickOutside">
         <div
             class="select-container__select"
-            :class="[{'select-container__has-chosen-value': !!selectedOptions.length},
+            :class="[{'select-container__has-chosen-value': !!selectedOption},
                     {'select-container_disabled': disabled},
                     `select-container__select_borders-${bordersType}`]"
             @click="showOptions = (disabled) ? false : !showOptions"
@@ -32,10 +32,7 @@
             </template>
             <template v-else>
                 <span class="select-container__value">
-                    {{ selectedOptions.length ? selectedOptions.join(', ') : placeholder }}
-                </span>
-                <span class="select-container__value-counter" v-if="selectedOptions.length > 1">
-                    ({{ selectedOptions.length }})
+                    {{ selectedOption || placeholder }}
                 </span>
 
                 <span class="select-container__arrow rotate">
@@ -64,7 +61,7 @@
                     <font-awesome-icon
                         class="select-container__icon"
                         :icon="['fas', 'check']"
-                        v-visible="selectedOptions.indexOf(filteredOptions[index]) !== -1"
+                        v-visible="selectedOption === filteredOptions[index]"
                     />
 
                     <label class="select-container__label">
@@ -85,9 +82,9 @@ export default {
             type: Array,
             required: true,
         },
-        selectedOptions: {
-            type: Array,
-            default: () => [],
+        selectedOption: {
+            type: String,
+            default: '',
         },
         placeholder: {
             type: String,
@@ -100,11 +97,6 @@ export default {
         disabled: {
             type: Boolean,
             default: false,
-        },
-        selectionMode: {
-            type: String,
-            default: 'multiple',
-            validator: (value) => value === 'single' || value === 'multiple',
         },
         resetText: {
             type: String,
@@ -143,16 +135,14 @@ export default {
         selectOption(option) {
             this.userChoseOption = true;
             this.showOptions = false;
-            if (!this.withInput) {
-                this.$emit('selectOption', this.selectedOptions, option, this.selectionMode);
-                return;
+            this.$emit('selectOption', option);
+            if (this.withInput) {
+                // if user typed sth and then selected item from dropdown, set his selected to that value
+                this.inputValue = option;
+                this.tempInputValue = option;
+                this.showChevron = true;
+                this.$refs.input.blur();
             }
-            // if user typed sth and then selected item from dropdown, set his selected to that value
-            this.inputValue = option;
-            this.tempInputValue = option;
-            this.showChevron = true;
-            this.$emit('selectOption', this.selectedOptions, option, this.selectionMode);
-            this.$refs.input.blur();
         },
         resetSelections() {
             this.userChoseOption = false;
@@ -174,12 +164,23 @@ export default {
 
             this.showChevron = true;
             if (this.userChoseOption) {
-                this.inputValue = this.tempInputValue;
-                this.tempInputValue = '';
+                setTimeout(() => {
+                    this.inputValue = this.tempInputValue;
+                    this.tempInputValue = '';
+                }, 200);
             }
         },
         clickOutside() {
             this.showOptions = false;
+        },
+    },
+    watch: {
+        selectedOption(val) {
+            if (!val) {
+                this.inputValue = '';
+                this.tempInputValue = '';
+                this.userChoseOption = false;
+            }
         },
     },
 };

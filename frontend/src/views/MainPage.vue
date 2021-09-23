@@ -9,10 +9,10 @@
         />
         <div v-if="isLoading || requestsPending > 0">
             <content-placeholders
+                class="loading-placeholder"
                 :rounded="true"
                 v-for="_ in 20"
                 :key="_"
-                class="loading-placeholder"
             >
                 <content-placeholders-img class="loading-placeholder__image" />
                 <div>
@@ -22,7 +22,10 @@
             </content-placeholders>
         </div>
         <div v-else-if="resultsCount !== 0">
-            <AppCarsList :cars="cars" />
+            <AppCarsList
+                class="cars-list"
+                :cars="cars"
+            />
             <div class="pagination-container">
                 <vue-paginate-al
                     :currentPage="page"
@@ -115,10 +118,13 @@ export default {
                 .catch((err) => console.log(err));
         },
         pageClicked(newPage) {
-            this.$router.push({
-                name: 'Main Page',
-                query: { page: newPage },
-            });
+            // redirect if we are not on that page already
+            if (parseInt(this.$route.query.page, 10) !== newPage) {
+                this.$router.push({
+                    name: 'Main Page',
+                    query: { page: newPage },
+                });
+            }
             this.getCars(newPage, this.filtersQueryString);
         },
         changeFilters(filters) {
@@ -152,8 +158,8 @@ main {
 
 .loading-placeholder {
     width: 800px;
-    padding-left: 16px;
-    margin: 16px 0 32px 0;
+    padding: 16px;
+    margin: 0 auto;
     display: flex;
 
     &__image {
@@ -166,5 +172,11 @@ main {
         width: 450px;
         margin-bottom: 40px;;
     }
+}
+
+.cars-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="cars-list">
+    <div>
         <AppCarCard
             v-for="car in cars"
             :key="car.id"
