@@ -59,9 +59,9 @@
                         placeholder="Make"
                         :options="availableMakes"
                         :selectedOption="filters.make"
-                        @selectOption="(option) => filters.make = option"
+                        @selectOption="(option) => {filters.model = ''; filters.make = option;}"
                         @resetSelectedOptions="filters.make = ''"
-                        with-input
+                        withInput
                     />
                 </div>
 
@@ -74,7 +74,7 @@
                         @selectOption="(option) => filters.model = option"
                         @resetSelectedOptions="filters.model = ''"
                         :disabled="!modelsList.length"
-                        with-input
+                        withInput
                     />
                 </div>
             </div>
@@ -122,23 +122,25 @@
                     <BaseSelect
                         class="filters__item_grouped"
                         placeholder="Year from"
-                        :options="yearOptions"
+                        :options="yearFromOptions"
                         :selectedOption="filters.year_from"
                         @selectOption="(option) => filters.year_from = option"
                         @resetSelectedOptions="filters.year_from = ''"
                         resetText="Reset"
                         bordersType="left"
+                        withInput
                     />
 
                     <BaseSelect
                         class="filters__item_grouped"
                         placeholder="to"
-                        :options="yearOptions"
+                        :options="yearToOptions"
                         :selectedOption="filters.year_to"
                         @selectOption="(option) => filters.year_to = option"
                         @resetSelectedOptions="filters.year_to = ''"
                         resetText="Reset"
                         bordersType="right"
+                        withInput
                     />
                 </div>
 
@@ -341,10 +343,22 @@ export default {
         };
     },
     computed: {
-        yearOptions() {
+        yearsRange() {
             // an array of [min_available_year; current_year]
             const yearsRange = new Date().getFullYear() - this.minAvailableYear + 1;
-            return Array.from(new Array(yearsRange), (x, i) => i + this.minAvailableYear).reverse();
+            return Array.from(new Array(yearsRange), (x, i) => (i + this.minAvailableYear).toString()).reverse();
+        },
+        yearFromOptions() {
+            if (!this.filters.year_to) {
+                return this.yearsRange;
+            }
+            return this.yearsRange.filter((year) => parseInt(year, 10) <= this.filters.year_to);
+        },
+        yearToOptions() {
+            if (!this.filters.year_from) {
+                return this.yearsRange;
+            }
+            return this.yearsRange.filter((year) => parseInt(year, 10) >= this.filters.year_from);
         },
         modelsList() {
             return this.availableModels.map((item) => item.model);

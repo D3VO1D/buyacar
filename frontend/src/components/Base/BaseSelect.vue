@@ -123,6 +123,9 @@ export default {
             if (!this.withInput) {
                 return this.options;
             }
+            if (this.userChoseOption && this.inputValue === this.selectedOption) {
+                return this.options;
+            }
             // if user entered sth, we should autocomplete and suggest filtered options
             return this.options.filter((option) => option.toLowerCase()
                 .indexOf(this.inputValue.toLowerCase()) !== -1);
@@ -176,11 +179,7 @@ export default {
     },
     watch: {
         selectedOption(val) {
-            if (!val) {
-                this.inputValue = '';
-                this.tempInputValue = '';
-                this.userChoseOption = false;
-            }
+            this.selectOption(val);
         },
     },
 };
