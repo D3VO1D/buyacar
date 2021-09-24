@@ -140,7 +140,7 @@ export default {
 @import '@/_vars';
 
 .card {
-    width: fit-content;
+    width: 100%;
     position: relative;
     padding: 16px;
     background-color: $white;

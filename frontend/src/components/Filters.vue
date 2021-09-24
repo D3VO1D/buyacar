@@ -487,7 +487,7 @@ export default {
 @import '@/_vars.scss';
 
 .filters {
-    margin: 0 0 24px 16px;
+    margin-bottom: 24px;
     padding: 20px;
     border-radius: 8px;
     background: $white;

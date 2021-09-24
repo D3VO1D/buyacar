@@ -138,8 +138,9 @@ export default {
 
 <style lang="scss" scoped>
 main {
-    width: fit-content;
-    padding: 40px 0 40px calc(10% - 16px);
+    width: 920px;
+    padding: 40px 0 40px 10%;
+    box-sizing: content-box;
 }
 
 .pagination-container {
@@ -157,7 +158,7 @@ main {
 }
 
 .loading-placeholder {
-    width: 800px;
+    width: 100%;
     padding: 16px;
     margin: 0 auto;
     display: flex;
@@ -178,5 +179,6 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 </style>
