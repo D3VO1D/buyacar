@@ -15,13 +15,9 @@ class Command(BaseCommand):
         parser.add_argument("--num_photos", type=int, help="Maximum number of photos for ad")
 
     def handle(self, *args, **kwargs):
-        try:
-            num_rows = kwargs['num_rows']
-            cars = pd.read_csv("ads.csv", nrows=num_rows, delimiter=";")
-        except:
-            cars = pd.read_csv("ads.csv", delimiter=";")
-
-        num_photos = kwargs['num_photos']
+        num_photos = kwargs.get('num_photos', 5)
+        num_rows = kwargs.get('num_rows', 10)
+        cars = pd.read_csv("ads.csv", nrows=num_rows, delimiter=";")
 
         for index, car in cars.iterrows():
             if car.make == "nan" and car.model == "nan":
@@ -34,7 +30,8 @@ class Command(BaseCommand):
                                                          location=car.location,
                                                          latitude=car.latitude,
                                                          longitude=car.longitude,
-                                                         photos=string_to_json_array(car.photos, num_photos),
+                                                         # photos=string_to_json_array(car.photos, num_photos),
+                                                         photos=car.photos,
                                                          title=car.title,
                                                          make=car.make,
                                                          model=car.model,
