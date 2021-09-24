@@ -8,18 +8,10 @@
             @changeFilters="changeFilters"
         />
         <div v-if="isLoading || requestsPending > 0">
-            <content-placeholders
-                class="loading-placeholder"
-                :rounded="true"
+            <ContentPlaceholderCard
                 v-for="_ in perPage"
                 :key="_"
-            >
-                <content-placeholders-img class="loading-placeholder__image" />
-                <div>
-                    <content-placeholders-text :lines="1" class="loading-placeholder__title" />
-                    <content-placeholders-text :lines="2" />
-                </div>
-            </content-placeholders>
+            />
         </div>
         <div v-else-if="resultsCount !== 0">
             <AppCarsList
@@ -45,6 +37,7 @@
 <script>
 import qs from 'qs';
 import AppCarsList from '@/components/AppCarsList';
+import ContentPlaceholderCard from '@/components/ContentPlaceholderCard';
 import { API } from '@/services/api';
 import Filters from '@/components/Filters';
 
@@ -53,6 +46,7 @@ export default {
     components: {
         Filters,
         AppCarsList,
+        ContentPlaceholderCard,
     },
     props: {
         page: {
@@ -122,27 +116,33 @@ export default {
                 .catch((err) => console.log(err));
         },
         pageClicked(newPage) {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth',
-            });
-
             // redirect if we are not on that page already
             if (parseInt(this.$route.query.page, 10) !== newPage) {
                 this.$router.push({
                     name: 'Main Page',
                     query: { page: newPage },
                 });
+                return;
             }
 
-            // Firefox bug: without setTimeout scrollTo doesn't happen
-            setTimeout(() => this.getCars(this.$route.query.page, this.filtersQueryString), 100);
+            this.getCars(newPage, this.filtersQueryString);
         },
         changeFilters(filters) {
             this.perPage = parseInt(filters.items_per_page, 10) || 50;
             this.filtersQueryString = qs.stringify(filters, { indices: false });
             console.log(this.filtersQueryString);
             this.pageClicked(1);
+        },
+    },
+    watch: {
+        '$route.query': function (val) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+
+            // Firefox bug: without setTimeout scrollTo doesn't happen
+            setTimeout(() => this.getCars(val.page, this.filtersQueryString), 100);
         },
     },
 };
@@ -167,24 +167,6 @@ main {
     max-width: 920px;
     margin: 32px auto;
     text-align: center;
-}
-
-.loading-placeholder {
-    width: 100%;
-    padding: 16px;
-    margin: 0 auto;
-    display: flex;
-
-    &__image {
-        width: 200px;
-        height: 150px;
-        margin-right: 24px;
-    }
-
-    &__title {
-        width: 450px;
-        margin-bottom: 40px;;
-    }
 }
 
 .cars-list {
