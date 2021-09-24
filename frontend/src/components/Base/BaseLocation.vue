@@ -17,9 +17,11 @@
                 <div class="location__dropdown-input-container">
                     <input
                         class="location__dropdown-input"
-                        placeholder="City or ZIP code"
-                        @input="loadOptions"
+                        :placeholder="tempLocationInput || 'City or ZIP code'"
                         v-model="userLocationInput"
+                        @input="loadOptions"
+                        @focus="focusInput"
+                        @blur="blurInput"
                     />
                 </div>
                 <div class="location__reset-location" v-if="location || userCity" @click="resetLocation">
@@ -70,6 +72,8 @@ export default {
             options: [],
             allOptions: [],
             userLocationInput: '',
+            tempLocationInput: '',
+            userChoseOption: false,
             startSearchingOffset: 3,
             isLoading: false,
         };
@@ -121,6 +125,7 @@ export default {
             }
             this.location = chosenLocation;
             this.userLocationInput = chosenLocation;
+            this.userChoseOption = true;
             this.showSearchBox = false;
             this.$emit('changeLocation', option);
         },
@@ -131,8 +136,21 @@ export default {
             this.location = '';
             this.userLocationInput = '';
             this.options = [];
+            this.userChoseOption = false;
             this.showSearchBox = false;
             this.$emit('resetLocation');
+        },
+        focusInput() {
+            if (this.userChoseOption) {
+                this.tempLocationInput = this.userLocationInput;
+                this.userLocationInput = '';
+            }
+        },
+        blurInput() {
+            if (this.userChoseOption) {
+                this.userLocationInput = this.tempLocationInput;
+                this.tempLocationInput = '';
+            }
         },
     },
 };

@@ -64,8 +64,9 @@ export default {
 
     &__cover-container {
         position: relative;
-        width: 100%;
         height: 150px;
+        overflow: hidden;
+        border-radius: 8px;
     }
 
     &__cover {
@@ -75,7 +76,6 @@ export default {
         width: 100%;
         max-height: 100%;
         object-fit: contain;
-        border-radius: 8px;
     }
 
     &__button-container {
