@@ -1,36 +1,44 @@
 <template>
     <main>
-        <Filters
-            :minAvailableYear="minYear"
-            :availableMakes="availableMakes"
-            :availableModels="availableModels"
-            :resultsCount="resultsCount"
-            @changeFilters="changeFilters"
-        />
-        <div v-if="isLoading || requestsPending > 0">
-            <ContentPlaceholderCard
-                v-for="_ in perPage"
-                :key="_"
+        <section>
+            <Filters
+                :minAvailableYear="minYear"
+                :availableMakes="availableMakes"
+                :availableModels="availableModels"
+                :resultsCount="resultsCount"
+                @changeFilters="changeFilters"
             />
-        </div>
-        <div v-else-if="resultsCount !== 0">
-            <AppCarsList
-                class="cars-list"
-                :cars="cars"
-            />
-            <div class="pagination-container">
-                <vue-paginate-al
-                    :currentPage="page"
-                    :totalPage="maxPage"
-                    customActiveBGColor="#DB3727"
-                    :withNextPrev="false"
-                    @btnClick="pageClicked"
+            <div v-if="isLoading || requestsPending > 0">
+                <ContentPlaceholderCard
+                    v-for="_ in perPage"
+                    :key="_"
                 />
             </div>
-        </div>
-        <p v-else class="no-results">
-            Unfortunately, we could not find any cars for you. Consider trying later or changing the filters.
-        </p>
+            <div v-else-if="resultsCount !== 0">
+                <AppCarsList
+                    class="cars-list"
+                    :cars="cars"
+                />
+                <div class="pagination-container">
+                    <vue-paginate-al
+                        :currentPage="page"
+                        :totalPage="maxPage"
+                        customActiveBGColor="#DB3727"
+                        :withNextPrev="false"
+                        @btnClick="pageClicked"
+                    />
+                </div>
+            </div>
+            <p v-else class="no-results">
+                Unfortunately, we could not find any cars for you. Consider trying later or changing the filters.
+            </p>
+        </section>
+
+        <aside>
+            <AdLargeSkyscraper />
+            <AdLargeSkyscraper />
+            <AdLargeSkyscraper />
+        </aside>
     </main>
 </template>
 
@@ -40,6 +48,7 @@ import AppCarsList from '@/components/AppCarsList';
 import ContentPlaceholderCard from '@/components/ContentPlaceholderCard';
 import { API } from '@/services/api';
 import Filters from '@/components/Filters';
+import AdLargeSkyscraper from '@/components/Ads/AdLargeSkyscraper';
 
 export default {
     name: 'MainPage',
@@ -47,6 +56,7 @@ export default {
         Filters,
         AppCarsList,
         ContentPlaceholderCard,
+        AdLargeSkyscraper,
     },
     props: {
         page: {
@@ -150,9 +160,22 @@ export default {
 
 <style lang="scss" scoped>
 main {
+    width: 100%;
+    display: flex;
+}
+
+section {
     width: 920px;
     padding: 40px 0 40px 10%;
     box-sizing: content-box;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 40px auto 0 auto;
+    padding-bottom: 40px;
 }
 
 .pagination-container {
