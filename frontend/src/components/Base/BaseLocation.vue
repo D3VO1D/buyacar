@@ -30,7 +30,19 @@
                     <font-awesome-icon class="location__reset-location-icon" :icon="['fas', 'times']"/>
                 </div>
             </div>
-            <ul class="location__options" v-if="options">
+
+            <div v-if="showRangeSlider" class="location__range-slider">
+                <span class="location__range-slider-hint">Range of search, mi</span>
+                <vue-slider
+                    v-model="locationOffset"
+                    :data="[0, 100, 200, 300, 400, 500]"
+                    :marks="true"
+                    :tooltipFormatter="(v) => `${v} mi`"
+                    :contained="true"
+                />
+            </div>
+
+            <ul class="location__options">
                 <li
                     class="location__option"
                     v-for="option in options"
@@ -64,12 +76,17 @@ export default {
             type: String,
             default: '',
         },
+        distance: {
+            type: [Number, String],
+            default: 200,
+        },
     },
     data() {
         return {
             location: '',
-            locationOffset: 0,
+            locationOffset: null,
             showSearchBox: false,
+            showRangeSlider: false,
             options: [],
             allOptions: [],
             userLocationInput: '',
@@ -84,11 +101,16 @@ export default {
     },
     computed: {
         text() {
-            return this.location || this.userCity || 'Choose location';
+            if (this.location || this.userCity) {
+                return (this.location || this.userCity) + ((this.locationOffset > 0)
+                    ? ` + ${this.locationOffset} mi` : '');
+            }
+            return 'Choose location';
         },
     },
     methods: {
         loadOptions() {
+            this.showRangeSlider = false;
             // user can write either a state or city name, or a valid zip code
             if (isValidUSZipCode(this.userLocationInput)) {
                 this.isLoading = true;
@@ -127,8 +149,11 @@ export default {
             this.location = chosenLocation;
             this.userLocationInput = chosenLocation;
             this.userChoseOption = true;
-            this.showSearchBox = false;
-            this.$emit('changeLocation', option);
+            this.showRangeSlider = true;
+            this.locationOffset = 200; // reset to default after each select
+            this.$emit('changeLocation', option, this.locationOffset);
+            // a little hack to ensure that this.options = [] happens after v-click-outside
+            setTimeout(() => { this.options = []; });
         },
         hideSearchBox() {
             this.showSearchBox = false;
@@ -139,16 +164,19 @@ export default {
         },
         resetLocationFields() {
             this.location = '';
+            this.locationOffset = null;
             this.userLocationInput = '';
             this.tempLocationInput = '';
             this.options = [];
             this.userChoseOption = false;
             this.showSearchBox = false;
+            this.showRangeSlider = false;
         },
         focusInput() {
             if (this.userChoseOption) {
                 this.tempLocationInput = this.userLocationInput;
                 this.userLocationInput = '';
+                this.showRangeSlider = true;
             }
         },
         blurInput() {
@@ -162,6 +190,16 @@ export default {
         userCity(val) {
             if (!val) {
                 this.resetLocationFields();
+            }
+        },
+        distance(val) {
+            if (!val) {
+                this.locationOffset = null;
+            }
+        },
+        locationOffset(val) {
+            if (val !== null) {
+                this.$emit('changeLocationOffset', val);
             }
         },
     },
@@ -276,6 +314,14 @@ export default {
         margin-right: 8px;
         color: rgba(0, 0, 0, .54);
         opacity: 0.7;
+    }
+
+    &__range-slider {
+        padding: 16px 24px;
+    }
+
+    &__range-slider-hint {
+        font-size: 15px;
     }
 
     &__options {

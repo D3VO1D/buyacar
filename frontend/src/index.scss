@@ -1,5 +1,15 @@
 @import 'vars';
 
+/* Set the theme color of the component */
+$themeColor: #157ee1;
+
+.vue-slider {
+  margin: 12px 0;
+}
+
+/* import theme style */
+@import '~vue-slider-component/lib/theme/antd.scss';
+
 * {
   margin: 0;
   padding: 0;

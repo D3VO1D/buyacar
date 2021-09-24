@@ -47,7 +47,9 @@
                 <div class="filters__column filters__column_align-right">
                     <BaseLocation
                         :userCity="filters.location"
+                        :distance="filters.distance"
                         @changeLocation="changeUserLocation"
+                        @changeLocationOffset="changeDistance"
                         @resetLocation="resetLocation"
                     />
                 </div>
@@ -307,6 +309,7 @@ export default {
                 ordering: '',
                 items_per_page: '',
                 location: '',
+                distance: '',
             },
             driveOptions: [
                 'AWD',
@@ -368,8 +371,9 @@ export default {
             return Object.keys(this.filters)
                 .reduce((acc, key) => {
                     const value = this.filters[key];
-                    // either a boolean or a 'truthy' value
-                    if (typeof value === 'boolean' || value) {
+                    // Either a boolean or a 'truthy' value
+                    // Also we make an exception for distance because we do want to pass '&distance=0'
+                    if (typeof value === 'boolean' || value || (key === 'distance' && value !== '')) {
                         acc[key] = value;
                     }
                     return acc;
@@ -423,16 +427,21 @@ export default {
             const isVisible = rect.bottom > 0;
             this.showHintTop = !isVisible;
         },
-        changeUserLocation(location) {
+        changeUserLocation(location, distance) {
             this.filters.location = location.name;
             if (location.stateCode) {
                 this.filters.location += `, ${location.stateCode}`;
             }
+            this.filters.distance = distance;
             this.filters.longitude = location.longitude;
             this.filters.latitude = location.latitude;
         },
+        changeDistance(distance) {
+            this.filters.distance = distance;
+        },
         resetLocation() {
             this.filters.location = '';
+            this.filters.distance = '';
             this.filters.longitude = 0;
             this.filters.latitude = 0;
         },
@@ -457,6 +466,7 @@ export default {
                 ordering: '',
                 items_per_page: '',
                 location: '',
+                distance: '',
             };
         },
         sortByForQuery(param) {

@@ -12,6 +12,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VuePaginateAl from 'vue-paginate-al';
 import VueContentPlaceholders from 'vue-content-placeholders';
+import VueSlider from 'vue-slider-component';
 
 import App from './App';
 import router from './router';
@@ -22,6 +23,7 @@ library.add(faPhoneAlt, faChevronUp, faChevronDown, faTimes, faCheck, faSearch);
 Vue.use(VueContentPlaceholders);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('vue-paginate-al', VuePaginateAl);
+Vue.component('vue-slider', VueSlider);
 
 Vue.config.productionTip = false;
 
