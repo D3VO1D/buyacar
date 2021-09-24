@@ -201,7 +201,7 @@
             <div class="filters__models-items">
                 <div
                     class="filters__models-item"
-                    v-for="model in availableModels"
+                    v-for="model in availableModels.slice(0, 12)"
                     :key="model.model"
                 >
                     <div class="filters__models-item-name" @click="filters.model = model.model">

@@ -25,13 +25,14 @@ export default {
     background-color: $accent-color;
     color: $white;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 24px 10%;
     font-family: $logo-font;
 
     &__logo {
         font-size: 32px;
+        width: 920px;
+        margin-right: 12px;
     }
 
     &__logo-img {

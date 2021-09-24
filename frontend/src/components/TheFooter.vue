@@ -1,23 +1,25 @@
 <template>
     <footer class="footer">
-        <ul class="footer__section">
-            <li>
-                We gathered all cars for sale in the US market to allow you easily find the best car to buy.
-            </li>
-        </ul>
-        <hr class="footer__section-divider"/>
-        <ul class="footer__section">
-            <li>
-                @ 2021 buyacar.com
-            </li>
-            <li>
-                info@name.com
-            </li>
-            <li>
-                <font-awesome-icon class="footer__icon" :icon="['fas', 'phone-alt']" />
-                <span>+7 495 755-55-77</span>
-            </li>
-        </ul>
+        <div class="footer__content">
+            <ul class="footer__section">
+                <li>
+                    We gathered all cars for sale in the US market to allow you easily find the best car to buy.
+                </li>
+            </ul>
+            <hr class="footer__section-divider"/>
+            <ul class="footer__section">
+                <li>
+                    @ 2021 wholecars.com
+                </li>
+                <li>
+                    info@name.com
+                </li>
+                <li>
+                    <font-awesome-icon class="footer__icon" :icon="['fas', 'phone-alt']" />
+                    <span>+7 495 755-55-77</span>
+                </li>
+            </ul>
+        </div>
     </footer>
 </template>
 
@@ -39,7 +41,9 @@ export default {
     padding: 24px 10%;
     font-family: $logo-font;
 
-    flex-shrink: 0;
+    &__content {
+        width: 920px;
+    }
 
     &__section {
         list-style-type: none;

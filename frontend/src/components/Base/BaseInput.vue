@@ -66,6 +66,7 @@ export default {
         display: block;
         width: 100%;
         height: 100%;
+        font-family: inherit;
         font-size: 15px;
         border: transparent;
         background-color: inherit;

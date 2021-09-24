@@ -11,7 +11,7 @@
             <content-placeholders
                 class="loading-placeholder"
                 :rounded="true"
-                v-for="_ in 20"
+                v-for="_ in perPage"
                 :key="_"
             >
                 <content-placeholders-img class="loading-placeholder__image" />
@@ -70,7 +70,8 @@ export default {
             minYear: 2000,
             availableMakes: [],
             availableModels: [],
-            filtersQueryString: '',
+            filtersQueryString: 'only_with_photo=true&is_broken=false',
+            perPage: 50,
         };
     },
     created() {
@@ -78,12 +79,15 @@ export default {
         this.getMinYear();
         this.getAvailableMakes();
 
-        this.getCars(this.page);
+        this.getCars(this.page, this.filtersQueryString);
     },
     methods: {
         getCars(page = 1, filters = '') {
             this.isLoading = true;
             ++this.requestsPending;
+            const oldModels = this.availableModels;
+            const shouldUpdateModelsList = !this.filtersQueryString.includes('model');
+            this.availableModels = [];
             API.getCars(page, filters)
                 .then((res) => {
                     const {
@@ -95,7 +99,7 @@ export default {
                     this.resultsCount = count;
                     this.cars = results;
                     this.maxPage = totalPages;
-                    this.availableModels = models.slice(0, 12);
+                    this.availableModels = (shouldUpdateModelsList) ? models : oldModels;
                 })
                 .catch((err) => console.log(err))
                 .finally(() => {
@@ -118,6 +122,11 @@ export default {
                 .catch((err) => console.log(err));
         },
         pageClicked(newPage) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+
             // redirect if we are not on that page already
             if (parseInt(this.$route.query.page, 10) !== newPage) {
                 this.$router.push({
@@ -125,9 +134,12 @@ export default {
                     query: { page: newPage },
                 });
             }
-            this.getCars(newPage, this.filtersQueryString);
+
+            // Firefox bug: without setTimeout scrollTo doesn't happen
+            setTimeout(() => this.getCars(this.$route.query.page, this.filtersQueryString), 100);
         },
         changeFilters(filters) {
+            this.perPage = parseInt(filters.items_per_page, 10) || 50;
             this.filtersQueryString = qs.stringify(filters, { indices: false });
             console.log(this.filtersQueryString);
             this.pageClicked(1);
