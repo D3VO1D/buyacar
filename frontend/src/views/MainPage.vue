@@ -20,12 +20,22 @@
                     :cars="cars"
                 />
                 <div class="pagination-container">
-                    <vue-paginate-al
-                        :currentPage="page"
-                        :totalPage="maxPage"
-                        customActiveBGColor="#DB3727"
-                        :withNextPrev="false"
-                        @btnClick="pageClicked"
+                    <paginate
+                        :value="page"
+                        :pageCount="maxPage"
+                        :clickHandler="pageClicked"
+                        :pageRange="7"
+                        :prevText="'←'"
+                        :nextText="'→'"
+                        :containerClass="'pagination'"
+                        :pageClass="'page-item'"
+                        :pageLinkClass="'page-item-link'"
+                        :activeClass="'page-item-active'"
+                        :disabledClass="'page-item-disabled'"
+                        :prevClass="'page-item-prev'"
+                        :nextClass="'page-item-next'"
+                        :prevLinkClass="'page-item-link'"
+                        :nextLinkClass="'page-item-link'"
                     />
                 </div>
             </div>
