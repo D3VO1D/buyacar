@@ -112,7 +112,7 @@
                     />
 
                     <BaseCheckbox
-                        class="filters__item_small filters__item_align-right"
+                        class="filters__item_small filters__item_align-right filters__checkbox"
                         label="With photos"
                         v-model="filters.only_with_photo"
                     />
@@ -561,6 +561,7 @@ export default {
         justify-content: center;
         align-items: center;
         transition: color .3s ease;
+        flex-shrink: 0;
 
         &:hover {
             color: $accent-color;
@@ -727,6 +728,56 @@ export default {
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
             border-left: none;
+        }
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .filters {
+        width: auto;
+        margin-right: 5%;
+
+        &__row {
+            width: 100%;
+            gap: 10px;
+
+            &_header {
+                flex-direction: column;
+                gap: 16px;
+                flex-direction: column-reverse;
+            }
+
+            &:nth-of-type(3), &:nth-of-type(4) {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+
+        &__column {
+            width: 100%;
+            margin: 0;
+        }
+
+        &__checkbox {
+            justify-content: flex-start;
+        }
+
+        &__hint-top {
+            width: 100vh;
+        }
+
+        &__below-selects {
+            width: auto;
+            margin-bottom: 16px;
+            margin-right: 5%;
+        }
+    }
+
+    .radio-toolbar {
+        width: 100%;
+
+        &__label {
+            width: calc(100% / 3);
         }
     }
 }

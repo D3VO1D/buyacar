@@ -52,6 +52,7 @@ export default {
         justify-content: space-around;
         margin: 20px 0;
         font-size: 18px;
+        text-align: center;
     }
 
     &__section-divider {
@@ -74,6 +75,17 @@ export default {
         &__content {
             width: auto;
         }
+
+        &__section {
+            font-size: 16px;
+            flex-direction: column;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .footer__section {
+        font-size: 14px;
     }
 }
 </style>

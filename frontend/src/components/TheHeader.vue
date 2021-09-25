@@ -60,6 +60,35 @@ export default {
 
         &__logo {
             width: auto;
+            font-size: 28px;
+        }
+
+        &__logo-img {
+            width: 40px;
+            height: 40px;
+        }
+
+        &__motto {
+            font-size: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header {
+        align-items: baseline;
+
+        &__logo {
+            font-size: 22px;
+        }
+
+        &__logo-img {
+            width: 35px;
+            height: 35px;
+        }
+
+        &__motto {
+            font-size: 14px;
         }
     }
 }
