@@ -5,6 +5,10 @@ from django.db.models import FloatField, Value
 from .models import CarAdvertisement
 from .services import get_ip_details, get_client_ip, get_locations_nearby_coords
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 DRIVE_CHOICES = (
     ("AWD", "AWD"),
     ("RWD", "RWD"),
@@ -30,6 +34,9 @@ BODY_CHOICES = (
 
 
 class CarAdFilter(filters.FilterSet):
+    """
+    Filter not considering city and distance
+    """
     price_from = filters.NumberFilter(field_name="price", lookup_expr='gte')
     price_to = filters.NumberFilter(field_name="price", lookup_expr='lte')
     year_from = filters.NumberFilter(field_name="year", lookup_expr='gte')
@@ -42,12 +49,8 @@ class CarAdFilter(filters.FilterSet):
     only_with_photo = filters.BooleanFilter(field_name="photos", method="has_photos", label="Only with photo")
 
     def has_photos(self, queryset, name, value):
+        # Excludes objects without photos for only_with_photos field
         return queryset.exclude(photos__exact='[]') if value else queryset
-
-    def __init__(self, data=None, *args, **kwargs):
-        if data is not None:
-            data = data.copy()
-        super(CarAdFilter, self).__init__(data, *args, **kwargs)
 
     class Meta:
         model = CarAdvertisement
@@ -55,6 +58,10 @@ class CarAdFilter(filters.FilterSet):
 
 
 class DistanceOrderingFilter(OrderingFilter):
+    """
+    Order queryset by given params or by distance
+    and filter by city
+    """
 
     def filter_queryset(self, request, queryset, view):
         ordering = self.get_ordering(request, queryset, view)
@@ -70,10 +77,11 @@ class DistanceOrderingFilter(OrderingFilter):
             ip_data = get_ip_details(get_client_ip(request))
             latitude, longitude, city = ip_data.latitude, ip_data.longitude, ip_data.city
 
+        logger.info('{} {}'.format(city, request.META['QUERY_STRING']))
+        queryset = get_locations_nearby_coords(queryset, latitude, longitude, distance, city)
         if not ordering:
-            queryset = get_locations_nearby_coords(latitude, longitude, queryset, distance, city).order_by("distance")
-
+            queryset = queryset.order_by("distance")
         else:
-            queryset = get_locations_nearby_coords(latitude, longitude, queryset, distance, city)
             queryset = super(DistanceOrderingFilter, self).filter_queryset(request, queryset, view)
+
         return queryset
