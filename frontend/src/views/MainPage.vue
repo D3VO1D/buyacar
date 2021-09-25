@@ -176,7 +176,7 @@ main {
 
 section {
     width: 920px;
-    padding: 40px 0 40px 10%;
+    padding: 40px 0 40px 5%;
     box-sizing: content-box;
 }
 
@@ -207,5 +207,11 @@ aside {
     flex-direction: column;
     align-items: center;
     width: 100%;
+}
+
+@media screen and (max-width: 1300px) {
+    aside {
+        display: none;
+    }
 }
 </style>

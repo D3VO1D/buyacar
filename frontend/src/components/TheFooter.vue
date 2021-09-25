@@ -38,7 +38,7 @@ export default {
     gap: 12px;
     background-color: $footer-color;
     color: $footer-text-color;
-    padding: 24px 10%;
+    padding: 24px 5%;
     font-family: $logo-font;
 
     &__content {
@@ -67,4 +67,13 @@ export default {
     }
 }
 
+@media screen and (max-width: 1000px) {
+    .footer {
+        width: 100%;
+
+        &__content {
+            width: auto;
+        }
+    }
+}
 </style>

@@ -26,7 +26,7 @@ export default {
     color: $white;
     display: flex;
     align-items: center;
-    padding: 24px 10%;
+    padding: 24px 5%;
     font-family: $logo-font;
 
     &__logo {
@@ -49,6 +49,18 @@ export default {
 
     &__motto {
         font-size: 22px;
+        flex-shrink: 0;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .header {
+        width: 100%;
+        justify-content: space-between;
+
+        &__logo {
+            width: auto;
+        }
     }
 }
 </style>
