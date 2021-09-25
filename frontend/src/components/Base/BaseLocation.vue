@@ -15,11 +15,14 @@
         <div class="location__search" v-if="showSearchBox">
             <div class="location__search-box">
                 <div class="location__dropdown-input-container">
+                    <font-awesome-icon class="location__search-icon" :icon="['fas', 'search']"/>
                     <input
                         class="location__dropdown-input"
-                        placeholder="City or state"
-                        @input="loadOptions"
+                        :placeholder="tempLocationInput || 'City or ZIP code'"
                         v-model="userLocationInput"
+                        @input="loadOptions"
+                        @focus="focusInput"
+                        @blur="blurInput"
                     />
                 </div>
                 <div class="location__reset-location" v-if="location || userCity" @click="resetLocation">
@@ -27,7 +30,19 @@
                     <font-awesome-icon class="location__reset-location-icon" :icon="['fas', 'times']"/>
                 </div>
             </div>
-            <ul class="location__options" v-if="options">
+
+            <div v-if="showRangeSlider" class="location__range-slider">
+                <span class="location__range-slider-hint">Range of search, mi</span>
+                <vue-slider
+                    v-model="locationOffset"
+                    :data="[0, 100, 200, 300, 400, 500]"
+                    :marks="true"
+                    :tooltipFormatter="(v) => `${v} mi`"
+                    :contained="true"
+                />
+            </div>
+
+            <ul class="location__options">
                 <li
                     class="location__option"
                     v-for="option in options"
@@ -61,15 +76,22 @@ export default {
             type: String,
             default: '',
         },
+        distance: {
+            type: [Number, String],
+            default: 200,
+        },
     },
     data() {
         return {
             location: '',
-            locationOffset: 0,
+            locationOffset: null,
             showSearchBox: false,
+            showRangeSlider: false,
             options: [],
             allOptions: [],
             userLocationInput: '',
+            tempLocationInput: '',
+            userChoseOption: false,
             startSearchingOffset: 3,
             isLoading: false,
         };
@@ -79,11 +101,16 @@ export default {
     },
     computed: {
         text() {
-            return this.location || this.userCity || 'Choose location';
+            if (this.location || this.userCity) {
+                return (this.location || this.userCity) + ((this.locationOffset > 0)
+                    ? ` + ${this.locationOffset} mi` : '');
+            }
+            return 'Choose location';
         },
     },
     methods: {
         loadOptions() {
+            this.showRangeSlider = false;
             // user can write either a state or city name, or a valid zip code
             if (isValidUSZipCode(this.userLocationInput)) {
                 this.isLoading = true;
@@ -121,18 +148,59 @@ export default {
             }
             this.location = chosenLocation;
             this.userLocationInput = chosenLocation;
-            this.showSearchBox = false;
-            this.$emit('changeLocation', option);
+            this.userChoseOption = true;
+            this.showRangeSlider = true;
+            this.locationOffset = 200; // reset to default after each select
+            this.$emit('changeLocation', option, this.locationOffset);
+            // a little hack to ensure that this.options = [] happens after v-click-outside
+            setTimeout(() => { this.options = []; });
         },
         hideSearchBox() {
             this.showSearchBox = false;
         },
         resetLocation() {
-            this.location = '';
-            this.userLocationInput = '';
-            this.options = [];
-            this.showSearchBox = false;
+            this.resetLocationFields();
             this.$emit('resetLocation');
+        },
+        resetLocationFields() {
+            this.location = '';
+            this.locationOffset = null;
+            this.userLocationInput = '';
+            this.tempLocationInput = '';
+            this.options = [];
+            this.userChoseOption = false;
+            this.showSearchBox = false;
+            this.showRangeSlider = false;
+        },
+        focusInput() {
+            if (this.userChoseOption) {
+                this.tempLocationInput = this.userLocationInput;
+                this.userLocationInput = '';
+                this.showRangeSlider = true;
+            }
+        },
+        blurInput() {
+            if (this.userChoseOption) {
+                this.userLocationInput = this.tempLocationInput;
+                this.tempLocationInput = '';
+            }
+        },
+    },
+    watch: {
+        userCity(val) {
+            if (!val) {
+                this.resetLocationFields();
+            }
+        },
+        distance(val) {
+            if (!val) {
+                this.locationOffset = null;
+            }
+        },
+        locationOffset(val) {
+            if (val !== null) {
+                this.$emit('changeLocationOffset', val);
+            }
         },
     },
 };
@@ -210,17 +278,6 @@ export default {
         &:focus-within, &:hover {
             border-color: #157ee1;
         }
-
-        &::before {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
-            content: "";
-            opacity: .5;
-            color: #000;
-            background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M15.437 14.063h-.726l-.253-.25a5.918 5.918 0 001.435-3.867 5.946 5.946 0 10-5.947 5.947 5.919 5.919 0 003.865-1.433l.253.25v.725l4.572 4.566L20 18.637l-4.563-4.574zm-5.49 0a4.116 4.116 0 110-8.233 4.117 4.117 0 010 8.233z' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
     }
 
     &__dropdown-input {
@@ -248,6 +305,23 @@ export default {
             transition: font-size .05s ease-out 0s, margin-top .05s ease-out 0s, opacity .1s ease-out 0s;
             transform: translateY(-50%);
         }
+    }
+
+    &__search-icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        color: rgba(0, 0, 0, .54);
+        opacity: 0.7;
+    }
+
+    &__range-slider {
+        padding: 16px 24px;
+    }
+
+    &__range-slider-hint {
+        font-size: 15px;
     }
 
     &__options {

@@ -27,7 +27,7 @@
                     <div class="radio-toolbar">
                         <input class="radio-toolbar__radio" type="radio" id="select-all-2"
                                name="toolbar-2" value="all">
-                        <label class="radio-toolbar__label" for="select-all-2">
+                        <label class="radio-toolbar__label" for="select-all-2" @click="filters.is_broken = null">
                             All
                         </label>
 
@@ -47,7 +47,9 @@
                 <div class="filters__column filters__column_align-right">
                     <BaseLocation
                         :userCity="filters.location"
+                        :distance="filters.distance"
                         @changeLocation="changeUserLocation"
+                        @changeLocationOffset="changeDistance"
                         @resetLocation="resetLocation"
                     />
                 </div>
@@ -58,11 +60,10 @@
                         class="filters__item_large"
                         placeholder="Make"
                         :options="availableMakes"
-                        :selectedOptions="filters.make"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.make = []"
-                        selectionMode="single"
-                        with-input
+                        :selectedOption="filters.make"
+                        @selectOption="(option) => {filters.model = ''; filters.make = option;}"
+                        @resetSelectedOptions="filters.make = ''"
+                        withInput
                     />
                 </div>
 
@@ -71,12 +72,11 @@
                         class="filters__item_large"
                         placeholder="Model"
                         :options="modelsList"
-                        :selectedOptions="filters.model"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.model = []"
-                        selectionMode="single"
+                        :selectedOption="filters.model"
+                        @selectOption="(option) => filters.model = option"
+                        @resetSelectedOptions="filters.model = ''"
                         :disabled="!modelsList.length"
-                        with-input
+                        withInput
                     />
                 </div>
             </div>
@@ -86,18 +86,18 @@
                         class="filters__item_small"
                         placeholder="Body"
                         :options="bodyOptions"
-                        :selectedOptions="filters.body"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.body = []"
+                        :selectedOption="filters.body"
+                        @selectOption="(option) => filters.body = option"
+                        @resetSelectedOptions="filters.body = ''"
                     />
 
                     <BaseSelect
                         class="filters__item_small"
                         placeholder="Transmission"
                         :options="transmissionOptions"
-                        :selectedOptions="filters.transmission"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.transmission = []"
+                        :selectedOption="filters.transmission"
+                        @selectOption="(option) => filters.transmission = option"
+                        @resetSelectedOptions="filters.transmission = ''"
                     />
                 </div>
 
@@ -106,9 +106,9 @@
                         class="filters__item_small"
                         placeholder="Drive"
                         :options="driveOptions"
-                        :selectedOptions="filters.drive"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.drive = []"
+                        :selectedOption="filters.drive"
+                        @selectOption="(option) => filters.drive = option"
+                        @resetSelectedOptions="filters.drive = ''"
                     />
 
                     <BaseCheckbox
@@ -124,25 +124,25 @@
                     <BaseSelect
                         class="filters__item_grouped"
                         placeholder="Year from"
-                        :options="yearOptions"
-                        :selectedOptions="filters.year_from"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.year_from = []"
-                        selectionMode="single"
+                        :options="yearFromOptions"
+                        :selectedOption="filters.year_from"
+                        @selectOption="(option) => filters.year_from = option"
+                        @resetSelectedOptions="filters.year_from = ''"
                         resetText="Reset"
                         bordersType="left"
+                        withInput
                     />
 
                     <BaseSelect
                         class="filters__item_grouped"
                         placeholder="to"
-                        :options="yearOptions"
-                        :selectedOptions="filters.year_to"
-                        @selectOption="selectOption"
-                        @resetSelectedOptions="filters.year_to = []"
-                        selectionMode="single"
+                        :options="yearToOptions"
+                        :selectedOption="filters.year_to"
+                        @selectOption="(option) => filters.year_to = option"
+                        @resetSelectedOptions="filters.year_to = ''"
                         resetText="Reset"
                         bordersType="right"
+                        withInput
                     />
                 </div>
 
@@ -198,37 +198,15 @@
                 </div>
             </div>
         </div>
-        <div class="filters__below-selects">
-            <BaseSelect
-                class="filters__item_small"
-                placeholder="50 per page"
-                :options="itemsPerPageOptions"
-                :selectedOptions="filters.items_per_page"
-                resetText="50 per page"
-                @selectOption="selectOption"
-                @resetSelectedOptions="filters.items_per_page = []"
-                selectionMode="single"
-            />
 
-            <BaseSelect
-                class="filters__item_small"
-                placeholder="Sort by"
-                :options="sortByOptions"
-                :selectedOptions="filters.ordering"
-                resetText="Default"
-                @selectOption="selectOption"
-                @resetSelectedOptions="filters.ordering = []"
-                selectionMode="single"
-            />
-        </div>
-        <div class="filters__available-models" v-if="modelsList.length && !filters.model.length">
+        <div class="filters__available-models" v-if="modelsList.length && filters.make && !filters.model">
             <div class="filters__models-items">
                 <div
                     class="filters__models-item"
-                    v-for="model in availableModels"
+                    v-for="model in availableModels.slice(0, 12)"
                     :key="model.model"
                 >
-                    <div class="filters__models-item-name" @click="filters.model = [model.model]">
+                    <div class="filters__models-item-name" @click="filters.model = model.model">
                         {{ model.model }}
                     </div>
                     <div class="filters__models-item-count">
@@ -237,6 +215,29 @@
                 </div>
             </div>
         </div>
+
+        <div class="filters__below-selects">
+            <BaseSelect
+                class="filters__item_small"
+                placeholder="50 per page"
+                :options="itemsPerPageOptions"
+                :selectedOption="filters.items_per_page"
+                resetText="50 per page"
+                @selectOption="(option) => filters.items_per_page = option"
+                @resetSelectedOptions="filters.items_per_page = ''"
+            />
+
+            <BaseSelect
+                class="filters__item_small"
+                placeholder="Sort by"
+                :options="sortByOptions"
+                :selectedOption="filters.ordering"
+                resetText="Distance"
+                @selectOption="(option) => filters.ordering = option"
+                @resetSelectedOptions="filters.ordering = ''"
+            />
+        </div>
+
         <div class="filters__hint-top" v-if="showHintTop">
             <div class="filters__hint-title" @click="scrollToTop">
                 <svg class="filters__hint-arrow-icon" viewBox="0 0 24 24" id="arrow-rounded">
@@ -272,10 +273,6 @@ export default {
             type: Number,
             default: 2000,
         },
-        userCity: {
-            type: String,
-            default: '',
-        },
         availableMakes: {
             type: Array,
             default: () => [],
@@ -295,23 +292,24 @@ export default {
             filters: {
                 is_new: null,
                 is_broken: false,
-                make: [],
-                model: [],
-                drive: [],
-                transmission: [],
-                body: [],
+                make: '',
+                model: '',
+                drive: '',
+                transmission: '',
+                body: '',
                 only_with_photo: true,
-                year_from: [],
-                year_to: [],
+                year_from: '',
+                year_to: '',
                 mileage_from: '',
                 mileage_to: '',
                 price_from: '',
                 price_to: '',
                 longitude: 0,
                 latitude: 0,
-                ordering: [],
-                items_per_page: [],
-                location: this.userCity,
+                ordering: '',
+                items_per_page: '',
+                location: '',
+                distance: '',
             },
             driveOptions: [
                 'AWD',
@@ -334,24 +332,36 @@ export default {
                 'Wagon',
             ],
             sortByOptions: [
-                'price',
-                '-price',
-                'year',
-                '-year',
+                'Price ↑',
+                'Price ↓',
+                'Year ↑',
+                'Year ↓',
             ],
             itemsPerPageOptions: [
+                '25 per page',
+                '50 per page',
                 '100 per page',
-                '150 per page',
-                '200 per page',
             ],
             showHintTop: false,
         };
     },
     computed: {
-        yearOptions() {
+        yearsRange() {
             // an array of [min_available_year; current_year]
             const yearsRange = new Date().getFullYear() - this.minAvailableYear + 1;
-            return Array.from(new Array(yearsRange), (x, i) => i + this.minAvailableYear);
+            return Array.from(new Array(yearsRange), (x, i) => (i + this.minAvailableYear).toString()).reverse();
+        },
+        yearFromOptions() {
+            if (!this.filters.year_to) {
+                return this.yearsRange;
+            }
+            return this.yearsRange.filter((year) => parseInt(year, 10) <= this.filters.year_to);
+        },
+        yearToOptions() {
+            if (!this.filters.year_from) {
+                return this.yearsRange;
+            }
+            return this.yearsRange.filter((year) => parseInt(year, 10) >= this.filters.year_from);
         },
         modelsList() {
             return this.availableModels.map((item) => item.model);
@@ -361,10 +371,10 @@ export default {
             return Object.keys(this.filters)
                 .reduce((acc, key) => {
                     const value = this.filters[key];
-                    // either a 'truthy' primitive or a non-empty object
-                    if ((value && typeof value !== 'object')
-                        || (value?.length !== undefined && value.length !== 0)) {
-                        acc[key] = this.filters[key];
+                    // Either a boolean or a 'truthy' value
+                    // Also we make an exception for distance because we do want to pass '&distance=0'
+                    if (typeof value === 'boolean' || value || (key === 'distance' && value !== '')) {
+                        acc[key] = value;
                     }
                     return acc;
                 }, {});
@@ -405,19 +415,6 @@ export default {
         window.removeEventListener('scroll', this.onScroll);
     },
     methods: {
-        selectOption(list, newOption, mode = 'multiple') {
-            if (mode === 'single') {
-                list.splice(0);
-                list.push(newOption);
-                return;
-            }
-            const index = list.indexOf(newOption);
-            if (index === -1) {
-                list.push(newOption);
-                return;
-            }
-            list.splice(index, 1);
-        },
         scrollToTop() {
             window.scrollTo({
                 top: 0,
@@ -430,50 +427,67 @@ export default {
             const isVisible = rect.bottom > 0;
             this.showHintTop = !isVisible;
         },
-        changeUserLocation(location) {
+        changeUserLocation(location, distance) {
             this.filters.location = location.name;
             if (location.stateCode) {
                 this.filters.location += `, ${location.stateCode}`;
             }
+            this.filters.distance = distance;
             this.filters.longitude = location.longitude;
             this.filters.latitude = location.latitude;
         },
+        changeDistance(distance) {
+            this.filters.distance = distance;
+        },
         resetLocation() {
             this.filters.location = '';
+            this.filters.distance = '';
             this.filters.longitude = 0;
             this.filters.latitude = 0;
         },
         resetFilters() {
             this.filters = {
-                make: [],
-                model: [],
-                drive: [],
-                transmission: [],
-                body: [],
+                is_new: null,
+                is_broken: false,
+                make: '',
+                model: '',
+                drive: '',
+                transmission: '',
+                body: '',
                 only_with_photo: true,
-                year_from: [],
-                year_to: [],
+                year_from: '',
+                year_to: '',
                 mileage_from: '',
                 mileage_to: '',
                 price_from: '',
                 price_to: '',
                 longitude: 0,
                 latitude: 0,
-                ordering: [],
-                items_per_page: [],
+                ordering: '',
+                items_per_page: '',
                 location: '',
+                distance: '',
             };
+        },
+        sortByForQuery(param) {
+            return {
+                'Price ↑': '-price',
+                'Price ↓': 'price',
+                'Year ↑': '-year',
+                'Year ↓': 'year',
+            }[param];
         },
     },
     watch: {
         filters: {
             handler() {
+                const { ordering } = this.appliedFilters;
+                if (ordering) {
+                    this.appliedFilters.ordering = this.sortByForQuery(ordering);
+                }
                 this.$emit('changeFilters', this.appliedFilters);
             },
             deep: true,
-        },
-        userCity(val) {
-            this.filters.location = val;
         },
     },
 };
@@ -483,7 +497,7 @@ export default {
 @import '@/_vars.scss';
 
 .filters {
-    margin: 0 0 24px 16px;
+    margin-bottom: 24px;
     padding: 20px;
     border-radius: 8px;
     background: $white;
@@ -688,13 +702,13 @@ export default {
     }
 
     &__label {
+        display: inline-block;
+        width: calc(280px / 3);
         padding: 10px 20px;
         font-size: 15px;
         border: 1px solid rgba(0, 0, 0, .12);
         background-color: $white;
         color: grey;
-        height: 36px;
-        line-height: 36px;
         text-align: center;
 
         &:hover {
@@ -706,11 +720,13 @@ export default {
         &:first-of-type {
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
+            border-right: none;
         }
 
         &:last-of-type {
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
+            border-left: none;
         }
     }
 }

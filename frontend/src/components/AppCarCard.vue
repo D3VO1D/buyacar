@@ -5,6 +5,7 @@
                 <div class="card__thumb">
                     <GalleryOnHover
                         :photos="previewPhotos"
+                        :totalPhotos="totalPhotos"
                         :placeholder-url="placeholderPhotoUrl"
                     />
                 </div>
@@ -117,6 +118,9 @@ export default {
         previewPhotos() {
             return this.car.photos.slice(0, 5);
         },
+        totalPhotos() {
+            return this.car.photos.length;
+        },
         placeholderPhotoUrl() {
             return `https://via.placeholder.com/200x150?text=${this.title}`;
         },
@@ -140,7 +144,7 @@ export default {
 @import '@/_vars';
 
 .card {
-    width: fit-content;
+    width: 100%;
     position: relative;
     padding: 16px;
     background-color: $white;

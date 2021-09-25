@@ -26,4 +26,4 @@ class CarAdvertisement(models.Model):
         return '{} {} {}'.format(self.id, self.make, self.model)
 
     class Meta:
-        db_table = 'ads'
+        db_table = 'ads'  # table name in remote db
