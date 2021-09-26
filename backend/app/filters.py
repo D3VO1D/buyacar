@@ -82,6 +82,8 @@ class DistanceOrderingFilter(OrderingFilter):
         if not ordering:
             queryset = queryset.order_by("distance")
         else:
+            if "price" in ordering[0]:  # ordering is a list
+                queryset = queryset.exclude(price=0)
             queryset = super(DistanceOrderingFilter, self).filter_queryset(request, queryset, view)
 
         return queryset
