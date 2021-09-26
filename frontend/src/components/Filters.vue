@@ -220,7 +220,7 @@
             <BaseSelect
                 v-visible="!$store.getters.showMobile"
                 class="filters__item_small"
-                placeholder="50 per page"
+                placeholder="25 per page"
                 :options="itemsPerPageOptions"
                 :selectedOption="filters.items_per_page"
                 @selectOption="(option) => filters.items_per_page = option"

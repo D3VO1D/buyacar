@@ -114,7 +114,7 @@ export default {
             // user can write either a state or city name, or a valid zip code
             if (isValidUSZipCode(this.userLocationInput)) {
                 this.isLoading = true;
-                getPlacesForZIP(this.userLocationInput)
+                getPlacesForZIP(this.userLocationInput.split('-')[0])
                     .then((res) => {
                         const { places } = res.data;
                         this.options = places.map((place) => (

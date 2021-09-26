@@ -5,14 +5,13 @@
         >
             <component
                 v-if="index > 0 && index % 10 === 0"
-                :key="car.id"
+                :key="`ad-${car.id}`"
                 :is="($store.getters.showMobile) ? 'AdMobileLeaderboard' : 'AdLeaderboard'"
             />
 
             <AppCarCard
-                v-else
                 :car="car"
-                :key="car.id"
+                :key="`car-${car.id}`"
             />
         </template>
     </div>
