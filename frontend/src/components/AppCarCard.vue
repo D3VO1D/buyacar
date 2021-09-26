@@ -1,6 +1,6 @@
 <template>
     <div class="root">
-    <template v-if="showMobile">
+    <template v-if="$store.getters.showMobile">
         <div class="card-m">
             <div class="card-m__header">
                 <p class="card-m__title">
@@ -147,10 +147,6 @@ export default {
         car: {
             required: true,
             type: Object,
-        },
-        showMobile: {
-            type: Boolean,
-            default: false,
         },
     },
     created() {
