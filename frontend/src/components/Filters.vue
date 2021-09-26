@@ -390,6 +390,10 @@ export default {
                         appliedFiltersInfo.push(value);
                         break;
                     case 'withPhotos':
+                    case 'location':
+                    case 'distance':
+                    case 'longitude':
+                    case 'latitude':
                         break;
                     default:
                         appliedFiltersCount += 1;
@@ -763,7 +767,7 @@ export default {
         }
 
         &__hint-top {
-            width: 100vh;
+            width: calc(100% - 10%);
         }
 
         &__below-selects {
@@ -778,6 +782,29 @@ export default {
 
         &__label {
             width: calc(100% / 3);
+        }
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .filters {
+        &__hint-top {
+            flex-direction: column;
+            align-items: flex-start;
+            height: auto;
+        }
+
+        &__hint-results-count {
+            margin: 0;
+            margin-left: 20px;
+        }
+    }
+
+    .radio-toolbar {
+        text-align: center;
+
+        &__label {
+            width: auto;
         }
     }
 }

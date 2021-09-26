@@ -193,7 +193,7 @@ export default {
             }
         },
         distance(val) {
-            if (!val) {
+            if (val === null) {
                 this.locationOffset = null;
             }
         },
@@ -356,6 +356,14 @@ export default {
         overflow-x: hidden;
         text-overflow: ellipsis;
         color: rgba(0, 0, 0, .6);
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .location {
+        &__search {
+            width: 250px;
+        }
     }
 }
 </style>

@@ -301,6 +301,10 @@ export default {
     }
 
     &__label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
         &:hover {
             cursor: pointer;
         }

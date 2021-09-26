@@ -92,4 +92,10 @@ export default {
         }
     }
 }
+
+@media screen and (max-width: 350px) {
+    .header {
+        flex-direction: column;
+    }
+}
 </style>
