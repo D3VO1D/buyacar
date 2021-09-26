@@ -20,12 +20,19 @@
                     class="cars-list"
                     :cars="cars"
                 />
-                <div class="pagination-container">
+                <infinite-loading
+                    v-if="$store.getters.showMobile && cars.length"
+                    @infinite="infiniteHandler"
+                >
+                    <div slot="no-results" class="no-more-records">No more records</div>
+                </infinite-loading>
+
+                <div class="pagination-container" v-else>
                     <paginate
                         :value="page"
                         :pageCount="maxPage"
                         :clickHandler="pageClicked"
-                        :pageRange="($store.getters.showMobile) ? 3 : 7"
+                        :pageRange="7"
                         :prevText="'←'"
                         :nextText="'→'"
                         :containerClass="'pagination'"
@@ -55,6 +62,7 @@
 
 <script>
 import qs from 'qs';
+import InfiniteLoading from 'vue-infinite-loading';
 import AppCarsList from '@/components/AppCarsList';
 import ContentPlaceholderCard from '@/components/ContentPlaceholderCard';
 import ContentPlaceholderCardMobile from '@/components/ContentPlaceholderCardMobile';
@@ -70,6 +78,7 @@ export default {
         ContentPlaceholderCard,
         ContentPlaceholderCardMobile,
         AdLargeSkyscraper,
+        InfiniteLoading,
     },
     props: {
         page: {
@@ -77,7 +86,7 @@ export default {
             default: 1,
         },
     },
-    data() {
+    data(props) {
         return {
             cars: [],
             isLoading: false,
@@ -89,6 +98,7 @@ export default {
             availableModels: [],
             filtersQueryString: 'only_with_photo=true&is_broken=false',
             perPage: 50,
+            currentPage: props.page,
         };
     },
     created() {
@@ -156,6 +166,21 @@ export default {
             console.log(this.filtersQueryString);
             this.pageClicked(1);
         },
+        infiniteHandler($state) {
+            API.getCars(this.currentPage + 1, this.filtersQueryString)
+                .then((res) => {
+                    this.cars.push(...res.data.results);
+                    $state.loaded();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    $state.complete();
+                });
+            if (this.currentPage + 1 === this.maxPage) {
+                $state.complete();
+            }
+            ++this.currentPage;
+        },
     },
     watch: {
         '$route.query': function (val) {
@@ -202,6 +227,13 @@ aside {
     font-size: 24px;
     max-width: 920px;
     margin: 32px auto;
+    text-align: center;
+}
+
+.no-more-records {
+    font-size: 18px;
+    color: grey;
+    margin: 20px auto;
     text-align: center;
 }
 

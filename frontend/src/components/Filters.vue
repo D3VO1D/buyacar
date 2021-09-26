@@ -218,23 +218,23 @@
 
         <div class="filters__below-selects">
             <BaseSelect
+                v-visible="!$store.getters.showMobile"
                 class="filters__item_small"
                 placeholder="50 per page"
                 :options="itemsPerPageOptions"
                 :selectedOption="filters.items_per_page"
-                resetText="50 per page"
                 @selectOption="(option) => filters.items_per_page = option"
-                @resetSelectedOptions="filters.items_per_page = ''"
+                hideResetOption
             />
 
             <BaseSelect
-                class="filters__item_small"
-                placeholder="Sort by"
+                :class="($store.getters.showMobile) ? 'filters__item_small' : 'filters__item_large'"
+                placeholder="Sort by Distance"
                 :options="sortByOptions"
                 :selectedOption="filters.ordering"
-                resetText="Distance"
                 @selectOption="(option) => filters.ordering = option"
-                @resetSelectedOptions="filters.ordering = ''"
+                hideResetOption
+                valuePrependText="Sort by "
             />
         </div>
 
@@ -332,10 +332,11 @@ export default {
                 'Wagon',
             ],
             sortByOptions: [
-                'Price ↑',
-                'Price ↓',
-                'Year ↑',
-                'Year ↓',
+                'Distance (nearest first)',
+                'Price ↑ (min first)',
+                'Price ↓ (max first)',
+                'Year ↑ (min first)',
+                'Year ↓ (max first)',
             ],
             itemsPerPageOptions: [
                 '25 per page',
@@ -475,10 +476,11 @@ export default {
         },
         sortByForQuery(param) {
             return {
-                'Price ↑': '-price',
-                'Price ↓': 'price',
-                'Year ↑': '-year',
-                'Year ↓': 'year',
+                Distance: '',
+                'Price ↑': 'price',
+                'Price ↓': '-price',
+                'Year ↑': 'year',
+                'Year ↓': '-year',
             }[param];
         },
     },
@@ -486,8 +488,11 @@ export default {
         filters: {
             handler() {
                 const { ordering } = this.appliedFilters;
-                if (ordering) {
-                    this.appliedFilters.ordering = this.sortByForQuery(ordering);
+                const normalizedOrdering = this.sortByForQuery(ordering);
+                if (normalizedOrdering) {
+                    this.appliedFilters.ordering = normalizedOrdering;
+                } else {
+                    delete this.appliedFilters.ordering;
                 }
                 this.$emit('changeFilters', this.appliedFilters);
             },
@@ -626,7 +631,7 @@ export default {
     }
 
     &__below-selects {
-        width: 280px;
+        width: 50%;
         display: flex;
         margin: 0 0 16px auto;
     }
@@ -634,7 +639,6 @@ export default {
     &__available-models {
         padding: 24px 16px 9px;
         margin-bottom: 15px;
-        margin-left: 16px;
     }
 
     &__models-items {
@@ -774,6 +778,20 @@ export default {
             width: auto;
             margin-bottom: 16px;
             margin-right: 5%;
+        }
+
+        &__available-models {
+            margin: 0;
+            margin-right: 5%;
+            padding: 0;
+        }
+
+        &__models-items {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        &__models-item {
+            width: auto;
         }
     }
 
