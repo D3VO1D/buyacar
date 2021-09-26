@@ -32,7 +32,7 @@
             </template>
             <template v-else>
                 <span class="select-container__value">
-                    {{ selectedOption || placeholder }}
+                    {{ `${this.valuePrependText}${this.selectedOption}` || placeholder }}
                 </span>
 
                 <span class="select-container__arrow rotate">
@@ -46,6 +46,7 @@
         <transition name="options-fade">
             <ul class="select-container__options" v-if="showOptions">
                 <li
+                    v-if="!hideResetOption"
                     class="select-container__option"
                     @click="resetSelections"
                 >
@@ -106,6 +107,14 @@ export default {
             type: String,
             default: 'all',
             validator: (value) => value === 'all' || value === 'left' || value === 'right',
+        },
+        hideResetOption: {
+            type: Boolean,
+            default: false,
+        },
+        valuePrependText: {
+            type: String,
+            default: '',
         },
     },
     data() {
@@ -301,6 +310,10 @@ export default {
     }
 
     &__label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
         &:hover {
             cursor: pointer;
         }

@@ -26,7 +26,7 @@ export default {
     color: $white;
     display: flex;
     align-items: center;
-    padding: 24px 10%;
+    padding: 24px 5%;
     font-family: $logo-font;
 
     &__logo {
@@ -49,6 +49,53 @@ export default {
 
     &__motto {
         font-size: 22px;
+        flex-shrink: 0;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .header {
+        width: 100%;
+        justify-content: space-between;
+
+        &__logo {
+            width: auto;
+            font-size: 28px;
+        }
+
+        &__logo-img {
+            width: 40px;
+            height: 40px;
+        }
+
+        &__motto {
+            font-size: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header {
+        align-items: baseline;
+
+        &__logo {
+            font-size: 22px;
+        }
+
+        &__logo-img {
+            width: 35px;
+            height: 35px;
+        }
+
+        &__motto {
+            font-size: 14px;
+        }
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .header {
+        flex-direction: column;
     }
 }
 </style>

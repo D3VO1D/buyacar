@@ -38,7 +38,7 @@ export default {
     gap: 12px;
     background-color: $footer-color;
     color: $footer-text-color;
-    padding: 24px 10%;
+    padding: 24px 5%;
     font-family: $logo-font;
 
     &__content {
@@ -52,6 +52,7 @@ export default {
         justify-content: space-around;
         margin: 20px 0;
         font-size: 18px;
+        text-align: center;
     }
 
     &__section-divider {
@@ -67,4 +68,24 @@ export default {
     }
 }
 
+@media screen and (max-width: 1000px) {
+    .footer {
+        width: 100%;
+
+        &__content {
+            width: auto;
+        }
+
+        &__section {
+            font-size: 16px;
+            flex-direction: column;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .footer__section {
+        font-size: 14px;
+    }
+}
 </style>
