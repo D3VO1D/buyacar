@@ -1,4 +1,5 @@
 <template>
+    <div class="root">
     <content-placeholders
         class="card-m"
         :rounded="true"
@@ -46,6 +47,7 @@
             </div>
         </div>
     </content-placeholders>
+    </div>
 </template>
 
 <script>
@@ -56,6 +58,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/_vars.scss';
+
+.root {
+    width: 100%;
+}
 
 .card-m {
     padding: 20px;
@@ -99,7 +105,7 @@ export default {
         flex-shrink: 0;
         border-radius: 8px;
         margin-right: 2px;
-        width: 86.7vw;
+        width: 100%;
         height: 65vw;
         object-fit: contain;
     }
@@ -124,7 +130,7 @@ export default {
         margin: 4px 0;
         white-space: nowrap;
         text-overflow: ellipsis;
-        width: 180px;
+        width: 130px;
 
         &:first-child {
             margin-top: 0;
@@ -158,7 +164,6 @@ export default {
         }
 
         &__photo {
-            width: 86.7vh;
             height: 65vh;
         }
     }
