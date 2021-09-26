@@ -10,7 +10,8 @@
                     {{ price }}
                 </h3>
             </div>
-            <div class="card-m__gallery">
+
+            <div class="card-m__gallery" v-if="photosLoaded">
                 <img
                     class="card-m__photo"
                     v-for="(photo, index) in previewPhotos"
@@ -18,6 +19,12 @@
                     :src="getPhoto(index)"
                 />
             </div>
+            <div v-else class="card-m__gallery">
+                <content-placeholders-img class="card-m__photo" />
+                <content-placeholders-img class="card-m__photo" />
+                <content-placeholders-img class="card-m__photo" />
+            </div>
+
             <div class="card-m__params">
                 <div class="card-m__params-column">
                     <div v-if="present(car.power) && car.power !== 0" class="card-m__params-cell">
@@ -57,10 +64,12 @@
                 <a :href="car.url" class="card__link" target="_blank" rel="noreferrer">
                     <div class="card__thumb">
                         <GalleryOnHover
+                            v-if="photosLoaded"
                             :photos="previewPhotos"
                             :totalPhotos="totalPhotos"
                             :placeholder-url="placeholderPhotoUrl"
                         />
+                        <content-placeholders-img v-else class="card__img" />
                     </div>
                     <div class="card__clicker"></div>
                 </a>
@@ -149,6 +158,11 @@ export default {
             type: Object,
         },
     },
+    data() {
+        return {
+            photosLoaded: false,
+        };
+    },
     created() {
         this.preloadPhotos();
     },
@@ -188,8 +202,16 @@ export default {
             return property !== 'nan' && property !== '';
         },
         preloadPhotos() {
+            this.photosLoaded = false;
+            let loadedCount = 0;
             this.previewPhotos.map((photo) => {
                 const img = new Image();
+                img.onload = () => {
+                    ++loadedCount;
+                    if (loadedCount === this.previewPhotos.length) {
+                        this.photosLoaded = true;
+                    }
+                };
                 img.src = photo;
                 return img;
             });
@@ -254,6 +276,13 @@ export default {
     &__thumb {
         flex-shrink: 0;
         width: 205px;
+        height: 150px;
+    }
+
+    &__img {
+        width: 205px;
+        height: 150px;
+        border-radius: 8px;
     }
 
     &__description {

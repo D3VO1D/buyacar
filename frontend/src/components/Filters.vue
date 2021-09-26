@@ -476,11 +476,11 @@ export default {
         },
         sortByForQuery(param) {
             return {
-                Distance: '',
-                'Price ↑': 'price',
-                'Price ↓': '-price',
-                'Year ↑': 'year',
-                'Year ↓': '-year',
+                'Distance (nearest first)': '',
+                'Price ↑ (min first)': 'price',
+                'Price ↓ (max first)': '-price',
+                'Year ↑ (min first)': 'year',
+                'Year ↓ (max first)': '-year',
             }[param];
         },
     },

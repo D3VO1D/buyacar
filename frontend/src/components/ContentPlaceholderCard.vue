@@ -5,7 +5,7 @@
     >
         <div class="card__main">
             <div class="card__thumb">
-                    <content-placeholders-img class="card__img" />
+                <content-placeholders-img class="card__img" />
             </div>
             <div class="card__description">
                 <div class="card__column">
