@@ -429,20 +429,13 @@ export default {
 
     &__footer {
         display: flex;
+        justify-content: space-between;
         align-items: center;
         border-top: 1px solid #e0e0e0;
         padding-top: 14px;
     }
 
-    &__location {
-        font-size: 12px;
-        flex: 1;
-        flex-shrink: 0;
-        min-width: 0;
-        color: grey;
-    }
-
-    &__source {
+    &__location, &__source {
         font-size: 12px;
         color: grey;
     }

@@ -9,9 +9,10 @@
                 @changeFilters="changeFilters"
             />
             <div v-if="isLoading || requestsPending > 0">
-                <ContentPlaceholderCard
+                <component
                     v-for="_ in perPage"
                     :key="_"
+                    :is="($store.getters.showMobile) ? 'ContentPlaceholderCardMobile' : 'ContentPlaceholderCard'"
                 />
             </div>
             <div v-else-if="resultsCount !== 0">
@@ -19,12 +20,12 @@
                     class="cars-list"
                     :cars="cars"
                 />
-                <!-- <div class="pagination-container">
+                <div class="pagination-container">
                     <paginate
                         :value="page"
                         :pageCount="maxPage"
                         :clickHandler="pageClicked"
-                        :pageRange="7"
+                        :pageRange="($store.getters.showMobile) ? 3 : 7"
                         :prevText="'←'"
                         :nextText="'→'"
                         :containerClass="'pagination'"
@@ -37,7 +38,7 @@
                         :prevLinkClass="'page-item-link'"
                         :nextLinkClass="'page-item-link'"
                     />
-                </div> -->
+                </div>
             </div>
             <p v-else class="no-results">
                 Unfortunately, we could not find any cars for you. Consider trying later or changing the filters.
@@ -56,6 +57,7 @@
 import qs from 'qs';
 import AppCarsList from '@/components/AppCarsList';
 import ContentPlaceholderCard from '@/components/ContentPlaceholderCard';
+import ContentPlaceholderCardMobile from '@/components/ContentPlaceholderCardMobile';
 import { API } from '@/services/api';
 import Filters from '@/components/Filters';
 import AdLargeSkyscraper from '@/components/Ads/AdLargeSkyscraper';
@@ -66,6 +68,7 @@ export default {
         Filters,
         AppCarsList,
         ContentPlaceholderCard,
+        ContentPlaceholderCardMobile,
         AdLargeSkyscraper,
     },
     props: {
@@ -212,6 +215,12 @@ aside {
 @media screen and (max-width: 1300px) {
     aside {
         display: none;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .pagination-container {
+        margin-right: 5%;
     }
 }
 </style>
