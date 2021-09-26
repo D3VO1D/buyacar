@@ -3,7 +3,7 @@
         <template
             v-for="(car, index) in cars"
         >
-            <AdLeaderboard v-if="index > 0 && index % 10 === 0" :key="car.id" />
+            <AdLeaderboard v-if="index > 0 && index % 10 === 0 && !showMobile" :key="car.id" />
 
             <AppCarCard
                 v-else

@@ -505,7 +505,7 @@ export default {
     padding: 20px;
     border-radius: 8px;
     background: $white;
-    box-shadow: 0 3px 14px $filters-shadow-color;
+    box-shadow: 0 3px 14px $card-shadow-color;
 
     &__row {
         display: flex;

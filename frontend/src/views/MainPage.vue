@@ -19,7 +19,7 @@
                     class="cars-list"
                     :cars="cars"
                 />
-                <div class="pagination-container">
+                <!-- <div class="pagination-container">
                     <paginate
                         :value="page"
                         :pageCount="maxPage"
@@ -37,7 +37,7 @@
                         :prevLinkClass="'page-item-link'"
                         :nextLinkClass="'page-item-link'"
                     />
-                </div>
+                </div> -->
             </div>
             <p v-else class="no-results">
                 Unfortunately, we could not find any cars for you. Consider trying later or changing the filters.
