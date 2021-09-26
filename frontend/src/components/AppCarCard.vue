@@ -90,6 +90,10 @@ export default {
             required: true,
             type: Object,
         },
+        showMobile: {
+            type: Boolean,
+            default: false,
+        },
     },
     created() {
         this.preloadPhotos();
@@ -282,4 +286,6 @@ export default {
         left: 0;
     }
 }
+
+@media screen and (max-width: 1000px) {}
 </style>

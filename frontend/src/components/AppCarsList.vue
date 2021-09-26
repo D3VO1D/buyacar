@@ -9,6 +9,7 @@
                 v-else
                 :car="car"
                 :key="car.id"
+                :showMobile="showMobile"
             />
         </template>
     </div>
@@ -28,6 +29,27 @@ export default {
         cars: {
             type: Array,
             required: true,
+        },
+    },
+    data() {
+        return {
+            windowWidth: window.innerWidth,
+        };
+    },
+    mounted() {
+        this.$nextTick(() => window.addEventListener('resize', this.onResize));
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.onResize);
+    },
+    computed: {
+        showMobile() {
+            return this.windowWidth < 1000;
+        },
+    },
+    methods: {
+        onResize() {
+            this.windowWidth = window.innerWidth;
         },
     },
 };
