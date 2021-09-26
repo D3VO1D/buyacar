@@ -5,7 +5,7 @@
             type="text"
             :placeholder="placeholder"
             :value="value"
-            @input="$emit('input', $event.target.value)"
+            @input="processInput($event.target.value)"
         />
     </div>
 </template>
@@ -26,6 +26,32 @@ export default {
             type: String,
             default: 'all',
             validator: (value) => value === 'all' || value === 'left' || value === 'right',
+        },
+    },
+    data() {
+        return {
+            finishedTyping: false,
+            timeout: null,
+            tempValue: '',
+        };
+    },
+    methods: {
+        processInput(value) {
+            // we don't update the value immediately to not send http request every time user types a letter
+            // instead, we update the value 500ms after the user typed the last symbol
+            this.finishedTyping = false;
+            this.tempValue = value;
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                this.finishedTyping = true;
+            }, 500);
+        },
+    },
+    watch: {
+        finishedTyping(val) {
+            if (val) {
+                this.$emit('input', this.tempValue);
+            }
         },
     },
 };
