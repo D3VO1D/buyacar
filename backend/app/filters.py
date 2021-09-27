@@ -37,8 +37,8 @@ class CarAdFilter(filters.FilterSet):
     """
     Filter not considering city and distance
     """
-    price_from = filters.NumberFilter(field_name="price", lookup_expr='gte')
-    price_to = filters.NumberFilter(field_name="price", lookup_expr='lte')
+    price_from = filters.NumberFilter(field_name="price", method="price_from_exclude_zero")
+    price_to = filters.NumberFilter(field_name="price", method="price_to_exclude_zero")
     year_from = filters.NumberFilter(field_name="year", lookup_expr='gte')
     year_to = filters.NumberFilter(field_name="year", lookup_expr='lte')
     mileage_from = filters.NumberFilter(field_name="mileage", lookup_expr='gte')
@@ -47,6 +47,14 @@ class CarAdFilter(filters.FilterSet):
     transmission = filters.ChoiceFilter(choices=TRANSMISSION_CHOICES)
     body = filters.MultipleChoiceFilter(choices=BODY_CHOICES)
     only_with_photo = filters.BooleanFilter(field_name="photos", method="has_photos", label="Only with photo")
+
+    def price_from_exclude_zero(self, queryset, name, value):
+        # filters price from the value, excluding zero
+        return queryset.exclude(price=0).filter(price__gte=value)
+
+    def price_to_exclude_zero(self, queryset, name, value):
+        # filters price to the value, excluding zero
+        return queryset.exclude(price=0).filter(price__lte=value)
 
     def has_photos(self, queryset, name, value):
         # Excludes objects without photos for only_with_photos field
