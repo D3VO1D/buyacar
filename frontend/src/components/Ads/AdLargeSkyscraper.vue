@@ -17,6 +17,7 @@ export default {
     height: 600px;
     position: relative;
     background-color: lightgrey;
+    flex-shrink: 0;
 
     &:hover {
         cursor: pointer;

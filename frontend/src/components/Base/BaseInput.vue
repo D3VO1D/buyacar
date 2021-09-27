@@ -1,11 +1,18 @@
 <template>
-    <div :class="['input-container', `input-container_borders-${bordersType}`]">
+    <div :class="[
+                    'input-container',
+                    `input-container_borders-${bordersType}`,
+                    { 'input-container_focused': isInputFocused }
+                ]"
+    >
         <input
             class="input-container__input"
             type="text"
             :placeholder="placeholder"
             :value="value"
             @input="processInput($event.target.value)"
+            @focus="isInputFocused = true"
+            @blur="isInputFocused = false"
         />
     </div>
 </template>
@@ -33,6 +40,7 @@ export default {
             finishedTyping: false,
             timeout: null,
             tempValue: '',
+            isInputFocused: false,
         };
     },
     methods: {
@@ -68,7 +76,7 @@ export default {
     border: 1px solid rgba(0, 0, 0, .12);
     padding: 0 8px;
 
-    &:hover {
+    &:hover, &_focused {
         cursor: text;
         border: 1px solid #157ee1;
     }
@@ -80,6 +88,7 @@ export default {
     &_borders-left {
         border-top-left-radius: 8px;
         border-bottom-left-radius: 8px;
+        border-right: none;
     }
 
     &_borders-right {

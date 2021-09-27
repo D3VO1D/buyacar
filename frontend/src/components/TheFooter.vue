@@ -40,6 +40,8 @@ export default {
     color: $footer-text-color;
     padding: 24px 5%;
     font-family: $logo-font;
+    min-height: 177px;
+    flex: 1 0 auto;
 
     &__content {
         width: 920px;

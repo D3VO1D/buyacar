@@ -28,6 +28,8 @@ export default {
     align-items: center;
     padding: 24px 5%;
     font-family: $logo-font;
+    min-height: 98px;
+    flex: 1 0 auto;
 
     &__logo {
         font-size: 32px;

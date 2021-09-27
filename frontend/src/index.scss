@@ -19,6 +19,7 @@ $themeColor: #157ee1;
 body {
   font-family: Arial, Helvetica Neue, Helvetica, yandex-sans-rub-sign, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -webkit-appearance: initial;
   font-size: $default-font-size;
   font-weight: $default-font-weight;
 }
