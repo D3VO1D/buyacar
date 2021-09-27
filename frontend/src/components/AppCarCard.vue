@@ -1,7 +1,7 @@
 <template>
     <div class="root">
     <template v-if="$store.getters.showMobile">
-        <div class="card-m">
+        <div class="card-m" @click="navigateToSource">
             <div class="card-m__header">
                 <p class="card-m__title">
                     {{ title }}, {{ car.year }}
@@ -221,6 +221,9 @@ export default {
                 return this.placeholderPhotoUrl;
             }
             return this.previewPhotos[index];
+        },
+        navigateToSource() {
+            window.open(this.car.url, '_blank');
         },
     },
 };
