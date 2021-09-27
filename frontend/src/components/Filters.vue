@@ -5,19 +5,19 @@
                 <div class="filters__column">
                     <div class="radio-toolbar">
                         <input class="radio-toolbar__radio" type="radio" id="select-all"
-                               name="toolbar-1" value="all" checked>
+                               name="toolbar-1" value="all" :checked="filters.is_new === null">
                         <label class="radio-toolbar__label" for="select-all" @click="filters.is_new = null">
                             All
                         </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-new"
-                               name="toolbar-1" value="new">
+                               name="toolbar-1" value="new" :checked="filters.is_new === true">
                         <label class="radio-toolbar__label" for="select-new" @click="filters.is_new = true">
                             New
                         </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-used"
-                               name="toolbar-1" value="used">
+                               name="toolbar-1" value="used" :checked="filters.is_new === false">
                         <label class="radio-toolbar__label" for="select-used" @click="filters.is_new = false">
                             Used
                         </label>
@@ -26,19 +26,19 @@
                 <div class="filters__column">
                     <div class="radio-toolbar">
                         <input class="radio-toolbar__radio" type="radio" id="select-all-2"
-                               name="toolbar-2" value="all">
+                               name="toolbar-2" value="all" :checked="filters.is_broken === null">
                         <label class="radio-toolbar__label" for="select-all-2" @click="filters.is_broken = null">
                             All
                         </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-working"
-                               name="toolbar-2" value="new" checked>
+                               name="toolbar-2" value="new" :checked="filters.is_broken === false">
                         <label class="radio-toolbar__label" for="select-working" @click="filters.is_broken = false">
                             Working
                         </label>
 
                         <input class="radio-toolbar__radio" type="radio" id="select-broken"
-                               name="toolbar-2" value="used">
+                               name="toolbar-2" value="used" :checked="filters.is_broken === true">
                         <label class="radio-toolbar__label" for="select-broken" @click="filters.is_broken = true">
                             Broken
                         </label>
@@ -259,6 +259,30 @@ import BaseSelect from '@/components/Base/BaseSelect';
 import BaseCheckbox from '@/components/Base/BaseCheckbox';
 import BaseInput from '@/components/Base/BaseInput';
 import BaseLocation from '@/components/Base/BaseLocation';
+import eventBus from '@/eventBus';
+
+const DEFAULT_FILTERS = {
+    is_new: null,
+    is_broken: false,
+    make: '',
+    model: '',
+    drive: '',
+    transmission: '',
+    body: '',
+    only_with_photo: true,
+    year_from: '',
+    year_to: '',
+    mileage_from: '',
+    mileage_to: '',
+    price_from: '',
+    price_to: '',
+    longitude: 0,
+    latitude: 0,
+    ordering: 'Distance (nearest first)',
+    items_per_page: '25 per page',
+    location: '',
+    distance: '',
+};
 
 export default {
     name: 'Filters',
@@ -289,28 +313,7 @@ export default {
     data() {
         // snake case is used to provide valid querystring for backend
         return {
-            filters: {
-                is_new: null,
-                is_broken: false,
-                make: '',
-                model: '',
-                drive: '',
-                transmission: '',
-                body: '',
-                only_with_photo: true,
-                year_from: '',
-                year_to: '',
-                mileage_from: '',
-                mileage_to: '',
-                price_from: '',
-                price_to: '',
-                longitude: 0,
-                latitude: 0,
-                ordering: 'Distance (nearest first)',
-                items_per_page: '25 per page',
-                location: '',
-                distance: '',
-            },
+            filters: { ...DEFAULT_FILTERS },
             driveOptions: [
                 'AWD',
                 'RWD',
@@ -416,8 +419,12 @@ export default {
     created() {
         window.addEventListener('scroll', this.onScroll);
     },
+    mounted() {
+        eventBus.$on('reset-filters', () => this.resetFilters());
+    },
     destroyed() {
         window.removeEventListener('scroll', this.onScroll);
+        eventBus.$off('reset-filters');
     },
     methods: {
         scrollToTop() {
@@ -451,28 +458,7 @@ export default {
             this.filters.latitude = 0;
         },
         resetFilters() {
-            this.filters = {
-                is_new: null,
-                is_broken: false,
-                make: '',
-                model: '',
-                drive: '',
-                transmission: '',
-                body: '',
-                only_with_photo: true,
-                year_from: '',
-                year_to: '',
-                mileage_from: '',
-                mileage_to: '',
-                price_from: '',
-                price_to: '',
-                longitude: 0,
-                latitude: 0,
-                ordering: '',
-                items_per_page: '',
-                location: '',
-                distance: '',
-            };
+            this.filters = { ...DEFAULT_FILTERS };
         },
         sortByForQuery(param) {
             return {

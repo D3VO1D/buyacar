@@ -1,6 +1,6 @@
 <template>
     <header class="header">
-        <h1 class="header__logo">
+        <h1 class="header__logo" @click="clickLogo">
             <router-link :to="{ name: 'Main Page', query: { page: 1 } }" class="header__logo-link">
                 <img class="header__logo-img" src="@/assets/logo.svg" alt="logo"/>
                 <span class="header__logo-name">WHOLE CARS</span>
@@ -13,8 +13,15 @@
 </template>
 
 <script>
+import eventBus from '@/eventBus';
+
 export default {
     name: 'TheHeader',
+    methods: {
+        clickLogo() {
+            eventBus.$emit('reset-filters');
+        },
+    },
 };
 </script>
 

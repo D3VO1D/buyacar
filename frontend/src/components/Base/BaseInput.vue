@@ -1,8 +1,9 @@
 <template>
     <div :class="[
                     'input-container',
+                    { 'input-container_focused': isInputFocused,
+                      'input-container_selected': isValueSelected },
                     `input-container_borders-${bordersType}`,
-                    { 'input-container_focused': isInputFocused }
                 ]"
     >
         <input
@@ -13,6 +14,7 @@
             @input="processInput($event.target.value)"
             @focus="isInputFocused = true"
             @blur="isInputFocused = false"
+            ref="input"
         />
     </div>
 </template>
@@ -41,6 +43,7 @@ export default {
             timeout: null,
             tempValue: '',
             isInputFocused: false,
+            isValueSelected: false,
         };
     },
     methods: {
@@ -52,13 +55,20 @@ export default {
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
                 this.finishedTyping = true;
-            }, 500);
+                this.$refs.input.blur();
+            }, 800);
         },
     },
     watch: {
         finishedTyping(val) {
+            this.isValueSelected = !!val;
             if (val) {
                 this.$emit('input', this.tempValue);
+            }
+        },
+        value(val) {
+            if (!val) {
+                this.isValueSelected = false;
             }
         },
     },
@@ -79,6 +89,11 @@ export default {
     &:hover, &_focused {
         cursor: text;
         border: 1px solid #157ee1;
+    }
+
+    &_selected {
+        border: 1px solid rgba(21, 126, 225, .5) !important;
+        background-color: #eef4fa;
     }
 
     &_borders-all {
