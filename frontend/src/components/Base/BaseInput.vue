@@ -10,10 +10,11 @@
             class="input-container__input"
             type="text"
             :placeholder="placeholder"
-            :value="value"
+            :value="tempValueFormatted"
             @input="processInput($event.target.value)"
             @focus="isInputFocused = true"
             @blur="isInputFocused = false"
+            @keyup.enter="finishedTyping = true"
             ref="input"
         />
     </div>
@@ -37,14 +38,20 @@ export default {
             validator: (value) => value === 'all' || value === 'left' || value === 'right',
         },
     },
-    data() {
+    data(props) {
         return {
             finishedTyping: false,
             timeout: null,
-            tempValue: '',
+            tempValue: props.value,
             isInputFocused: false,
             isValueSelected: false,
         };
+    },
+    computed: {
+        tempValueFormatted() {
+            if (!this.tempValue.replace(/\D/g, '')) return '';
+            return new Intl.NumberFormat('en-US').format(this.tempValue.replace(/\D/g, '').replaceAll(',', ''));
+        },
     },
     methods: {
         processInput(value) {
@@ -54,8 +61,8 @@ export default {
             this.tempValue = value;
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
+                if (!this.tempValue) return;
                 this.finishedTyping = true;
-                this.$refs.input.blur();
             }, 800);
         },
     },
@@ -63,10 +70,13 @@ export default {
         finishedTyping(val) {
             this.isValueSelected = !!val;
             if (val) {
+                this.tempValue = this.tempValue.replace(/\D/g, '').replaceAll(',', '');
+                this.$refs.input.blur();
                 this.$emit('input', this.tempValue);
             }
         },
         value(val) {
+            this.tempValue = val;
             if (!val) {
                 this.isValueSelected = false;
             }

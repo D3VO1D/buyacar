@@ -86,6 +86,7 @@ export default {
         return {
             location: '',
             locationOffset: null,
+            timeout: null,
             showSearchBox: false,
             showRangeSlider: false,
             options: [],
@@ -207,9 +208,12 @@ export default {
             }
         },
         locationOffset(val) {
-            if (val !== null) {
-                this.$emit('changeLocationOffset', val);
-            }
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                if (val !== null) {
+                    this.$emit('changeLocationOffset', val);
+                }
+            }, 500);
         },
     },
 };
@@ -277,6 +281,7 @@ export default {
     &__dropdown-input-container {
         position: relative;
         display: flex;
+        flex: 1 0 auto;
         align-items: center;
         width: 100%;
         padding: 0 12px;

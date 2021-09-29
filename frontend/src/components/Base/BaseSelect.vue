@@ -8,6 +8,7 @@
                     `select-container__select_borders-${bordersType}`,]"
             @click="showOptions = (disabled) ? false : !showOptions"
             @keyup.esc="resetSelections"
+            @keyup.enter="enterPressed"
         >
             <template v-if="withInput">
                 <input
@@ -188,6 +189,11 @@ export default {
         },
         clickOutside() {
             this.showOptions = false;
+        },
+        enterPressed() {
+            if (!this.filteredOptions.length) return;
+
+            this.selectOption(this.filteredOptions[0]);
         },
     },
     watch: {
