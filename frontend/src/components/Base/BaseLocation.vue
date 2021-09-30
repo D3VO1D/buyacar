@@ -1,6 +1,6 @@
 <template>
     <div class="location" v-click-outside="hideSearchBox">
-        <div class="location__select" @click="showSearchBox = !showSearchBox">
+        <div class="location__select" @click="toggleSearchBox">
             <div class="location__select-icon">
                 <svg viewBox="0 0 24 24" id="geo">
                     <g fill-rule="evenodd" fill="currentColor">
@@ -12,7 +12,7 @@
             </div>
             <div class="location__text">{{ text }}</div>
         </div>
-        <div class="location__search" v-if="showSearchBox">
+        <div class="location__search" v-show="showSearchBox">
             <div class="location__search-box">
                 <div class="location__dropdown-input-container">
                     <font-awesome-icon class="location__search-icon" :icon="['fas', 'search']"/>
@@ -23,6 +23,7 @@
                         @input="loadOptions"
                         @focus="focusInput"
                         @blur="blurInput"
+                        ref="location"
                     />
                 </div>
                 <div class="location__reset-location" v-if="location || userCity" @click="resetLocation">
@@ -85,6 +86,7 @@ export default {
         return {
             location: '',
             locationOffset: null,
+            timeout: null,
             showSearchBox: false,
             showRangeSlider: false,
             options: [],
@@ -155,6 +157,14 @@ export default {
             // a little hack to ensure that this.options = [] happens after v-click-outside
             setTimeout(() => { this.options = []; });
         },
+        toggleSearchBox() {
+            this.showSearchBox = !this.showSearchBox;
+            if (this.showSearchBox) {
+                this.$nextTick(() => this.$refs.location.focus());
+            } else {
+                this.$nextTick(() => this.$refs.location.blur());
+            }
+        },
         hideSearchBox() {
             this.showSearchBox = false;
         },
@@ -198,9 +208,12 @@ export default {
             }
         },
         locationOffset(val) {
-            if (val !== null) {
-                this.$emit('changeLocationOffset', val);
-            }
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                if (val !== null) {
+                    this.$emit('changeLocationOffset', val);
+                }
+            }, 500);
         },
     },
 };
@@ -268,6 +281,7 @@ export default {
     &__dropdown-input-container {
         position: relative;
         display: flex;
+        flex: 1 0 auto;
         align-items: center;
         width: 100%;
         padding: 0 12px;
@@ -292,10 +306,6 @@ export default {
 
         &::placeholder {
             font-size: 15px;
-            line-height: normal;
-            position: absolute;
-            top: 50%;
-            display: block;
             overflow: hidden;
             max-width: calc(100% - 32px);
             white-space: nowrap;
@@ -303,7 +313,6 @@ export default {
             pointer-events: none;
             color: rgba(0, 0, 0, .54);
             transition: font-size .05s ease-out 0s, margin-top .05s ease-out 0s, opacity .1s ease-out 0s;
-            transform: translateY(-50%);
         }
     }
 

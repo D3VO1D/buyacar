@@ -3,46 +3,19 @@
         <div class="filters" ref="filtersBlock">
             <div class="filters__row filters__row_header">
                 <div class="filters__column">
-                    <div class="radio-toolbar">
-                        <input class="radio-toolbar__radio" type="radio" id="select-all"
-                               name="toolbar-1" value="all" checked>
-                        <label class="radio-toolbar__label" for="select-all" @click="filters.is_new = null">
-                            All
-                        </label>
-
-                        <input class="radio-toolbar__radio" type="radio" id="select-new"
-                               name="toolbar-1" value="new">
-                        <label class="radio-toolbar__label" for="select-new" @click="filters.is_new = true">
-                            New
-                        </label>
-
-                        <input class="radio-toolbar__radio" type="radio" id="select-used"
-                               name="toolbar-1" value="used">
-                        <label class="radio-toolbar__label" for="select-used" @click="filters.is_new = false">
-                            Used
-                        </label>
-                    </div>
+                    <BaseRadioButtonGroup
+                        :options="['All', 'New', 'Used']"
+                        :selectedOption="isNewSelectedOption"
+                        @selectOption="selectIsNew"
+                    />
                 </div>
                 <div class="filters__column">
-                    <div class="radio-toolbar">
-                        <input class="radio-toolbar__radio" type="radio" id="select-all-2"
-                               name="toolbar-2" value="all">
-                        <label class="radio-toolbar__label" for="select-all-2" @click="filters.is_broken = null">
-                            All
-                        </label>
-
-                        <input class="radio-toolbar__radio" type="radio" id="select-working"
-                               name="toolbar-2" value="new" checked>
-                        <label class="radio-toolbar__label" for="select-working" @click="filters.is_broken = false">
-                            Working
-                        </label>
-
-                        <input class="radio-toolbar__radio" type="radio" id="select-broken"
-                               name="toolbar-2" value="used">
-                        <label class="radio-toolbar__label" for="select-broken" @click="filters.is_broken = true">
-                            Broken
-                        </label>
-                    </div>
+                    <BaseRadioButtonGroup
+                        :options="['All', 'Working', 'Broken']"
+                        :selectedOption="(filters.is_new) ? null : isBrokenSelectedOption"
+                        :disabled="!!filters.is_new"
+                        @selectOption="selectIsBroken"
+                    />
                 </div>
                 <div class="filters__column filters__column_align-right">
                     <BaseLocation
@@ -259,6 +232,31 @@ import BaseSelect from '@/components/Base/BaseSelect';
 import BaseCheckbox from '@/components/Base/BaseCheckbox';
 import BaseInput from '@/components/Base/BaseInput';
 import BaseLocation from '@/components/Base/BaseLocation';
+import BaseRadioButtonGroup from '@/components/Base/BaseRadioButtonGroup';
+import eventBus from '@/eventBus';
+
+const DEFAULT_FILTERS = {
+    is_new: null,
+    is_broken: false,
+    make: '',
+    model: '',
+    drive: '',
+    transmission: '',
+    body: '',
+    only_with_photo: true,
+    year_from: '',
+    year_to: '',
+    mileage_from: '',
+    mileage_to: '',
+    price_from: '',
+    price_to: '',
+    longitude: 0,
+    latitude: 0,
+    ordering: 'Distance (nearest first)',
+    items_per_page: '25 per page',
+    location: '',
+    distance: '',
+};
 
 export default {
     name: 'Filters',
@@ -267,6 +265,7 @@ export default {
         BaseInput,
         BaseCheckbox,
         BaseSelect,
+        BaseRadioButtonGroup,
     },
     props: {
         minAvailableYear: {
@@ -289,28 +288,7 @@ export default {
     data() {
         // snake case is used to provide valid querystring for backend
         return {
-            filters: {
-                is_new: null,
-                is_broken: false,
-                make: '',
-                model: '',
-                drive: '',
-                transmission: '',
-                body: '',
-                only_with_photo: true,
-                year_from: '',
-                year_to: '',
-                mileage_from: '',
-                mileage_to: '',
-                price_from: '',
-                price_to: '',
-                longitude: 0,
-                latitude: 0,
-                ordering: '',
-                items_per_page: '',
-                location: '',
-                distance: '',
-            },
+            filters: { ...DEFAULT_FILTERS },
             driveOptions: [
                 'AWD',
                 'RWD',
@@ -344,6 +322,8 @@ export default {
                 '100 per page',
             ],
             showHintTop: false,
+            isNewSelectedOption: 'All',
+            isBrokenSelectedOption: 'Working',
         };
     },
     computed: {
@@ -416,8 +396,12 @@ export default {
     created() {
         window.addEventListener('scroll', this.onScroll);
     },
+    mounted() {
+        eventBus.$on('reset-filters', this.resetFilters);
+    },
     destroyed() {
         window.removeEventListener('scroll', this.onScroll);
+        eventBus.$off('reset-filters');
     },
     methods: {
         scrollToTop() {
@@ -451,28 +435,8 @@ export default {
             this.filters.latitude = 0;
         },
         resetFilters() {
-            this.filters = {
-                is_new: null,
-                is_broken: false,
-                make: '',
-                model: '',
-                drive: '',
-                transmission: '',
-                body: '',
-                only_with_photo: true,
-                year_from: '',
-                year_to: '',
-                mileage_from: '',
-                mileage_to: '',
-                price_from: '',
-                price_to: '',
-                longitude: 0,
-                latitude: 0,
-                ordering: '',
-                items_per_page: '',
-                location: '',
-                distance: '',
-            };
+            this.filters = { ...DEFAULT_FILTERS };
+            eventBus.$emit('clear-form');
         },
         sortByForQuery(param) {
             return {
@@ -482,6 +446,36 @@ export default {
                 'Year ↑ (min first)': 'year',
                 'Year ↓ (max first)': '-year',
             }[param];
+        },
+        selectIsNew(option) {
+            this.isNewSelectedOption = option;
+            switch (option) {
+            case 'New':
+                this.filters.is_new = true;
+                // new car can't be broken, resetting is_broken filter
+                this.filters.is_broken = false;
+                break;
+            case 'Used':
+                this.filters.is_new = false;
+                break;
+            default:
+                this.filters.is_new = null;
+                break;
+            }
+        },
+        selectIsBroken(option) {
+            this.isBrokenSelectedOption = option;
+            switch (option) {
+            case 'Working':
+                this.filters.is_broken = false;
+                break;
+            case 'Broken':
+                this.filters.is_broken = true;
+                break;
+            default:
+                this.filters.is_broken = null;
+                break;
+            }
         },
     },
     watch: {
@@ -692,54 +686,6 @@ export default {
     }
 }
 
-.radio-toolbar {
-
-    &__radio {
-        opacity: 0;
-        position: fixed;
-        width: 0;
-
-        &:checked + label {
-            background-color: #eef4fa;
-            border: 1px solid rgba(21, 126, 225, .5);
-            color: $text-color;
-
-            &:hover {
-                cursor: default;
-            }
-        }
-    }
-
-    &__label {
-        display: inline-block;
-        width: calc(280px / 3);
-        padding: 10px 20px;
-        font-size: 15px;
-        border: 1px solid rgba(0, 0, 0, .12);
-        background-color: $white;
-        color: grey;
-        text-align: center;
-
-        &:hover {
-            color: $white;
-            background-color: #157ee1;
-            cursor: pointer;
-        }
-
-        &:first-of-type {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-            border-right: none;
-        }
-
-        &:last-of-type {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
-            border-left: none;
-        }
-    }
-}
-
 @media screen and (max-width: 1000px) {
     .filters {
         width: auto;
@@ -794,14 +740,6 @@ export default {
             width: auto;
         }
     }
-
-    .radio-toolbar {
-        width: 100%;
-
-        &__label {
-            width: calc(100% / 3);
-        }
-    }
 }
 
 @media screen and (max-width: 360px) {
@@ -815,14 +753,6 @@ export default {
         &__hint-results-count {
             margin: 0;
             margin-left: 20px;
-        }
-    }
-
-    .radio-toolbar {
-        text-align: center;
-
-        &__label {
-            width: auto;
         }
     }
 }

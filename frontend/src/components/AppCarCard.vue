@@ -1,6 +1,5 @@
 <template>
-    <div class="root">
-    <template v-if="$store.getters.showMobile">
+    <div class="root" v-if="$store.getters.showMobile">
         <div class="card-m">
             <div class="card-m__header">
                 <p class="card-m__title">
@@ -20,9 +19,11 @@
                 />
             </div>
             <div v-else class="card-m__gallery">
-                <content-placeholders-img class="card-m__photo" />
-                <content-placeholders-img class="card-m__photo" />
-                <content-placeholders-img class="card-m__photo" />
+                <content-placeholders :rounded="true">
+                    <content-placeholders-img class="card-m__photo" />
+                    <content-placeholders-img class="card-m__photo" />
+                    <content-placeholders-img class="card-m__photo" />
+                </content-placeholders>
             </div>
 
             <div class="card-m__params">
@@ -57,92 +58,91 @@
                 </div>
             </div>
         </div>
-    </template>
-    <template v-else>
-        <div class="card">
-            <div class="card__main">
-                <a :href="car.url" class="card__link" target="_blank" rel="noreferrer">
-                    <div class="card__thumb">
-                        <GalleryOnHover
-                            v-if="photosLoaded"
-                            :photos="previewPhotos"
-                            :totalPhotos="totalPhotos"
-                            :placeholder-url="placeholderPhotoUrl"
-                        />
-                        <content-placeholders-img v-else class="card__img" />
+    </div>
+    <div class="card" v-else>
+        <div class="card__main">
+            <a :href="car.url" class="card__link" target="_blank" rel="noreferrer">
+                <div class="card__thumb">
+                    <GalleryOnHover
+                        v-if="photosLoaded"
+                        :photos="previewPhotos"
+                        :totalPhotos="totalPhotos"
+                        :placeholder-url="placeholderPhotoUrl"
+                    />
+                    <content-placeholders v-else :rounded="true">
+                        <content-placeholders-img class="card__img" />
+                    </content-placeholders>
+                </div>
+                <div class="card__clicker"></div>
+            </a>
+            <div class="card__description">
+                <div class="card__column">
+                    <div class="card__column-row">
+                        <h3 class="card__title">
+                            {{ title }}
+                        </h3>
                     </div>
-                    <div class="card__clicker"></div>
-                </a>
-                <div class="card__description">
-                    <div class="card__column">
-                        <div class="card__column-row">
-                            <h3 class="card__title">
-                                {{ title }}
-                            </h3>
-                        </div>
 
-                        <div class="card__column-row">
-                            <div class="card__tech-summary">
-                                <div class="card__tech-summary-column">
-                                    <div v-if="present(car.power) && car.power !== 0" class="card__cell">
-                                        {{ car.power }}
-                                    </div>
-                                    <div v-else class="card__cell">&nbsp;</div>
-                                    <div v-if="present(car.transmission)" class="card__cell">
-                                        {{ car.transmission }}
-                                    </div>
+                    <div class="card__column-row">
+                        <div class="card__tech-summary">
+                            <div class="card__tech-summary-column">
+                                <div v-if="present(car.power) && car.power !== 0" class="card__cell">
+                                    {{ car.power }}
                                 </div>
-                                <div class="card__tech-summary-column">
-                                    <div v-if="present(car.drive)" class="card__cell">{{ car.drive }}</div>
-                                    <div v-else class="card__cell">&nbsp;</div>
-                                    <div v-if="present(car.body)" class="card__cell">{{ car.body }}</div>
+                                <div v-else class="card__cell">&nbsp;</div>
+                                <div v-if="present(car.transmission)" class="card__cell">
+                                    {{ car.transmission }}
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="card__column-row">
-                            <div v-if="present(car.location)" class="card__additional-info">
-                                {{ car.location }}
+                            <div class="card__tech-summary-column">
+                                <div v-if="present(car.drive)" class="card__cell">{{ car.drive }}</div>
+                                <div v-else class="card__cell">&nbsp;</div>
+                                <div v-if="present(car.body)" class="card__cell">{{ car.body }}</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card__column">
-                        <div class="card__column-row">
-                            <div class="card__price">
-                                {{ price }}
-                            </div>
+                    <div class="card__column-row">
+                        <div v-if="present(car.location)" class="card__additional-info">
+                            {{ car.location }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card__column">
+                    <div class="card__column-row">
+                        <div class="card__price">
+                            {{ price }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card__column">
+                    <div class="card__column-row">
+                        <div v-if="present(car.year)" class="card__year">
+                            {{ car.year }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card__column">
+                    <div class="card__column-row">
+                        <div v-if="present(car.mileage)" class="card__mileage">
+                            {{ mileage }}
                         </div>
                     </div>
 
-                    <div class="card__column">
-                        <div class="card__column-row">
-                            <div v-if="present(car.year)" class="card__year">
-                                {{ car.year }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card__column">
-                        <div class="card__column-row">
-                            <div v-if="present(car.mileage)" class="card__mileage">
-                                {{ mileage }}
-                            </div>
-                        </div>
-
-                        <div class="card__column-row">
-                            <div
-                                v-if="present(car.source)"
-                                class="card__additional-info card__additional-info_align_right"
-                            >
-                                {{ car.source }}
-                            </div>
+                    <div class="card__column-row">
+                        <div
+                            v-if="present(car.source)"
+                            class="card__additional-info card__additional-info_align_right"
+                        >
+                            {{ car.source }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </template>
     </div>
 </template>
 
@@ -203,6 +203,12 @@ export default {
         },
         preloadPhotos() {
             this.photosLoaded = false;
+
+            if (!this.previewPhotos.length) {
+                this.photosLoaded = true;
+                return;
+            }
+
             let loadedCount = 0;
             this.previewPhotos.map((photo) => {
                 const img = new Image();
@@ -211,6 +217,9 @@ export default {
                     if (loadedCount === this.previewPhotos.length) {
                         this.photosLoaded = true;
                     }
+                };
+                img.onerror = () => {
+                    img.src = this.placeholderPhotoUrl;
                 };
                 img.src = photo;
                 return img;
@@ -221,6 +230,9 @@ export default {
                 return this.placeholderPhotoUrl;
             }
             return this.previewPhotos[index];
+        },
+        navigateToSource() {
+            window.open(this.car.url, '_blank');
         },
     },
 };
@@ -424,7 +436,7 @@ export default {
         flex-shrink: 0;
         border-radius: 8px;
         margin-right: 2px;
-        max-width: 100%;
+        width: 280px;
         height: 65vw;
         object-fit: contain;
     }
@@ -477,6 +489,7 @@ export default {
         }
 
         &__photo {
+            width: 250px;
             height: 65vh;
         }
     }

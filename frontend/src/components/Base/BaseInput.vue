@@ -1,11 +1,21 @@
 <template>
-    <div :class="['input-container', `input-container_borders-${bordersType}`]">
+    <div :class="[
+                    'input-container',
+                    { 'input-container_focused': isInputFocused,
+                      'input-container_selected': isValueSelected },
+                    `input-container_borders-${bordersType}`,
+                ]"
+    >
         <input
             class="input-container__input"
             type="text"
             :placeholder="placeholder"
-            :value="value"
+            :value="tempValueFormatted"
             @input="processInput($event.target.value)"
+            @focus="isInputFocused = true"
+            @blur="isInputFocused = false"
+            @keyup.enter="finishedTyping = true"
+            ref="input"
         />
     </div>
 </template>
@@ -28,12 +38,20 @@ export default {
             validator: (value) => value === 'all' || value === 'left' || value === 'right',
         },
     },
-    data() {
+    data(props) {
         return {
             finishedTyping: false,
             timeout: null,
-            tempValue: '',
+            tempValue: props.value,
+            isInputFocused: false,
+            isValueSelected: false,
         };
+    },
+    computed: {
+        tempValueFormatted() {
+            if (!this.tempValue.replace(/\D/g, '')) return '';
+            return new Intl.NumberFormat('en-US').format(this.tempValue.replace(/\D/g, '').replaceAll(',', ''));
+        },
     },
     methods: {
         processInput(value) {
@@ -43,14 +61,24 @@ export default {
             this.tempValue = value;
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
+                if (!this.tempValue) return;
                 this.finishedTyping = true;
-            }, 500);
+            }, 800);
         },
     },
     watch: {
         finishedTyping(val) {
+            this.isValueSelected = !!val;
             if (val) {
+                this.tempValue = this.tempValue.replace(/\D/g, '').replaceAll(',', '');
+                this.$refs.input.blur();
                 this.$emit('input', this.tempValue);
+            }
+        },
+        value(val) {
+            this.tempValue = val;
+            if (!val) {
+                this.isValueSelected = false;
             }
         },
     },
@@ -68,9 +96,14 @@ export default {
     border: 1px solid rgba(0, 0, 0, .12);
     padding: 0 8px;
 
-    &:hover {
+    &:hover, &_focused {
         cursor: text;
         border: 1px solid #157ee1;
+    }
+
+    &_selected {
+        border: 1px solid rgba(21, 126, 225, .5) !important;
+        background-color: #eef4fa;
     }
 
     &_borders-all {
@@ -80,6 +113,7 @@ export default {
     &_borders-left {
         border-top-left-radius: 8px;
         border-bottom-left-radius: 8px;
+        border-right: none;
     }
 
     &_borders-right {
@@ -96,6 +130,11 @@ export default {
         font-size: 15px;
         border: transparent;
         background-color: inherit;
+        color: #000 !important;
+
+        &::placeholder {
+            color: grey !important;
+        }
     }
 }
 </style>

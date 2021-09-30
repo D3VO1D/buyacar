@@ -4,9 +4,11 @@
             class="select-container__select"
             :class="[{'select-container__has-chosen-value': !!selectedOption},
                     {'select-container_disabled': disabled},
-                    `select-container__select_borders-${bordersType}`]"
+                    {'select-container__select_focused': isInputFocused},
+                    `select-container__select_borders-${bordersType}`,]"
             @click="showOptions = (disabled) ? false : !showOptions"
             @keyup.esc="resetSelections"
+            @keyup.enter="enterPressed"
         >
             <template v-if="withInput">
                 <input
@@ -76,6 +78,8 @@
 </template>
 
 <script>
+import eventBus from '@/eventBus';
+
 export default {
     name: 'BaseSelect',
     props: {
@@ -117,6 +121,12 @@ export default {
             default: '',
         },
     },
+    mounted() {
+        eventBus.$on('clear-form', this.resetInput);
+    },
+    destroyed() {
+        eventBus.$off('clear-form');
+    },
     data() {
         return {
             showOptions: false,
@@ -125,6 +135,7 @@ export default {
             inputValue: '',
             tempInputValue: '',
             userChoseOption: false,
+            isInputFocused: false,
         };
     },
     computed: {
@@ -165,6 +176,7 @@ export default {
         focusInput() {
             if (this.disabled) return;
 
+            this.isInputFocused = true;
             this.showChevron = false;
             if (this.userChoseOption) {
                 this.tempInputValue = this.inputValue;
@@ -174,6 +186,7 @@ export default {
         blurInput() {
             if (this.disabled) return;
 
+            this.isInputFocused = false;
             this.showChevron = true;
             if (this.userChoseOption) {
                 setTimeout(() => {
@@ -185,10 +198,24 @@ export default {
         clickOutside() {
             this.showOptions = false;
         },
+        enterPressed() {
+            if (!this.filteredOptions.length) return;
+
+            this.selectOption(this.filteredOptions[0]);
+        },
+        resetInput() {
+            this.inputValue = '';
+        },
     },
     watch: {
         selectedOption(val) {
             this.selectOption(val);
+        },
+        inputValue(val) {
+            const firstAutoComplete = this.filteredOptions[0];
+            if (val === firstAutoComplete) {
+                this.selectOption(firstAutoComplete);
+            }
         },
     },
 };
@@ -210,7 +237,7 @@ export default {
         justify-content: space-between;
         align-items: center;
 
-        &:hover {
+        &:hover, &_focused {
             cursor: pointer;
             border: 1px solid #157ee1;
         }
@@ -222,6 +249,7 @@ export default {
         &_borders-left {
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
+            border-right: none;
         }
 
         &_borders-right {
@@ -334,9 +362,14 @@ export default {
     border: transparent;
     margin-right: 8px;
     background-color: inherit;
+    color: #000;
 
     &:disabled::placeholder {
         color: rgba(0, 0, 0, .24);
+    }
+
+    &::placeholder {
+        color: grey;
     }
 }
 

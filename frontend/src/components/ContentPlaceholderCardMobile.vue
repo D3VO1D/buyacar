@@ -105,7 +105,7 @@ export default {
         flex-shrink: 0;
         border-radius: 8px;
         margin-right: 2px;
-        max-width: 100%;
+        width: 280px;
         height: 65vw;
         object-fit: contain;
     }
@@ -164,6 +164,7 @@ export default {
         }
 
         &__photo {
+            width: 250px;
             height: 65vh;
         }
     }
