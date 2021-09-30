@@ -19,9 +19,11 @@
                 />
             </div>
             <div v-else class="card-m__gallery">
-                <content-placeholders-img class="card-m__photo" />
-                <content-placeholders-img class="card-m__photo" />
-                <content-placeholders-img class="card-m__photo" />
+                <content-placeholders :rounded="true">
+                    <content-placeholders-img class="card-m__photo" />
+                    <content-placeholders-img class="card-m__photo" />
+                    <content-placeholders-img class="card-m__photo" />
+                </content-placeholders>
             </div>
 
             <div class="card-m__params">
@@ -67,7 +69,9 @@
                         :totalPhotos="totalPhotos"
                         :placeholder-url="placeholderPhotoUrl"
                     />
-                    <content-placeholders-img v-else class="card__img" />
+                    <content-placeholders v-else :rounded="true">
+                        <content-placeholders-img class="card__img" />
+                    </content-placeholders>
                 </div>
                 <div class="card__clicker"></div>
             </a>
@@ -199,6 +203,12 @@ export default {
         },
         preloadPhotos() {
             this.photosLoaded = false;
+
+            if (!this.previewPhotos.length) {
+                this.photosLoaded = true;
+                return;
+            }
+
             let loadedCount = 0;
             this.previewPhotos.map((photo) => {
                 const img = new Image();
@@ -207,6 +217,9 @@ export default {
                     if (loadedCount === this.previewPhotos.length) {
                         this.photosLoaded = true;
                     }
+                };
+                img.onerror = () => {
+                    img.src = this.placeholderPhotoUrl;
                 };
                 img.src = photo;
                 return img;
