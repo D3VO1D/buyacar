@@ -362,9 +362,14 @@ export default {
     border: transparent;
     margin-right: 8px;
     background-color: inherit;
+    color: #000;
 
     &:disabled::placeholder {
         color: rgba(0, 0, 0, .24);
+    }
+
+    &::placeholder {
+        color: grey;
     }
 }
 

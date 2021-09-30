@@ -306,10 +306,6 @@ export default {
 
         &::placeholder {
             font-size: 15px;
-            line-height: normal;
-            position: absolute;
-            top: 50%;
-            display: block;
             overflow: hidden;
             max-width: calc(100% - 32px);
             white-space: nowrap;
@@ -317,7 +313,6 @@ export default {
             pointer-events: none;
             color: rgba(0, 0, 0, .54);
             transition: font-size .05s ease-out 0s, margin-top .05s ease-out 0s, opacity .1s ease-out 0s;
-            transform: translateY(-50%);
         }
     }
 

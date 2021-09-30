@@ -199,7 +199,9 @@ export default {
 <style lang="scss" scoped>
 main {
     width: 100%;
+    height: fit-content;
     display: flex;
+    flex: 1 0 auto;
 }
 
 section {

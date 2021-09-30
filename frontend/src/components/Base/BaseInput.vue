@@ -130,6 +130,11 @@ export default {
         font-size: 15px;
         border: transparent;
         background-color: inherit;
+        color: #000 !important;
+
+        &::placeholder {
+            color: grey !important;
+        }
     }
 }
 </style>
