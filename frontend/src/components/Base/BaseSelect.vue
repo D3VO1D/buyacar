@@ -78,6 +78,8 @@
 </template>
 
 <script>
+import eventBus from '@/eventBus';
+
 export default {
     name: 'BaseSelect',
     props: {
@@ -118,6 +120,12 @@ export default {
             type: String,
             default: '',
         },
+    },
+    mounted() {
+        eventBus.$on('clear-form', this.resetInput);
+    },
+    destroyed() {
+        eventBus.$off('clear-form');
     },
     data() {
         return {
@@ -195,10 +203,19 @@ export default {
 
             this.selectOption(this.filteredOptions[0]);
         },
+        resetInput() {
+            this.inputValue = '';
+        },
     },
     watch: {
         selectedOption(val) {
             this.selectOption(val);
+        },
+        inputValue(val) {
+            const firstAutoComplete = this.filteredOptions[0];
+            if (val === firstAutoComplete) {
+                this.selectOption(firstAutoComplete);
+            }
         },
     },
 };

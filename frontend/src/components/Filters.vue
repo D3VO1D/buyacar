@@ -397,7 +397,7 @@ export default {
         window.addEventListener('scroll', this.onScroll);
     },
     mounted() {
-        eventBus.$on('reset-filters', () => this.resetFilters());
+        eventBus.$on('reset-filters', this.resetFilters);
     },
     destroyed() {
         window.removeEventListener('scroll', this.onScroll);
@@ -436,6 +436,7 @@ export default {
         },
         resetFilters() {
             this.filters = { ...DEFAULT_FILTERS };
+            eventBus.$emit('clear-form');
         },
         sortByForQuery(param) {
             return {
