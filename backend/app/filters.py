@@ -77,7 +77,7 @@ class DistanceOrderingFilter(OrderingFilter):
         request_latitude = request.query_params.get('latitude', None)
         request_longitude = request.query_params.get('longitude', None)
         request_city = request.query_params.get('location', None)
-        distance = request.query_params.get('distance', 200)
+        distance = request.query_params.get('distance', None)
 
         if request_latitude and request_longitude and request_city:
             latitude, longitude, city = request_latitude, request_longitude, request_city.split(',')[0]
