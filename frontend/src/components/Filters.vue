@@ -104,6 +104,7 @@
                         resetText="Reset"
                         bordersType="left"
                         withInput
+                        onlyNumbers
                     />
 
                     <BaseSelect
@@ -116,6 +117,7 @@
                         resetText="Reset"
                         bordersType="right"
                         withInput
+                        onlyNumbers
                     />
                 </div>
 
@@ -163,7 +165,7 @@
                 </div>
                 <div class="filters__column">
                     <div class="filters__results-count" v-if="resultsCount > 0">
-                        {{ resultsCount }} results
+                        {{ resultsCountFormatted }} results
                     </div>
                     <div class="filters__results-count" v-else-if="resultsCount === 0">
                         No results
@@ -221,7 +223,7 @@
                 {{ appliedFiltersMessage }}
             </div>
             <div class="filters__hint-results-count" v-if="resultsCount">
-                {{ resultsCount }} results
+                {{ resultsCountFormatted }} results
             </div>
         </div>
     </div>
@@ -322,11 +324,12 @@ export default {
                 '100 per page',
             ],
             showHintTop: false,
-            isNewSelectedOption: 'All',
-            isBrokenSelectedOption: 'Working',
         };
     },
     computed: {
+        resultsCountFormatted() {
+            return new Intl.NumberFormat('en-US').format(this.resultsCount);
+        },
         yearsRange() {
             // an array of [min_available_year; current_year]
             const yearsRange = new Date().getFullYear() - this.minAvailableYear + 1;
@@ -346,6 +349,20 @@ export default {
         },
         modelsList() {
             return this.availableModels.map((item) => item.model);
+        },
+        isNewSelectedOption() {
+            return {
+                null: 'All',
+                true: 'New',
+                false: 'Used',
+            }[this.filters.is_new];
+        },
+        isBrokenSelectedOption() {
+            return {
+                null: 'All',
+                true: 'Broken',
+                false: 'Working',
+            }[this.filters.is_broken];
         },
         appliedFilters() {
             // select not empty values from filters object
@@ -448,7 +465,6 @@ export default {
             }[param];
         },
         selectIsNew(option) {
-            this.isNewSelectedOption = option;
             switch (option) {
             case 'New':
                 this.filters.is_new = true;
@@ -464,7 +480,6 @@ export default {
             }
         },
         selectIsBroken(option) {
-            this.isBrokenSelectedOption = option;
             switch (option) {
             case 'Working':
                 this.filters.is_broken = false;

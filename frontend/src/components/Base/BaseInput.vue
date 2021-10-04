@@ -10,8 +10,7 @@
             class="input-container__input"
             type="text"
             :placeholder="placeholder"
-            :value="tempValueFormatted"
-            @input="processInput($event.target.value)"
+            v-model="tempValue"
             @focus="isInputFocused = true"
             @blur="isInputFocused = false"
             @keyup.enter="finishedTyping = true"
@@ -47,36 +46,35 @@ export default {
             isValueSelected: false,
         };
     },
-    computed: {
-        tempValueFormatted() {
-            if (!this.tempValue.replace(/\D/g, '')) return '';
-            return new Intl.NumberFormat('en-US').format(this.tempValue.replace(/\D/g, '').replaceAll(',', ''));
-        },
-    },
-    methods: {
-        processInput(value) {
+    watch: {
+        tempValue(val) {
             // we don't update the value immediately to not send http request every time user types a letter
             // instead, we update the value 500ms after the user typed the last symbol
             this.finishedTyping = false;
-            this.tempValue = value;
             clearTimeout(this.timeout);
+            const onlyDigits = val.replace(/\D/g, '');
+            if (!onlyDigits) {
+                this.tempValue = '';
+                return;
+            }
+
+            this.tempValue = new Intl.NumberFormat('en-US').format(onlyDigits);
             this.timeout = setTimeout(() => {
                 if (!this.tempValue) return;
                 this.finishedTyping = true;
-            }, 800);
+            }, 500);
         },
-    },
-    watch: {
         finishedTyping(val) {
             this.isValueSelected = !!val;
             if (val) {
-                this.tempValue = this.tempValue.replace(/\D/g, '').replaceAll(',', '');
                 this.$refs.input.blur();
-                this.$emit('input', this.tempValue);
+                this.$emit('input', this.tempValue.replaceAll(',', ''));
             }
         },
         value(val) {
-            this.tempValue = val;
+            if (val !== this.tempValue.replaceAll(',', '')) {
+                this.tempValue = val;
+            }
             if (!val) {
                 this.isValueSelected = false;
             }

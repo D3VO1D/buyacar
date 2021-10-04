@@ -21,6 +21,7 @@
                     @input="showOptions = !disabled"
                     @focus="focusInput"
                     @blur="blurInput"
+                    @keypress="isNumber"
                     ref="input"
                 />
 
@@ -96,6 +97,10 @@ export default {
             default: '',
         },
         withInput: {
+            type: Boolean,
+            default: false,
+        },
+        onlyNumbers: {
             type: Boolean,
             default: false,
         },
@@ -205,6 +210,12 @@ export default {
         },
         resetInput() {
             this.inputValue = '';
+        },
+        isNumber(e) {
+            if (!this.withInput || !this.onlyNumbers) return;
+
+            const char = String.fromCharCode(e.keyCode);
+            if (!(/\d/.test(char))) e.preventDefault();
         },
     },
     watch: {

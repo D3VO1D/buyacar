@@ -150,7 +150,7 @@ export default {
         },
         pageClicked(newPage) {
             // redirect if we are not on that page already
-            if (parseInt(this.$route.query.page, 10) !== newPage) {
+            if (parseInt(this.$route.query.page || '1', 10) !== newPage) {
                 this.$router.push({
                     name: 'Main Page',
                     query: { page: newPage },
@@ -183,6 +183,7 @@ export default {
         },
     },
     watch: {
+        // eslint-disable-next-line func-names
         '$route.query': function (val) {
             window.scrollTo({
                 top: 0,
