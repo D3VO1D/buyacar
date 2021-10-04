@@ -1,11 +1,15 @@
 <template>
-    <div class="select-container" v-click-outside="clickOutside">
+    <div
+        class="select-container"
+        :class="{'select-container_highlight': isInputFocused || !!selectedOption}"
+        v-click-outside="clickOutside"
+    >
         <div
             class="select-container__select"
-            :class="[{'select-container__has-chosen-value': !!selectedOption},
-                    {'select-container_disabled': disabled},
-                    {'select-container__select_focused': isInputFocused},
-                    `select-container__select_borders-${bordersType}`,]"
+            :class="[{'select-container__has-chosen-value': !!selectedOption,
+                    'select-container_disabled': disabled,
+                    'select-container__select_focused': isInputFocused},
+                    `select-container__select_borders-${bordersType}`]"
             @click="showOptions = (disabled) ? false : !showOptions"
             @keyup.esc="resetSelections"
             @keyup.enter="enterPressed"
@@ -239,6 +243,14 @@ export default {
     position: relative;
     font-size: 15px;
 
+    &:last-child {
+        margin-left: -1px;
+    }
+
+    &:hover, &_highlight {
+        z-index: 100;
+    }
+
     &__select {
         height: 36px;
         background-color: $white;
@@ -260,7 +272,6 @@ export default {
         &_borders-left {
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
-            border-right: none;
         }
 
         &_borders-right {
@@ -274,10 +285,6 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-    }
-
-    &__value-counter {
-        margin-right: 4px;
     }
 
     &_disabled {
